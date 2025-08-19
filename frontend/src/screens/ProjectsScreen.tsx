@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, MoreVertical, Search, Bell, ChevronDown, ZapIcon, DollarSignIcon, CalendarIcon, FileBarChart } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import { Plus, MoreVertical, Search, Bell, ZapIcon, DollarSignIcon, CalendarIcon, FileBarChart } from 'lucide-react';
 import SideBar from "../components/SideBar";
 import {useNavigate, NavLink, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation} from "../features/projectApiSlice";
@@ -10,6 +10,7 @@ import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
+import {ProjectFilters} from "../components/ProjectFilters";
 
 
 
@@ -19,7 +20,8 @@ export function ProjectsScreen() {
     const {keyword} = useParams();
 
     const {userInfo} = useSelector((state: any) => state.auth);
-    const userId = userInfo?.userId;
+    const userId = userInfo?.id;
+    console.log(userId)
 
     const [createProject] = useCreateProjectMutation();
     const [logoutApiCall] = useLogoutMutation();
@@ -43,6 +45,7 @@ export function ProjectsScreen() {
             setEstimate(newValue as number);
         }
     }
+
 
     const requireAuth = (callback: () => void) => {
         if (!userInfo) {
@@ -91,27 +94,6 @@ export function ProjectsScreen() {
         }
     };
 
-    // const onCreateSubmitHandler = async (e: any) => {
-    //     e.preventDefault();
-    //     try {
-    //         await createProject({
-    //             Projectname: projectName,
-    //             Description: description,
-    //             Projectnumber: projectNumber,
-    //             Projectmanager: projectManager,
-    //             Location: location,
-    //             contractor: contractor,
-    //             projectestimate: estimate,
-    //             createdAt: new Date().toISOString(),
-    //             UserId: userId,
-    //         }).unwrap();
-    //         toast.success("Project created successfully");
-    //    //     navigate("/projects");
-    //     } catch (error: any) {
-    //         toast.error("Error updating project", error);
-    //     }
-    // }
-
     const logoutHandler = async () => {
         try {
             // @ts-ignore
@@ -137,6 +119,28 @@ export function ProjectsScreen() {
             projectDate.getFullYear() === now.getFullYear()
         );
     }).length || 0;
+
+    const projectItems = projects?.items;
+    const [filteredProjects, setFilteredProjects] = useState(projectItems);
+    const [searchTerm, setSearchTerm] = useState<string>("");
+
+    const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const term = e.target.value.toLowerCase();
+        setSearchTerm(term);
+
+        const filtered = projects?.items.filter((p: any) => {
+            return p.projectname.toLowerCase().includes(term);
+        });
+
+        setFilteredProjects(filtered);
+    }
+
+    useEffect(() => {
+        if (projectItems) {
+            const filtered = searchTerm ? projectItems.filter((p: any) => p.projectname.toLowerCase().includes(searchTerm.toLowerCase())) : projectItems;
+            setFilteredProjects(filtered);
+        }
+    }, [projectItems, searchTerm, projectItems, searchTerm]);
 
     const downloadCSV_File = () => {
         if (!projects?.items?.length) {
@@ -219,9 +223,9 @@ export function ProjectsScreen() {
                                             <div
                                                 className='items-center  group gap-2 relative flex flex-row'>
                                                 <div
-                                                    className="w-8 h-8 bg-purple-600 rounded-full items-center py-1 text-white text-center">{userInfo?.token?.userName.charAt(0)}</div>
+                                                    className="w-8 h-8 bg-purple-600 rounded-full items-center py-1 text-white text-center">{userInfo?.userName?.charAt(0)}</div>
                                                 <span
-                                                    className="hidden sm:inline text-sm">{userInfo?.token?.email}</span>
+                                                    className="hidden sm:inline text-sm">{userInfo?.email}</span>
 
 
                                             </div>
@@ -257,6 +261,7 @@ export function ProjectsScreen() {
                             <div className='relative'>
                                 <input
                                     type='text'
+                                    onChange={handleProjectSearch}
                                     placeholder='Search...'
                                     className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-16 pr-6 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                 />
@@ -429,7 +434,8 @@ export function ProjectsScreen() {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {projects?.items?.map((project: any, index: number) => (
+                                    {/*{projects?.items?.map((project: any, index: number) => (*/}
+                                    {filteredProjects?.map((project: any, index: number) => (
                                         <tr key={`${project}-${index}`}
                                             className="border-t border-gray-800 hover:bg-gray-900/50 transition-colors">
                                             <td className="p-4 text-white font-medium">{project.projectname}</td>

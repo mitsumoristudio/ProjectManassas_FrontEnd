@@ -5,9 +5,9 @@ import {ToastContainer} from "react-toastify";
 import TopNavigation from "./components/TopNavigation";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
-import HomeScreen from "./screens/HomeScreen";
 import HomePage from ".//screens/Homepage";
 import {ProjectsScreen} from "./screens/ProjectsScreen";
+import {ProjectFilters} from "./components/ProjectFilters";
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/register" element={<RegisterScreen />} />
                 <Route path={"/projects"} element={<ProjectsScreen />} />
+                <Route path={"/filterProjects"} element={<ProjectFilters/>} />
 
 
             </Routes>
