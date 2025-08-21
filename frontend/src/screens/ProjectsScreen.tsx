@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Plus, MoreVertical, Search, Bell, ZapIcon, DollarSignIcon, CalendarIcon, FileBarChart } from 'lucide-react';
+import { Plus, MoreVertical,ZapIcon, DollarSignIcon, CalendarIcon} from 'lucide-react';
 import SideBar from "../components/SideBar";
 import {useNavigate, NavLink, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation} from "../features/projectApiSlice";
@@ -10,12 +10,12 @@ import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
-import {ProjectFilters} from "../components/ProjectFilters";
-
-
+import DashboardHeader from "../components/DashBoardHeader";
+import DownloadCSVbutton from "../components/DownloadCSVbutton";
+// import {ProjectFilters} from "../components/ProjectFilters";
 
 export function ProjectsScreen() {
-    const [isSidebarOpen, setSidebarOpen] = useState(false);
+
     const navigate = useNavigate();
     const {keyword} = useParams();
 
@@ -155,48 +155,7 @@ export function ProjectsScreen() {
             setFilteredProjects(filtered);
         }
         setCurrentPage(1); // Reset Page if filter changes
-    }, [projectItems, searchTerm, projectItems, searchTerm]);
-
-    // Download CSV File
-    const downloadCSV_File = () => {
-        if (!projects?.items?.length) {
-            return;
-        }
-        // Define CSV Headers
-        const csvHeader = [
-            "Project Name",
-            "Project Number",
-            "Estimate",
-            "Location",
-            "Contractor",
-            "Project Manager",
-            "Created At",
-            "Status",
-        ];
-        // Map project data to CSV rows
-        const csvRows = projects?.items?.map((row: any) => [
-            row.projectname,
-            row.projectnumber,
-            row.projectestimate,
-            row.location,
-            row.contractor,
-            row.projectmanager,
-            new Date(row.createdAt).toLocaleDateString(),
-            row.status || "Pending",
-        ]);
-        // Combine header and rows into CSV string
-        const csvConstant = [csvHeader, ...csvRows].map((row: any) => row.join(",")).join('\n');
-
-        // Create a blob and trigger download
-        const blob = new Blob([csvConstant], {type: "text/csv;charset=utf-8"});
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "projects.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
+    }, [projectItems, searchTerm, ]);
 
     return (
         <>
@@ -207,57 +166,7 @@ export function ProjectsScreen() {
                 {/* Main Content */}
                 <div className="flex-1 flex flex-col">
                     {/* Header */}
-                    <header className="bg-[#101010]/80 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-10">
-                        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                            <div className="flex items-center justify-between h-16">
-                                <div className="flex items-center gap-3">
-                                    <button onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                            className="md:hidden mr-4 text-gray-400 hover:text-white">
-                                        {/*<GanttChartSquare size={24}/>*/}
-                                    </button>
-
-                                    <NavLink to={"/"} className={"flex items-center gap-2 hover:text-white"}>
-                                        <svg width="26" height="26" viewBox="0 0 96 96" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd" clipRule="evenodd"
-                                                  d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z"
-                                                  fill="#30E0A5"/>
-                                        </svg>
-                                        <h1 className="text-2xl font-semibold">Manassas</h1>
-                                    </NavLink>
-
-                                </div>
-                                <div className="flex items-center space-x-4">
-                                    <button className="text-gray-400 hover:text-white">
-                                        <Search size={20}/>
-                                    </button>
-                                    <button className="text-gray-400 hover:text-white">
-                                        <Bell size={20}/>
-                                    </button>
-                                    <div className="flex items-center space-x-2">
-                                        {userInfo ? (
-                                            <div
-                                                className='items-center  group gap-2 relative flex flex-row'>
-                                                <div
-                                                    className="w-8 h-8 bg-purple-600 rounded-full items-center py-1 text-white text-center">{userInfo?.userName?.charAt(0)}</div>
-                                                <span
-                                                    className="hidden sm:inline text-sm">{userInfo?.email}</span>
-
-
-                                            </div>
-                                        ) : (
-                                            <div className={"hidden md:flex items-center space-x-4"}>
-                                                <NavLink to={"/login"}
-                                                         className={"text-md font-semibold text-center px-4 py-1 text-gray-900  h-8 hover:text-white  bg-[#30E0A5] rounded-md hover:bg-opacity-90 transition-colors"}>Log
-                                                    in</NavLink>
-                                            </div>
-                                        )}
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
+                   <DashboardHeader />
 
                     {/* Page Content */}
                     <main className=" p-4 sm:p-6 flex-shrink-0 lg:p-8 container mx-auto">
@@ -268,7 +177,6 @@ export function ProjectsScreen() {
                             <StackCard icon={CalendarIcon} name={"Project this month"} value={totalProjectsThisMonth}
                                        color={"#8B5CF6"}/>
                         </div>
-
 
                         <div
                             className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:items-center mb-6">
@@ -424,12 +332,7 @@ export function ProjectsScreen() {
                             )}
 
                             {/* Download CSV file */}
-                            <button
-                                onClick={() => requireAuth(() => downloadCSV_File())}
-                                className="flex items-center justify-center px-4 py-2 bg-[#30E0A5] text-black hover:text-white font-semibold rounded-md hover:bg-opacity-90 transition-colors">
-                                <FileBarChart size={18} className="mr-2"/>
-                                Download CSV
-                            </button>
+                            <DownloadCSVbutton />
                         </div>
 
                         {/* Projects Table */}
