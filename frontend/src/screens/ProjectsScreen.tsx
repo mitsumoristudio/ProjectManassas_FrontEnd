@@ -36,6 +36,7 @@ export function ProjectsScreen() {
     const [description, setDescription] = useState<string>("");
     const newId = uuidv4();
 
+    // Pass a number in textfield
     const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         const parsedValue = newValue === "" ? "" : parseFloat(newValue)
@@ -46,7 +47,7 @@ export function ProjectsScreen() {
         }
     }
 
-
+    // Confirm if the user exists
     const requireAuth = (callback: () => void) => {
         if (!userInfo) {
             toast.error("You must be logged in to create a project");
@@ -55,6 +56,7 @@ export function ProjectsScreen() {
         callback();
     }
 
+    // Add New Project Handler
     const onCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -106,6 +108,7 @@ export function ProjectsScreen() {
         }
     }
 
+    // Get data from Reduxs
     const {data: projects} = useGetAllProjectsQuery<any>({keyword});
     const totalProjects = projects?.items?.length || 0;
     const totalEstimate = projects?.items?.reduce((acc: any, item: any) => acc + item.projectestimate, 0) || 0;
@@ -124,6 +127,17 @@ export function ProjectsScreen() {
     const [filteredProjects, setFilteredProjects] = useState(projectItems);
     const [searchTerm, setSearchTerm] = useState<string>("");
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 7;
+
+    // Pagination Calculation
+    const totalPages = Math.ceil(projectItems?.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentProjects = projectItems?.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
@@ -140,8 +154,10 @@ export function ProjectsScreen() {
             const filtered = searchTerm ? projectItems.filter((p: any) => p.projectname.toLowerCase().includes(searchTerm.toLowerCase())) : projectItems;
             setFilteredProjects(filtered);
         }
+        setCurrentPage(1); // Reset Page if filter changes
     }, [projectItems, searchTerm, projectItems, searchTerm]);
 
+    // Download CSV File
     const downloadCSV_File = () => {
         if (!projects?.items?.length) {
             return;
@@ -245,7 +261,7 @@ export function ProjectsScreen() {
 
                     {/* Page Content */}
                     <main className=" p-4 sm:p-6 flex-shrink-0 lg:p-8 container mx-auto">
-                        <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xl:grid-cols-2 gap-4"}>
+                        <div className={"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"}>
                             <StackCard icon={ZapIcon} name={"Total Projects"} value={totalProjects} color={"#6366F1"}/>
                             <StackCard icon={DollarSignIcon} name={"Total Estimate"} value={totalEstimate}
                                        color={"#8B5CF6"}/>
@@ -435,7 +451,7 @@ export function ProjectsScreen() {
                                     </thead>
                                     <tbody>
                                     {/*{projects?.items?.map((project: any, index: number) => (*/}
-                                    {filteredProjects?.map((project: any, index: number) => (
+                                    {currentProjects?.map((project: any, index: number) => (
                                         <tr key={`${project}-${index}`}
                                             className="border-t border-gray-800 hover:bg-gray-900/50 transition-colors">
                                             <td className="p-4 text-white font-medium">{project.projectname}</td>
@@ -469,6 +485,34 @@ export function ProjectsScreen() {
 
                             </div>
                         </div>
+
+                        {/* Pagination Button */}
+                        <div className={"flex justify-center space-x-2 mt-4"}>
+                            <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev -1, 1))}
+                            className={"px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-600 "}
+                            disabled={currentPage === 1}>
+                                Prev
+                            </button>
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => setCurrentPage(page)}
+                                    className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-700 text-white hover:bg-gray-600"}`}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+
+                            <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            className={"px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-600"}
+                            disabled={currentPage === totalPages}>
+                                Next
+                            </button>
+
+                        </div>
+
                     </main>
                 </div>
             </div>
