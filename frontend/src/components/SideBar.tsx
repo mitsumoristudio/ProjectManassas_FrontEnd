@@ -17,7 +17,7 @@ const SIDEBAR_ITEMS = [
     { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
     { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
     {name: "Users", icon: User, color: "#EC4899", href: "/users"},
-    {name: "Overview", icon: DollarSign, color: "#10B981", href: "/sales"},
+    {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
     {name: "Orders", icon: ShoppingCart, color: "#F59E0B", href:"/orders" },
     {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/analytics"},
     {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"}

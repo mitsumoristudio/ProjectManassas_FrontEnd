@@ -42,11 +42,12 @@ export default function DashboardHeader() {
                                 {userInfo ? (
                                     <div
                                         className='items-center  group gap-2 relative flex flex-row'>
-                                        <div
-                                            className="w-8 h-8 bg-purple-600 rounded-full items-center py-1 text-white text-center">{userInfo?.userName?.charAt(0)}</div>
-                                        <span
-                                            className="hidden sm:inline text-sm">{userInfo?.email}</span>
 
+                                        <div
+                                            className="w-8 h-8 cursor-pointer bg-purple-600 rounded-full items-center py-1 text-white text-center">{userInfo?.userName?.charAt(0)}
+                                        </div>
+
+                                        <span className="hidden sm:inline text-sm">{userInfo?.email}</span>
 
                                     </div>
                                 ) : (

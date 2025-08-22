@@ -11,7 +11,7 @@ import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
 import DashboardHeader from "../components/DashBoardHeader";
-import DownloadCSVbutton from "../components/DownloadCSVbutton";
+import DownloadProjectCSVbutton from "../components/DownloadProjectCSVbutton";
 // import {ProjectFilters} from "../components/ProjectFilters";
 
 export function ProjectsScreen() {
@@ -129,7 +129,7 @@ export function ProjectsScreen() {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 7;
+    const itemsPerPage = 6;
 
     // Pagination Calculation
     const totalPages = Math.ceil(projectItems?.length / itemsPerPage);
@@ -332,7 +332,7 @@ export function ProjectsScreen() {
                             )}
 
                             {/* Download CSV file */}
-                            <DownloadCSVbutton />
+                            <DownloadProjectCSVbutton />
                         </div>
 
                         {/* Projects Table */}

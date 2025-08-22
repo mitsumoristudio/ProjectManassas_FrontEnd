@@ -1,12 +1,12 @@
 
 import {useGetAllProjectsQuery} from "../features/projectApiSlice";
-import {useParams, } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import {FileBarChart} from "lucide-react";
 import React from "react";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 
-export default function DownloadCSVbutton() {
+const DownloadProjectCSVbutton = () => {
     const {keyword} = useParams();
     const {data: projects} = useGetAllProjectsQuery<any>({keyword});
     const {userInfo} = useSelector((state: any) => state.auth);
@@ -74,3 +74,5 @@ export default function DownloadCSVbutton() {
         </>
     )
 }
+
+export default DownloadProjectCSVbutton;

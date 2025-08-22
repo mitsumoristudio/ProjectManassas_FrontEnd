@@ -31,7 +31,7 @@ export const equipmentApiSlice = apiSlice.injectEndpoints({
             query: (data: any) => ({
                 url: EQUIPMENTS_URL,
                 method: "POST",
-                data: data,
+                body: data,
             }),
             invalidateTags:["Equipment"]
         }),
