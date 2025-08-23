@@ -19,7 +19,7 @@ const SIDEBAR_ITEMS = [
     {name: "Users", icon: User, color: "#EC4899", href: "/users"},
     {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
     {name: "Orders", icon: ShoppingCart, color: "#F59E0B", href:"/orders" },
-    {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/analytics"},
+    {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
     {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"}
 ]
 

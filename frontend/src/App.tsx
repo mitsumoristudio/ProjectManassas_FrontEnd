@@ -9,6 +9,7 @@ import HomePage from ".//screens/Homepage";
 import {ProjectsScreen} from "./screens/ProjectsScreen";
 import {ProjectFilters} from "./components/ProjectFilters";
 import EquipmentScreen from "./screens/EquipmentScreen";
+import EquipmentAnalyticsScreen from "./screens/EquipmentAnalyticsScreen";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/register" element={<RegisterScreen />} />
                 <Route path={"/projects"} element={<ProjectsScreen />} />
                 <Route path={"/equipments"} element={<EquipmentScreen />} />
+                <Route path={"/equipmentAnalytics"} element={<EquipmentAnalyticsScreen />} />
                 <Route path={"/filterProjects"} element={<ProjectFilters/>} />
 
 
