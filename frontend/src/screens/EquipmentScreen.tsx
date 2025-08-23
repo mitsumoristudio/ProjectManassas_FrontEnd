@@ -20,6 +20,7 @@ import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
 import DashboardHeader from "../components/DashBoardHeader";
+import {DownloadEquipmentCSVbutton} from "../components/DownloadEquipmentCSVbutton";
 
 
 export default function EquipmentScreen() {
@@ -386,7 +387,7 @@ export default function EquipmentScreen() {
                             )}
 
                             {/* Download CSV file */}
-
+                            <DownloadEquipmentCSVbutton />
 
                         </div>
 
