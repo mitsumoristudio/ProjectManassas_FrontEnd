@@ -1,22 +1,19 @@
 
 import {
-    Plus,
-    FileBarChart,
     DollarSignIcon,
-    ShoppingCartIcon, ZapIcon,
+     ZapIcon,
 } from "lucide-react";
 
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SideBar from "../components/SideBar";
 import StackCard from "../components/StackCard";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllEquipmentsQuery} from "../features/equipmentApiSlice";
-import {useSelector} from "react-redux";
+
 
 import DashboardHeader from "../components/DashBoardHeader";
 import PieChartComponent from "../components/PieChartComponent";
+import {LineChartComponent} from "../components/LineChartComponent";
 
 export default function EquipmentAnalyticsScreen() {
     const navigate = useNavigate();
@@ -26,6 +23,7 @@ export default function EquipmentAnalyticsScreen() {
     // Calculated Equipment Cost
     const totalEquipments = equipments?.items?.length || 0;
     const totalEstimate = equipments?.items?.reduce((acc: any, item: any) => acc + Number(item.monthlyCost), 0) || 0;
+
 
     // Prepare Pie Chart data set for Equipment Category breakdown
     const pieCategoryData = equipments?.items?.reduce((acc : any[], item: any) => {
@@ -49,17 +47,42 @@ export default function EquipmentAnalyticsScreen() {
         return acc;
     }, [])
 
+    // LineChart monthly cost
+    const monthlyCostMap = new Map<string, { date: Date; value: number }>();
+
+    equipments?.items?.forEach((item: any) => {
+        const date = new Date(item.createdAt);
+
+        // Normalize to year + month index (YYYY-MM)
+        const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+
+        const current = monthlyCostMap?.get(monthKey)?.value || 0;
+        monthlyCostMap?.set(monthKey, {
+            date: new Date(date.getFullYear(), date.getMonth(), 1), // always first day of month
+            value: current + (item.monthlyCost || 0),
+        });
+    });
+
+// Convert Map → Array
+    let monthlyCostData = Array.from(monthlyCostMap, ([, { date, value }]) => ({
+        name: date.toLocaleString("default", { month: "short", year: "numeric" }),
+        value,
+        date, // keep real date for sorting
+    }));
+
+// Sort by real Date
+    monthlyCostData?.sort((a, b) => a.date.getTime() - b.date.getTime());
 
     // Internal vs External Pie Chart Data
-    const pieInternalExternalData = equipments?.items?.reduce((acc : any[], item: any) => {
-        const existingData = acc.find((e: any) => e.name === item.internalExternal);
-        if (existingData) {
-            existingData.value += 1;
-        } else {
-            acc.push({name: item.internalExternal || "Unknown Category", value: 1});
-        }
-        return acc;
-    }, [])
+    // const pieInternalExternalData = equipments?.items?.reduce((acc : any[], item: any) => {
+    //     const existingData = acc.find((e: any) => e.name === item.internalExternal);
+    //     if (existingData) {
+    //         existingData.value += 1;
+    //     } else {
+    //         acc.push({name: item.internalExternal || "Unknown Category", value: 1});
+    //     }
+    //     return acc;
+    // }, [])
 
     return (
         <>
@@ -78,6 +101,7 @@ export default function EquipmentAnalyticsScreen() {
                             <StackCard icon={ZapIcon} name={"Total Equipment"} value={totalEquipments} color={"#6366F1"}/>
                             <StackCard icon={DollarSignIcon} name={"Overall Equipment Cost"} value={totalEstimate}
                                        color={"#8B5CF6"}/>
+
                         </div>
 
 
@@ -86,23 +110,29 @@ export default function EquipmentAnalyticsScreen() {
                             <div className={"p-6 bg-[#101010] rounded-lg border border-gray-800"}>
                                 <h2 className={"text-lg font-semibold text-gray-300 mb-4"}>Equipment Count By Category</h2>
 
-                                <PieChartComponent data={pieCategoryData} />
+                                <PieChartComponent data={pieCategoryData || []} />
 
                             </div>
 
                             <div className={"p-4 bg-[#101010] rounded-lg border border-gray-800"}>
                                 <h2 className={"text-lg font-semibold text-gray-300 mb-4"}>Monthly Equipment Cost</h2>
 
-                                <PieChartComponent data={pieMonthlyCost} />
+                                <PieChartComponent data={pieMonthlyCost || []} />
 
                             </div>
+                        </div>
 
+                        <div className={"p-6 mx-auto py-2"}>
+                            <div className={"p-4 bg-[#101010] rounded-lg border border-gray-800 mb-8"}>
+                                <h2 className={"text-lg font-semibold text-white mb-2"}>Monthly Cost Trend</h2>
+                                <LineChartComponent data={monthlyCostData || []} color={"#10b981"}/>
+                            </div>
 
                         </div>
 
-                        <div className={"grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"}>
 
-                        </div>
+
+
                     </main>
 
                 </div>

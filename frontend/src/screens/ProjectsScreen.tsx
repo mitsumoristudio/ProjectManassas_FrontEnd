@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Plus, MoreVertical,ZapIcon, DollarSignIcon, CalendarIcon} from 'lucide-react';
+import { Plus, MoreVertical,ZapIcon, DollarSignIcon, CalendarIcon, ClipboardEdit} from 'lucide-react';
 import SideBar from "../components/SideBar";
 import {useNavigate, NavLink, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation} from "../features/projectApiSlice";
@@ -21,10 +21,11 @@ export function ProjectsScreen() {
 
     const {userInfo} = useSelector((state: any) => state.auth);
     const userId = userInfo?.id;
-    console.log(userId)
+   // console.log(userId)
 
     const [createProject] = useCreateProjectMutation();
     const [logoutApiCall] = useLogoutMutation();
+
 
     const [openEdit, setOpenEdit] = useState(false);
     const [projectName, setProjectName] = useState<string>("");
@@ -113,6 +114,19 @@ export function ProjectsScreen() {
     const totalProjects = projects?.items?.length || 0;
     const totalEstimate = projects?.items?.reduce((acc: any, item: any) => acc + item.projectestimate, 0) || 0;
     // console.log("Project Response", projects);
+
+    const filteredUserProjectId = projects?.items?.filter((project: {userId: string}) => project.userId  === userId);
+
+    // Confirm if the UserID is equal to Project UserID or User is Admin
+    const requirefilteredUser = (callback: () => void) => {
+        const isAssigned = filteredUserProjectId && filteredUserProjectId.length > 0;
+
+        if (!userInfo?.isAdmin && !isAssigned) {
+            toast.error("You must be assigned to project to edit");
+            return;
+        }
+        callback();
+    }
 
     const totalProjectsThisMonth = projects?.items?.filter((p: any) => {
         const projectDate = new Date(p.createdAt);
@@ -372,14 +386,22 @@ export function ProjectsScreen() {
                                             )}</td>
                                             <td className="p-4 text-gray-300">
                                                 <span
-                                                    className={`px-2 py-1 text-xs font-medium rounded-full ${project.status === 'Active' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                                                    className={`px-2 py-1 text-xs font-medium rounded-full bg-green-400`}>
                                                     {project.status}
                                                 </span>
                                             </td>
+                                            {}
                                             <td className="p-4 text-right">
-                                                <button className="text-gray-400 hover:text-white">
+
+
+                                                {/* Open Project Edit page */}
+
+                                                <button onClick={() => requireAuth(() => requirefilteredUser(() => navigate("/editProject")))}
+                                                    className="text-gray-400 hover:text-white">
                                                     <MoreVertical size={20}/>
                                                 </button>
+
+
                                             </td>
                                         </tr>
                                     ))}
