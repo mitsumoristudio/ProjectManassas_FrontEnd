@@ -16,7 +16,7 @@ import {AnimatePresence, motion} from "framer-motion";
 const SIDEBAR_ITEMS = [
     { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
     { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
-    {name: "Users", icon: User, color: "#EC4899", href: "/users"},
+    {name: "Users", icon: User, color: "#EC4899", href: "/myprojects"},
     {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
     {name: "Orders", icon: ShoppingCart, color: "#F59E0B", href:"/orders" },
     {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},

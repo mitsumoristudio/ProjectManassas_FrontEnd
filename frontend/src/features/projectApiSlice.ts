@@ -25,7 +25,7 @@ export const projectApiSlice = apiSlice.injectEndpoints({
         }),
         getMyProject: builder.query({
             query: (userId: string) => ({
-                url: `${PROJECT_URL}/${userId}/myProject`,
+                url: `${PROJECT_URL}/user/${userId}`,
                 method: "GET",
             }),
             keepUnusedDataFor: 5,

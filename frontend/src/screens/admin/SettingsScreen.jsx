@@ -10,7 +10,7 @@ import {useProfileMutation, useDeleteUserMutation} from "../../features/userApiS
 import {useSelector, useDispatch, } from "react-redux";
 import {toast} from "react-toastify";
 import {setCredentials} from "../../features/authSlice";
-import {useNavigate} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet";
 
 
@@ -96,11 +96,21 @@ export default function SettingsScreen() {
                 <meta name="description" content="Settings Page" />
             </Helmet>
                 <main className={"flex-1 overflow-auto relative z-10 bg-gray-900 px-4"}>
+
                     <header
                         className={"bg-gray-900 bg-opacity-50 backdrop-blur-md shadow-lg mb-6 border-b border-gray-700"}>
-                        <div className={"max-w-7xl mx-auto py-4 sm: px-6 lg:px-8 ml-20"}>
-                            <h1 className={"text-4xl font-semibold text-gray-100"}>Settings</h1>
-                        </div>
+
+                        <NavLink to={"/"} className={"flex items-center gap-1 hover:text-white px-2"}>
+                            <svg width="26" height="26" viewBox="0 0 96 96" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path fillRule="evenodd" clipRule="evenodd"
+                                      d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z"
+                                      fill="#30E0A5"/>
+                            </svg>
+                            <h1 className="text-2xl font-semibold text-white p-2 ">Manassas</h1>
+                            <h1 className="text-3xl font-semibold text-white p-4 ">Settings</h1>
+                        </NavLink>
+
                     </header>
 
                     <SettingSection title={"Profile"} icon={PiUserFill}>
@@ -109,7 +119,7 @@ export default function SettingsScreen() {
                                 <div
                                     className='h-12 w-12 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold'>
 
-                                    {userInfo.name.charAt(0)}
+                                    {userInfo?.email?.charAt(0)}
                                 </div>
                             </div>
 
