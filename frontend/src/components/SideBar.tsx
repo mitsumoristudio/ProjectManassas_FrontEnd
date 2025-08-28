@@ -15,7 +15,7 @@ import {
     Settings2Icon,
     LogOutIcon,
     TrendingUp,
-
+    UserCircle2Icon,
     User
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
@@ -37,8 +37,9 @@ export default function SideBar() {
     const AUTH_SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
         { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
-        {name: "Users", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
+        {name: "My Projects", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
+        {name: "My Equipment", icon: UserCircle2Icon, color: "#6324f1", href: `/equipments/user/${userInfo?.id}`},
         {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
@@ -118,33 +119,6 @@ export default function SideBar() {
                                     </>
                                 )
                             })}
-
-
-                            {/*<nav className={'mt-8 flex-grow'}>*/}
-
-                            {/*    {AUTH_SIDEBAR_ITEMS.map((item, index) => {*/}
-                            {/*        return (*/}
-                            {/*            <Link to={item.href} key={item.href}>*/}
-                            {/*                <motion.div className={'flex items-center p-4 text-sm font-medium rounded-lg  hover:bg-gray-700 transition-colors mb-2'}>*/}
-                            {/*                    <item.icon size={28} style={{color: item.color, minWidth: "20px"}} />*/}
-
-                            {/*                    <AnimatePresence>*/}
-                            {/*                        {isSidebarOpen && (*/}
-                            {/*                            <motion.span key={index}*/}
-                            {/*                                         className={'ml-4 whitespace-nowrap'}*/}
-                            {/*                                         initial={{ opacity: 0, width: 0 }}*/}
-                            {/*                                         animate={{opacity: 1, width: "auto"}}*/}
-                            {/*                                         exit={{opacity: 0, width: 0}}*/}
-                            {/*                                         transition={{duration: 0.4, delay: 0.3}}>*/}
-                            {/*                                {item.name}*/}
-                            {/*                            </motion.span>*/}
-                            {/*                        )}*/}
-                            {/*                    </AnimatePresence>*/}
-                            {/*                </motion.div>*/}
-                            {/*            </Link>*/}
-                            {/*        )*/}
-                            {/*    })}*/}
-                            {/*</nav>*/}
 
                         </section>
                     ) : (

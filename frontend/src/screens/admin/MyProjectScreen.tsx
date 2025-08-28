@@ -54,8 +54,10 @@ export default function MyProjectScreen() {
         }
     }
 
+    // Calculate total project for User
     const myTotalProjects = projects?.filter((project: {userId:string}) => project.userId === userId).length || 0;
 
+    // Calculate totalProject estimate for User
     const myTotalEstimate = projects?.filter((p: any)=> p.userId === userId)
         .reduce((acc: number, item:any) => acc + (item.projectEstimate || 0), 0) || 0;
 

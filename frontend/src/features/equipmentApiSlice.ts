@@ -22,7 +22,7 @@ export const equipmentApiSlice = apiSlice.injectEndpoints({
         }),
         getMyEquipments: builder.query({
             query:(userId:string) => ({
-                url: `${EQUIPMENTS_URL}/${userId}/myEquipment`,
+                url: `${EQUIPMENTS_URL}/user/${userId}`,
                 method: "GET",
             }),
             keepUnusedDataFor: 5,
