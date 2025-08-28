@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon} from 'lucide-react';
+import { MoreVertical, ZapIcon, DollarSignIcon, TrashIcon} from 'lucide-react';
 import SideBar from "../../components/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import StackCard from "../../components/StackCard";
@@ -21,29 +21,23 @@ export default function MyProjectScreen() {
 
     const {data: projects, isLoading, isError, refetch} = useGetMyProjectQuery<any>(id);
     const [deleteProject] = useDeleteProjectMutation();
-    const projectItems = projects?.items;
-    const [filteredProjects, setFilteredProjects] = useState(projectItems);
+
+    const [filteredProjects, setFilteredProjects] = useState(projects);
     const [searchTerm, setSearchTerm] = useState<string>("");
+
+    const filterTheProjects = projects?.filter((item: any) => item.projectName.toLowerCase().includes(searchTerm.toLowerCase()));
 
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
 
-        const filtered = projects?.items.filter((p: any) => {
-            return p.projectname.toLowerCase().includes(term);
+        const filtered = projects?.filter((p: any) => {
+            return p.projectName.toLowerCase().includes(term);
         });
 
         setFilteredProjects(filtered);
     }
-
-    useEffect(() => {
-        if (projectItems) {
-            const filtered = searchTerm ? projectItems.filter((p: any) => p.projectname.toLowerCase().includes(searchTerm.toLowerCase())) : projectItems;
-            setFilteredProjects(filtered);
-        }
-     //   setCurrentPage(1); // Reset Page if filter changes
-    }, [projectItems, searchTerm, ]);
 
     // Delete Project
     const deleteProjectHandler = async (id: any) => {
@@ -53,17 +47,17 @@ export default function MyProjectScreen() {
                 refetch();
 
                 toast.success("Product deleted successfully.");
-                navigate("/")
+
             } catch (error) {
                 toast.error("Problem with deleting this product now!");
             }
         }
     }
 
-    const myTotalProjects = projects?.items?.filter((project: {userId:string}) => project.userId === userId);
+    const myTotalProjects = projects?.filter((project: {userId:string}) => project.userId === userId).length || 0;
 
-    const myTotalEstimate = projects?.items?.filter((projects: any)=> projects.userId === userId)
-        .reduce((acc: any, item:any) => acc + item.projectestimate, 0) || 0;
+    const myTotalEstimate = projects?.filter((p: any)=> p.userId === userId)
+        .reduce((acc: number, item:any) => acc + (item.projectEstimate || 0), 0) || 0;
 
     return (
         <>
@@ -98,15 +92,17 @@ export default function MyProjectScreen() {
                                                color={"#8B5CF6"}/>
                                 </div>
 
-                                <div className={"flex flex-col sm:flex-row justify-between items-center gap-4 sm:items-center mb-6"}>
-                                    <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">Current Projects</h2>
-                                    <div className='relative'>
+                                <div className={"flex flex-1 sm:flex-row justify-items-end items-center gap-4 sm:items-center mb-6"}>
+                                    <h2 className="text-2xl font-bold text-white mb-4 sm:mb-0">My Projects</h2>
+                                    <div className='relative flex flex-row gap-6'>
                                         <input
                                             type='text'
                                             onChange={handleProjectSearch}
                                             placeholder='Search...'
-                                            className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-16 pr-6 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                                            className='bg-gray-700 text-white mx-2 placeholder-gray-400 rounded-lg pl-16 pr-6 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                         />
+
+
                                         <CiSearch className='absolute left-3 top-2.5 text-gray-400' size={18}/>
 
                                         {/* Download CSV file */}
@@ -133,15 +129,15 @@ export default function MyProjectScreen() {
                                             </thead>
                                             <tbody>
                                             {/*{projects?.items?.map((project: any, index: number) => (*/}
-                                            {projectItems?.map((project: any, index: number) => (
-                                                <tr key={`${project}-${index}`}
+                                            {filterTheProjects?.map((project: any, index: number) => (
+                                                <tr key={project.id}
                                                     className="border-t border-gray-800 hover:bg-gray-900/50 transition-colors">
-                                                    <td className="p-4 text-white font-medium">{project.projectname}</td>
-                                                    <td className="p-4 text-gray-300">{project.projectnumber}</td>
-                                                    <td className="p-4 text-gray-300">${project.projectestimate}</td>
+                                                    <td className="p-4 text-white font-medium">{project.projectName}</td>
+                                                    <td className="p-4 text-gray-300">{project.projectNumber}</td>
+                                                    <td className="p-4 text-gray-300">${project.projectEstimate}</td>
                                                     <td className="p-4 text-gray-300">{project.location}</td>
                                                     <td className="p-4 text-gray-300">{project.contractor}</td>
-                                                    <td className="p-4 text-gray-300">{project.projectmanager}</td>
+                                                    <td className="p-4 text-gray-300">{project.projectManager}</td>
                                                     <td className="p-4 text-gray-300">{new Date(project.createdAt).toLocaleDateString(
                                                         "en-US", {
                                                             year: "numeric",
@@ -156,7 +152,7 @@ export default function MyProjectScreen() {
                                                 </span>
                                                     </td>
                                                     {}
-                                                    <td className="p-4 text-right">
+                                                    <td className="p-4 text-right flex gap-2 justify-end">
 
                                                         {/* Open Project Edit page add edit button */}
                                                         <button
@@ -185,8 +181,6 @@ export default function MyProjectScreen() {
                                 </div>
 
                             </main>
-
-
 
                         </div>
                     </div>

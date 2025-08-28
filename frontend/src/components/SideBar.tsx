@@ -1,30 +1,61 @@
 
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {logout} from "../features/authSlice";
+import {useLogoutMutation} from "../features/userApiSlice";
+import {useDispatch} from "react-redux";
+
+
 
 import {
     BarChart2Icon,
     DollarSign, LucideHome,
     MenuSquare,
     Settings2Icon,
-    ShoppingCart,
+    LogOutIcon,
     TrendingUp,
+
     User
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 
-const SIDEBAR_ITEMS = [
-    { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
-    { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
-    {name: "Users", icon: User, color: "#EC4899", href: "/myprojects"},
-    {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
-    {name: "Orders", icon: ShoppingCart, color: "#F59E0B", href:"/orders" },
-    {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
-    {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"}
-]
-
 export default function SideBar() {
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+    const {userInfo} = useSelector((state: any) => state.auth)
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [logoutApiCall] = useLogoutMutation();
+
+    const SIDEBAR_ITEMS = [
+        { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
+        { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
+        {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
+        {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
+    ]
+
+    const AUTH_SIDEBAR_ITEMS = [
+        { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
+        { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
+        {name: "Users", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
+        {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
+        {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
+        {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
+        {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
+
+    ]
+
+    const logoutHandler = async () => {
+        try {
+            //@ts-ignore
+            await logoutApiCall().unwrap()
+            //@ts-ignore
+            dispatch(logout())
+            navigate("/");
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <main className={"bg-[#0A0A0A]"}>
@@ -39,30 +70,115 @@ export default function SideBar() {
                         <MenuSquare size={30}/>
                     </motion.button>
 
-                    <nav className={'mt-8 flex-grow'}>
-                        {SIDEBAR_ITEMS.map((item, index) => {
-                            return (
-                                <Link to={item.href} key={item.href}>
-                                    <motion.div className={'flex items-center p-4 text-sm font-medium rounded-lg  hover:bg-gray-700 transition-colors mb-2'}>
-                                        <item.icon size={28} style={{color: item.color, minWidth: "20px"}} />
-
+                    { userInfo ? (
+                        <section>
+                            {AUTH_SIDEBAR_ITEMS.map((item, index) => {
+                                const content = (
+                                    <motion.div
+                                        className="flex items-center p-4 text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2"
+                                    >
+                                        <item.icon size={28} style={{ color: item.color, minWidth: "20px" }} />
                                         <AnimatePresence>
                                             {isSidebarOpen && (
-                                                <motion.span key={index}
-                                                             className={'ml-4 whitespace-nowrap'}
-                                                             initial={{ opacity: 0, width: 0 }}
-                                                             animate={{opacity: 1, width: "auto"}}
-                                                             exit={{opacity: 0, width: 0}}
-                                                             transition={{duration: 0.4, delay: 0.3}}>
+                                                <motion.span
+                                                    key={index}
+                                                    className="ml-4 whitespace-nowrap"
+                                                    initial={{ opacity: 0, width: 0 }}
+                                                    animate={{ opacity: 1, width: "auto" }}
+                                                    exit={{ opacity: 0, width: 0 }}
+                                                    transition={{ duration: 0.4, delay: 0.3 }}
+                                                >
                                                     {item.name}
                                                 </motion.span>
                                             )}
                                         </AnimatePresence>
                                     </motion.div>
-                                </Link>
-                            )
-                        })}
-                    </nav>
+                                );
+
+                                // Handle logout action
+                                if (item.action === "logout") {
+                                    return (
+                                        <button
+                                            key={item.name}
+                                            onClick={logoutHandler}
+                                            className="w-full text-left"
+                                        >
+                                            {content}
+                                        </button>
+                                    );
+                                }
+                                if (item.href) {
+                                    return (
+                                        <Link to={item.href as string} key={item.href}>
+                                            {content}
+                                        </Link>
+                                    );
+                                }
+                                return (<>
+                                    </>
+                                )
+                            })}
+
+
+                            {/*<nav className={'mt-8 flex-grow'}>*/}
+
+                            {/*    {AUTH_SIDEBAR_ITEMS.map((item, index) => {*/}
+                            {/*        return (*/}
+                            {/*            <Link to={item.href} key={item.href}>*/}
+                            {/*                <motion.div className={'flex items-center p-4 text-sm font-medium rounded-lg  hover:bg-gray-700 transition-colors mb-2'}>*/}
+                            {/*                    <item.icon size={28} style={{color: item.color, minWidth: "20px"}} />*/}
+
+                            {/*                    <AnimatePresence>*/}
+                            {/*                        {isSidebarOpen && (*/}
+                            {/*                            <motion.span key={index}*/}
+                            {/*                                         className={'ml-4 whitespace-nowrap'}*/}
+                            {/*                                         initial={{ opacity: 0, width: 0 }}*/}
+                            {/*                                         animate={{opacity: 1, width: "auto"}}*/}
+                            {/*                                         exit={{opacity: 0, width: 0}}*/}
+                            {/*                                         transition={{duration: 0.4, delay: 0.3}}>*/}
+                            {/*                                {item.name}*/}
+                            {/*                            </motion.span>*/}
+                            {/*                        )}*/}
+                            {/*                    </AnimatePresence>*/}
+                            {/*                </motion.div>*/}
+                            {/*            </Link>*/}
+                            {/*        )*/}
+                            {/*    })}*/}
+                            {/*</nav>*/}
+
+                        </section>
+                    ) : (
+                        <section>
+                            <nav className={'mt-8 flex-grow'}>
+
+                                {SIDEBAR_ITEMS.map((item, index) => {
+                                    return (
+                                        <Link to={item.href} key={item.href}>
+                                            <motion.div className={'flex items-center p-4 text-sm font-medium rounded-lg  hover:bg-gray-700 transition-colors mb-2'}>
+                                                <item.icon size={28} style={{color: item.color, minWidth: "20px"}} />
+
+                                                <AnimatePresence>
+                                                    {isSidebarOpen && (
+                                                        <motion.span key={index}
+                                                                     className={'ml-4 whitespace-nowrap'}
+                                                                     initial={{ opacity: 0, width: 0 }}
+                                                                     animate={{opacity: 1, width: "auto"}}
+                                                                     exit={{opacity: 0, width: 0}}
+                                                                     transition={{duration: 0.4, delay: 0.3}}>
+                                                            {item.name}
+                                                        </motion.span>
+                                                    )}
+                                                </AnimatePresence>
+                                            </motion.div>
+                                        </Link>
+                                    )
+                                })}
+                            </nav>
+
+                        </section>
+                    )}
+
+
                 </div>
 
             </motion.div>

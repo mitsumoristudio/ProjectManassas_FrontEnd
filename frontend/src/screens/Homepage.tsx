@@ -57,7 +57,7 @@ export default function Homepage() {
                             <ArrowRight size={18} />
                         </a>
                         <a href="/contactUs" className="w-full sm:w-auto px-6 py-3 text-base font-medium text-white bg-[#1A1A1A] border border-gray-700 rounded-md hover:bg-gray-800 transition-all flex items-center justify-center space-x-2">
-                            <span>Talk to our staff</span>
+                            <span>Talk to us</span>
                         </a>
                     </div>
                 </section>
@@ -90,7 +90,7 @@ export default function Homepage() {
                             { title: 'Instant provisioning', description: 'Create a new construction project in matter of seconds' },
                             { title: 'Autoscaling', description: 'Scale projects and keep track of ongoing process' },
                             { title: 'Team assignments & Roles', description: 'Assign admin roles & built with authentication features' },
-                            { title: 'Bottomless storage', description: 'Store data at ease' },
+                            { title: 'Store individual projects', description: 'Store data at ease' },
                             { title: 'Visualization', description: 'Set and visualize project goals and scope of work' },
                             { title: 'Project Management functions', description: 'Add constraints, requirements and stay updated' },
                         ].map((feature) => (
