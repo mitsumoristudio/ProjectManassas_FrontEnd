@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import { Search, ArrowRight, Menu, X } from 'lucide-react';
 import {NavLink, useNavigate} from "react-router-dom";
-import {logout} from "../features/authSlice";
+import {logout} from "../../../features/authSlice";
 import{ useSelector, useDispatch} from "react-redux";
-import {useLogoutMutation} from "../features/userApiSlice";
+import {useLogoutMutation} from "../../../features/userApiSlice";
 
 export default function NavBarComponent() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);

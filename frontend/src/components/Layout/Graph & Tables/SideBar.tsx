@@ -2,14 +2,15 @@
 import React from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
-import {logout} from "../features/authSlice";
-import {useLogoutMutation} from "../features/userApiSlice";
+import {logout} from "../../../features/authSlice";
+import {useLogoutMutation} from "../../../features/userApiSlice";
 import {useDispatch} from "react-redux";
 
 
 
 import {
     BarChart2Icon,
+    AreaChartIcon,
     DollarSign, LucideHome,
     MenuSquare,
     Settings2Icon,
@@ -40,7 +41,7 @@ export default function SideBar() {
         {name: "My Projects", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "My Equipment", icon: UserCircle2Icon, color: "#6324f1", href: `/equipments/user/${userInfo?.id}`},
-        {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
+        {name: "Equipment Analytic", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
 

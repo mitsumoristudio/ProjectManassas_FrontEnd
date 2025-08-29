@@ -4,7 +4,7 @@ import {NavLink, useNavigate} from "react-router-dom";
 import {logout} from "../features/authSlice";
 import{ useSelector, useDispatch} from "react-redux";
 import {useLogoutMutation} from "../features/userApiSlice";
-import NavBarComponent from "../components/NavBarComponent";
+import NavBarComponent from "../components/Layout/Graph & Tables/NavBarComponent";
 
 // Main App Component
 export default function Homepage() {

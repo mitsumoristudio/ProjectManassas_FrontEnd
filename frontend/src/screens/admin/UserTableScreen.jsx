@@ -3,7 +3,7 @@ import {useState} from "react";
 import {motion} from "framer-motion";
 import { CiSearch } from "react-icons/ci";
 import {toast} from "react-toastify";
-import CustomLoader from "../../components/CustomLoader";
+import CustomLoader from "../../components/Layout/CustomLoader.js";
 import {useGetAllUsersMutation, useDeleteUserMutation} from "../../features/userApiSlice";
 import {Link} from "react-router-dom";
 import {Helmet} from "react-helmet";

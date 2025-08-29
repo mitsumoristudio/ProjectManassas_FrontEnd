@@ -1,5 +1,5 @@
 
-import {useGetAllEquipmentsQuery} from "../features/equipmentApiSlice";
+import {useGetAllEquipmentsQuery} from "../../../features/equipmentApiSlice";
 import {useParams} from "react-router-dom";
 import {FileBarChart} from "lucide-react";
 import React from "react";

@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon} from 'lucide-react';
-import SideBar from "../components/SideBar";
+import SideBar from "../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
-import StackCard from "../components/StackCard";
+import StackCard from "../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
 import {logout} from "../features/authSlice";
 import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
-import DashboardHeader from "../components/DashBoardHeader";
-import DownloadProjectCSVbutton from "../components/DownloadProjectCSVbutton";
-import CustomLoader from "../components/CustomLoader";
+import DashboardHeader from "../components/Layout/DashBoardHeader";
+import DownloadProjectCSVbutton from "../components/Layout/Graph & Tables/DownloadProjectCSVbutton";
+import CustomLoader from "../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import { motion } from 'framer-motion';
 
@@ -140,18 +140,22 @@ export function ProjectsScreen() {
     }).length || 0;
 
     const projectItems = projects?.items;
-    const [filteredProjects, setFilteredProjects] = useState(projectItems);
+
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     // Pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 6;
 
+    const filterProjects = projectItems?.filter((item: any) => item.projectname.toLowerCase().includes(searchTerm.toLowerCase()));
+
     // Pagination Calculation
     const totalPages = Math.ceil(projectItems?.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentProjects = projectItems?.slice(indexOfFirstItem, indexOfLastItem);
+    const currentProjects = filterProjects?.slice(indexOfFirstItem, indexOfLastItem);
+
+    const [filteredProjects, setFilteredProjects] = useState(currentProjects);
 
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

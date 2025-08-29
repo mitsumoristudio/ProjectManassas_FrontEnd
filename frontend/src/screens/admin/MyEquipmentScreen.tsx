@@ -1,17 +1,17 @@
 import React, {useState, useEffect} from "react";
 import { MoreVertical, ZapIcon, DollarSignIcon, TrashIcon} from 'lucide-react';
-import SideBar from "../../components/SideBar";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import  {useParams} from "react-router-dom";
-import StackCard from "../../components/StackCard";
+import StackCard from "../../components/Layout/StackCard";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
-import DashboardHeader from "../../components/DashBoardHeader";
-import CustomLoader from "../../components/CustomLoader";
+import DashboardHeader from "../../components/Layout/DashBoardHeader";
+import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import {motion} from "framer-motion";
 import {useGetMyEquipmentsQuery, useDeleteEquipmentMutation} from "../../features/equipmentApiSlice";
 import {CiSearch} from "react-icons/ci";
-import {DownloadEquipmentCSVbutton} from "../../components/DownloadEquipmentCSVbutton";
+import {DownloadEquipmentCSVbutton} from "../../components/Layout/Graph & Tables/DownloadEquipmentCSVbutton";
 
 export default function MyEquipmentScreen() {
     const {id}= useParams();
@@ -63,7 +63,6 @@ export default function MyEquipmentScreen() {
             }
         }
     }
-
 
     // Calculate total equipment for User
     const myTotalEquipments = equipments?.filter((equipment: {userId:string}) => equipment.userId === userId).length || 0;
@@ -132,7 +131,7 @@ export default function MyEquipmentScreen() {
                                     </div>
                                 </div>
 
-                                {/* Projects Table */}
+                                {/* Equipment Table */}
                                 <div className={"bg-[#101010] border border-gray-800 rounded-lg overflow-hidden"}>
                                     <div className={"overflow-x-auto"}>
                                         <table className={"w-full text-left"}>

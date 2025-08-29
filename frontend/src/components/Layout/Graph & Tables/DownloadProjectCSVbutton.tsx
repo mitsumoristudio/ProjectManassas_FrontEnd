@@ -1,5 +1,5 @@
 
-import {useGetAllProjectsQuery} from "../features/projectApiSlice";
+import {useGetAllProjectsQuery} from "../../../features/projectApiSlice";
 import {useParams } from "react-router-dom";
 import {FileBarChart} from "lucide-react";
 import React from "react";

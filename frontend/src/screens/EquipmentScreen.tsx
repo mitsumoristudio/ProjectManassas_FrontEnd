@@ -8,19 +8,19 @@ import {
     FileBarChart,
     ChevronDownIcon
 } from 'lucide-react';
-import SideBar from "../components/SideBar";
+import SideBar from "../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, NavLink, useParams} from "react-router-dom";
 import {useGetAllEquipmentsQuery, useCreateEquipmentMutation} from "../features/equipmentApiSlice";
 import {useGetAllProjectsQuery} from "../features/projectApiSlice";
-import StackCard from "../components/StackCard";
+import StackCard from "../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
 import {logout} from "../features/authSlice";
 import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
-import DashboardHeader from "../components/DashBoardHeader";
-import {DownloadEquipmentCSVbutton} from "../components/DownloadEquipmentCSVbutton";
+import DashboardHeader from "../components/Layout/DashBoardHeader";
+import {DownloadEquipmentCSVbutton} from "../components/Layout/Graph & Tables/DownloadEquipmentCSVbutton";
 
 
 export default function EquipmentScreen() {
@@ -29,7 +29,6 @@ export default function EquipmentScreen() {
     const {userInfo} = useSelector((state: any) => state.auth);
     const userId = userInfo?.id;
     console.log(userId)
-
 
     const [createEquipment] = useCreateEquipmentMutation();
     const [logoutApiCall] = useLogoutMutation();
@@ -66,17 +65,38 @@ export default function EquipmentScreen() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 6;
 
+    const [searchTerm, setSearchTerm] = useState<string>("");
+
+
+    const filterTheEquipments = equipmentItems?.filter((item: any) => item.equipmentName.toLowerCase().includes(searchTerm.toLowerCase()));
+
     // Pagination Calculation
     const totalPages = Math.ceil(equipmentItems?.length / itemsPerPage);
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentEquipments = equipmentItems ? equipmentItems.slice(indexOfFirstItem, indexOfLastItem) : [];
+    const currentEquipments =  filterTheEquipments?.slice(indexOfFirstItem, indexOfLastItem);
+
+    const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
+
+    // Handle Equipment Search
+    const handleEquipmentSearch = (e: React.ChangeEvent<HTMLInputElement>)=> {
+        const term = e.target.value.toLowerCase();
+        setSearchTerm(term);
+
+        const filtered = equipmentItems?.filter((item: any) => {
+            return item.equipmentName.toLowerCase().includes(term)
+        });
+        setFilterEquipments(filtered);
+    }
 
     useEffect(() => {
-        if (currentPage > totalPages){
-            setCurrentPage(totalPages || 1);
+        if (equipmentItems) {
+            const filtered = searchTerm ? equipmentItems.filter((item: any) => item.equipmentName.toLowerCase().includes(searchTerm.toLowerCase())) : equipmentItems;
+            setFilterEquipments(filtered);
         }
-    }, [totalPages]);
+        setCurrentPage(1); // Reset Page if filter changes
+
+    }, [equipmentItems, searchTerm]);
 
     // Pass a number in textfield
     const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,7 +176,6 @@ export default function EquipmentScreen() {
         callback();
     };
 
-
     return (
         <>
             <div className={"bg-[#0A0A0A] text-white font-sans min-h-screen flex"}>
@@ -184,6 +203,7 @@ export default function EquipmentScreen() {
                                 {/* add todo for search*/}
                                 <input
                                     type='text'
+                                    onChange={handleEquipmentSearch}
                                     placeholder='Search...'
                                     className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-16 pr-6 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
                                 />

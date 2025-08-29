@@ -1,17 +1,17 @@
 import React, {useState, useEffect} from "react";
 import { MoreVertical, ZapIcon, DollarSignIcon, TrashIcon} from 'lucide-react';
-import SideBar from "../../components/SideBar";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
-import StackCard from "../../components/StackCard";
+import StackCard from "../../components/Layout/StackCard";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
-import DashboardHeader from "../../components/DashBoardHeader";
-import CustomLoader from "../../components/CustomLoader";
+import DashboardHeader from "../../components/Layout/DashBoardHeader";
+import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import {motion} from "framer-motion";
 import {useGetMyProjectQuery, useDeleteProjectMutation} from "../../features/projectApiSlice";
 import {CiSearch} from "react-icons/ci";
-import DownloadProjectCSVbutton from "../../components/DownloadProjectCSVbutton";
+import DownloadProjectCSVbutton from "../../components/Layout/Graph & Tables/DownloadProjectCSVbutton";
 
 export default function MyProjectScreen() {
     const navigate = useNavigate();
@@ -22,10 +22,24 @@ export default function MyProjectScreen() {
     const {data: projects, isLoading, isError, refetch} = useGetMyProjectQuery<any>(id);
     const [deleteProject] = useDeleteProjectMutation();
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const itemsPerPage = 6;
+
+    // Pagination Calculation
+    const totalPages = Math.ceil(projects?.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+
     const [filteredProjects, setFilteredProjects] = useState(projects);
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const filterTheProjects = projects?.filter((item: any) => item.projectName.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    // Pagination
+    const currentEquipments = filterTheProjects?.slice(indexOfFirstItem, indexOfLastItem);
+    const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
 
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,6 +194,33 @@ export default function MyProjectScreen() {
                                         </table>
 
                                     </div>
+                                </div>
+
+                                {/* Pagination Button */}
+                                <div className={"flex justify-center space-x-2 mt-4"}>
+                                    <button
+                                        onClick={() => setCurrentPage((prev) => Math.max(prev -1, 1))}
+                                        className={"px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-600 "}
+                                        disabled={currentPage === 1}>
+                                        Prev
+                                    </button>
+
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => setCurrentPage(page)}
+                                            className={`px-3 py-1 rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-gray-700 text-white hover:bg-gray-600"}`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                                            className={"px-3 py-1 bg-gray-800 text-white rounded hover:bg-gray-600"}
+                                            disabled={currentPage === totalPages}>
+                                        Next
+                                    </button>
+
                                 </div>
 
                             </main>

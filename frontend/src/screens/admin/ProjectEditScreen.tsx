@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {toast} from 'react-toastify'
 import {useSelector} from 'react-redux'
-import CustomLoader from "../../components/CustomLoader";
+import CustomLoader from "../../components/Layout/CustomLoader";
 import {useUpdateProjectMutation, useGetProjectQuery} from "../../features/projectApiSlice";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
 

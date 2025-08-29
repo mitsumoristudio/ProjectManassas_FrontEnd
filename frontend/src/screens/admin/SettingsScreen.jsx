@@ -4,7 +4,7 @@ import { PiUserFill } from "react-icons/pi";
 import { FaLock } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import SettingSection from "../../components/SettingSection.jsx"
-import ToggleSwitch from "../../components/ToggleSwitch.jsx"
+import ToggleSwitch from "../../components/Layout/ToggleSwitch.jsx"
 import {motion} from "framer-motion";
 import {useProfileMutation, useDeleteUserMutation} from "../../features/userApiSlice";
 import {useSelector, useDispatch, } from "react-redux";
