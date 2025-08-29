@@ -13,6 +13,8 @@ import ProjectEditScreen from "./screens/admin/ProjectEditScreen";
 import SettingsScreen from "./screens/admin/SettingsScreen";
 import MyProjectScreen from "./screens/admin/MyProjectScreen";
 import MyEquipmentScreen from "./screens/admin/MyEquipmentScreen";
+import ContactUsScreen from "./screens/ContactUsScreen";
+import AboutUsScreen from "./screens/AboutUsScreen";
 
 
 function App() {
@@ -33,6 +35,8 @@ function App() {
                 <Route path={"/equipmentAnalytics"} element={<EquipmentAnalyticsScreen />} />
                 <Route path={"/projects/user/:id"} element={<MyProjectScreen />} />
                 <Route path={"/equipments/user/:id"} element={<MyEquipmentScreen />} />
+                <Route path={"/contactUs"} element={<ContactUsScreen />} />
+                <Route path={"/about"} element={<AboutUsScreen />} />
                 <Route path={"/settings"} element={<SettingsScreen />} />
 
             </Routes>
