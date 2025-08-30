@@ -5,7 +5,6 @@ import {
     ZapIcon,
     DollarSignIcon,
     CalendarIcon,
-    FileBarChart,
     ChevronDownIcon
 } from 'lucide-react';
 import SideBar from "../components/Layout/Graph & Tables/SideBar";
@@ -63,7 +62,7 @@ export default function EquipmentScreen() {
     const equipmentItems = equipments?.items;
     // Pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 7;
 
     const [searchTerm, setSearchTerm] = useState<string>("");
 

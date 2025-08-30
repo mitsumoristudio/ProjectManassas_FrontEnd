@@ -145,7 +145,7 @@ export function ProjectsScreen() {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 7;
 
     const filterProjects = projectItems?.filter((item: any) => item.projectname.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -267,6 +267,8 @@ export function ProjectsScreen() {
                                                             value={projectName}
                                                             className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                                             placeholder="Project"
+                                                            data-cy={"error-project"}
+                                                            data-cx={"input-project"}
                                                             onChange={(e) => setProjectName(e.target.value)}
                                                         />
                                                     </div>
@@ -281,6 +283,8 @@ export function ProjectsScreen() {
                                                             value={projectNumber}
                                                             className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                                             placeholder="#10000"
+                                                            data-cy={"error-projectnumber"}
+                                                            data-cx={"input-projectnumber"}
                                                             onChange={(e) => setProjectNumber(e.target.value)}
                                                         />
                                                     </div>
@@ -295,6 +299,8 @@ export function ProjectsScreen() {
                                                             value={estimate}
                                                             className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                                             placeholder={"Enter value"}
+                                                            data-cy={"error-estimate"}
+                                                            data-cx={"input-estimate"}
                                                             onChange={handleNumberChange}
                                                         />
                                                     </div>
@@ -309,6 +315,8 @@ export function ProjectsScreen() {
                                                             value={location}
                                                             className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                                             placeholder="City, State"
+                                                            data-cy={"error-location"}
+                                                            data-cx={"input-location"}
                                                             onChange={(e) => setLocation(e.target.value)}
                                                         />
                                                     </div>
@@ -323,6 +331,8 @@ export function ProjectsScreen() {
                                                             value={contractor}
                                                             className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                                             placeholder="General Contractor"
+                                                            data-cy={"error-contractor"}
+                                                            data-cx={"input-contractor"}
                                                             onChange={(e) => setContractor(e.target.value)}
                                                         />
                                                     </div>
@@ -337,6 +347,8 @@ export function ProjectsScreen() {
                                                             value={projectManager}
                                                             className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                                             placeholder="Project Manager"
+                                                            data-cy={"error-projectmanager"}
+                                                            data-cx={"input-projectmanager"}
                                                             onChange={(e) => setProjectManager(e.target.value)}
                                                         />
                                                     </div>
@@ -344,7 +356,8 @@ export function ProjectsScreen() {
                                                     <div>
                                                         <label data-cy={"description_headline"}
                                                                htmlFor="message"
-                                                               className="block text-lg font-medium text-gray-700 mb-1">
+                                                               className="block text-lg font-medium text-gray-700 mb-1"
+                                                                >
                                                             Description
                                                         </label>
                                                         <textarea

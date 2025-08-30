@@ -24,7 +24,7 @@ export default function MyProjectScreen() {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 7;
 
     // Pagination Calculation
     const totalPages = Math.ceil(projects?.length / itemsPerPage);
