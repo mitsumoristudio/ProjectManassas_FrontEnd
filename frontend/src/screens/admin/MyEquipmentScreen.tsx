@@ -36,17 +36,17 @@ export default function MyEquipmentScreen() {
 
     // Pagination
     const currentEquipments = filterTheEquipments?.slice(indexOfFirstItem, indexOfLastItem);
-    const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
+  //  const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
 
     // Handle Equipment Search
     const handleEquipmentSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
 
-        const filtered = equipments.filter((p: any) => {
-            return p.equipmentName.toLowerCase().includes(term);
-        });
-        setFilterEquipments(filtered);
+        // const filtered = equipments.filter((p: any) => {
+        //     return p.equipmentName.toLowerCase().includes(term);
+        // });
+     //   setFilterEquipments(filtered);
     }
 
     // Delete Equipment
@@ -72,10 +72,10 @@ export default function MyEquipmentScreen() {
     .reduce((acc: number, item:any) => acc + (item.monthlyCost|| 0), 0) || 0;
 
     useEffect(() => {
-        if (equipments) {
-            const filtered = searchTerm ? equipments?.filter((p: any) => p.equipmentName.toLowerCase().includes(searchTerm.toLowerCase())) : equipments;
-            setFilterEquipments(filtered);
-        }
+        // if (equipments) {
+        //     const filtered = searchTerm ? equipments?.filter((p: any) => p.equipmentName.toLowerCase().includes(searchTerm.toLowerCase())) : equipments;
+        //     setFilterEquipments(filtered);
+        // }
         setCurrentPage(1); // Reset Page if filter changes
     }, [equipments, searchTerm]);
 

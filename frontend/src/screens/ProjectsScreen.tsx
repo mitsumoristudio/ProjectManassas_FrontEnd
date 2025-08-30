@@ -155,25 +155,25 @@ export function ProjectsScreen() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = filterProjects?.slice(indexOfFirstItem, indexOfLastItem);
 
-    const [filteredProjects, setFilteredProjects] = useState(currentProjects);
+ //   const [filteredProjects, setFilteredProjects] = useState(currentProjects);
 
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
 
-        const filtered = projects?.items.filter((p: any) => {
-            return p.projectname.toLowerCase().includes(term);
-        });
+        // const filtered = projects?.items.filter((p: any) => {
+        //     return p.projectname.toLowerCase().includes(term);
+        // });
 
-        setFilteredProjects(filtered);
+     //   setFilteredProjects(filtered);
     }
 
     useEffect(() => {
-        if (projectItems) {
-            const filtered = searchTerm ? projectItems.filter((p: any) => p.projectname.toLowerCase().includes(searchTerm.toLowerCase())) : projectItems;
-            setFilteredProjects(filtered);
-        }
+        // if (projectItems) {
+        //     const filtered = searchTerm ? projectItems.filter((p: any) => p.projectname.toLowerCase().includes(searchTerm.toLowerCase())) : projectItems;
+        //     setFilteredProjects(filtered);
+        // }
         setCurrentPage(1); // Reset Page if filter changes
     }, [projectItems, searchTerm, ]);
 

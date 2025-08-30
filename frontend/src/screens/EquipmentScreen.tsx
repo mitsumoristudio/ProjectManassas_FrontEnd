@@ -75,23 +75,23 @@ export default function EquipmentScreen() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentEquipments =  filterTheEquipments?.slice(indexOfFirstItem, indexOfLastItem);
 
-    const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
+  //  const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
 
     // Handle Equipment Search
     const handleEquipmentSearch = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
 
-        const filtered = equipmentItems?.filter((item: any) => {
-            return item.equipmentName.toLowerCase().includes(term)
-        });
-        setFilterEquipments(filtered);
+     //   const filtered = equipmentItems?.filter((item: any) => {
+     //       return item.equipmentName.toLowerCase().includes(term)
+     //   });
+    //    setFilterEquipments(filtered);
     }
 
     useEffect(() => {
         if (equipmentItems) {
-            const filtered = searchTerm ? equipmentItems.filter((item: any) => item.equipmentName.toLowerCase().includes(searchTerm.toLowerCase())) : equipmentItems;
-            setFilterEquipments(filtered);
+      //      const filtered = searchTerm ? equipmentItems.filter((item: any) => item.equipmentName.toLowerCase().includes(searchTerm.toLowerCase())) : equipmentItems;
+      //      setFilterEquipments(filtered);
         }
         setCurrentPage(1); // Reset Page if filter changes
 

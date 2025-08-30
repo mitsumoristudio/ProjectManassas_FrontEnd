@@ -28,8 +28,8 @@ export default function MyProjectScreen() {
 
     // Pagination Calculation
     const totalPages = Math.ceil(projects?.length / itemsPerPage);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    // const indexOfLastItem = currentPage * itemsPerPage;
+    // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
 
 
@@ -38,19 +38,19 @@ export default function MyProjectScreen() {
     const filterTheProjects = projects?.filter((item: any) => item.projectName.toLowerCase().includes(searchTerm.toLowerCase()));
 
     // Pagination
-    const currentProjects = filterTheProjects?.slice(indexOfFirstItem, indexOfLastItem);
-    const [filterProjects, setfilterProjects] = useState(currentProjects);
+   // const currentProjects = filterTheProjects?.slice(indexOfFirstItem, indexOfLastItem);
+//    const [filterProjects, setfilterProjects] = useState(currentProjects);
 
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
 
-        const filtered = projects?.filter((p: any) => {
-            return p.projectName.toLowerCase().includes(term);
-        });
-
-        setfilterProjects(filtered);
+        // const filtered = projects?.filter((p: any) => {
+        //     return p.projectName.toLowerCase().includes(term);
+        // });
+        //
+        // setfilterProjects(filtered);
 
     }
 

@@ -14,7 +14,7 @@ export default function ProjectEditScreen() {
     const {userInfo} = useSelector((state: any) => state.auth)
     const userId = userInfo?.id;
 
-    const [openEdit, setOpenEdit] = useState(false);
+  //  const [openEdit, setOpenEdit] = useState(false);
     const [projectName, setProjectName] = useState<string>("");
     const [projectNumber, setProjectNumber] = useState<string>("");
     const [estimate, setEstimate] = useState<string>("");
@@ -203,7 +203,7 @@ export default function ProjectEditScreen() {
                                     <NavLink to={"/projects"}>
                                         <button
                                             type="button"
-                                            onClick={() => setOpenEdit(false)}
+                                           // onClick={() => setOpenEdit(false)}
                                             className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
                                         >
                                             Cancel
