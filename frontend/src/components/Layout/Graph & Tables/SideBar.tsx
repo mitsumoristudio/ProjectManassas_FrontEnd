@@ -10,7 +10,6 @@ import {useDispatch} from "react-redux";
 
 import {
     BarChart2Icon,
-    AreaChartIcon,
     DollarSign, LucideHome,
     MenuSquare,
     Settings2Icon,

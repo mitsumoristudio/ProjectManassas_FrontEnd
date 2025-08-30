@@ -8,13 +8,13 @@ import {
     ChevronDownIcon
 } from 'lucide-react';
 import SideBar from "../components/Layout/Graph & Tables/SideBar";
-import {useNavigate, NavLink, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useGetAllEquipmentsQuery, useCreateEquipmentMutation} from "../features/equipmentApiSlice";
 import {useGetAllProjectsQuery} from "../features/projectApiSlice";
 import StackCard from "../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
-import {logout} from "../features/authSlice";
-import {useLogoutMutation} from "../features/userApiSlice";
+// import {logout} from "../features/authSlice";
+// import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
@@ -23,14 +23,14 @@ import {DownloadEquipmentCSVbutton} from "../components/Layout/Graph & Tables/Do
 
 
 export default function EquipmentScreen() {
-    const navigate = useNavigate();
+ //   const navigate = useNavigate();
     const {keyword} = useParams();
     const {userInfo} = useSelector((state: any) => state.auth);
     const userId = userInfo?.id;
     console.log(userId)
 
     const [createEquipment] = useCreateEquipmentMutation();
-    const [logoutApiCall] = useLogoutMutation();
+    // const [logoutApiCall] = useLogoutMutation();
     const {data: projects} = useGetAllProjectsQuery<any>({keyword});
     const projectItems = projects?.items || [];
 
@@ -107,17 +107,17 @@ export default function EquipmentScreen() {
             setMonthlyCost(newValue as number);
         }
     }
-    const logoutHandler = async () => {
-        try {
-            // @ts-ignore
-            await logoutApiCall().unwrap()
-            // @ts-ignore
-            dispatch(logout())
-            navigate("/login");
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // const logoutHandler = async () => {
+    //     try {
+    //         // @ts-ignore
+    //         await logoutApiCall().unwrap()
+    //         // @ts-ignore
+    //         dispatch(logout())
+    //         navigate("/login");
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     // Add New Equipment
     const onCreateSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {

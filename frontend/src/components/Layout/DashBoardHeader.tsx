@@ -7,7 +7,6 @@ import {useSelector} from "react-redux";
 export default function DashboardHeader() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const {userInfo} = useSelector((state: any) => state.auth);
-    const userId = userInfo?.id;
 
     return (
         <>

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Search, ArrowRight, Menu, X } from 'lucide-react';
-import {NavLink, useNavigate} from "react-router-dom";
+import { Search,  Menu, X } from 'lucide-react';
+import {NavLink} from "react-router-dom";
 import {logout} from "../../../features/authSlice";
 import{ useSelector, useDispatch} from "react-redux";
 import {useLogoutMutation} from "../../../features/userApiSlice";
@@ -12,7 +12,6 @@ export default function NavBarComponent() {
     const {userInfo} = useSelector((state: any) => state.auth);
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const [logoutApiCall] = useLogoutMutation();
 

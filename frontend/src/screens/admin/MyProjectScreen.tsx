@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import { MoreVertical, ZapIcon, DollarSignIcon, TrashIcon} from 'lucide-react';
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
-import {useNavigate, useParams} from "react-router-dom";
+import { useParams} from "react-router-dom";
 import StackCard from "../../components/Layout/StackCard";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
@@ -14,7 +14,7 @@ import {CiSearch} from "react-icons/ci";
 import DownloadProjectCSVbutton from "../../components/Layout/Graph & Tables/DownloadProjectCSVbutton";
 
 export default function MyProjectScreen() {
-    const navigate = useNavigate();
+  //  const navigate = useNavigate();
     const {id} = useParams();
     const {userInfo} = useSelector((state: any) => state.auth);
     const userId = userInfo?.id;
@@ -32,14 +32,14 @@ export default function MyProjectScreen() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
 
-    const [filteredProjects, setFilteredProjects] = useState(projects);
+
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const filterTheProjects = projects?.filter((item: any) => item.projectName.toLowerCase().includes(searchTerm.toLowerCase()));
 
     // Pagination
-    const currentEquipments = filterTheProjects?.slice(indexOfFirstItem, indexOfLastItem);
-    const [filterEquipments, setFilterEquipments] = useState(currentEquipments);
+    const currentProjects = filterTheProjects?.slice(indexOfFirstItem, indexOfLastItem);
+    const [filterProjects, setfilterProjects] = useState(currentProjects);
 
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +50,8 @@ export default function MyProjectScreen() {
             return p.projectName.toLowerCase().includes(term);
         });
 
-        setFilteredProjects(filtered);
+        setfilterProjects(filtered);
+
     }
 
     // Delete Project

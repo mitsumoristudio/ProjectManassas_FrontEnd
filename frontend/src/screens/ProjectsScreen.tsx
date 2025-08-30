@@ -5,8 +5,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
 import StackCard from "../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
-import {logout} from "../features/authSlice";
-import {useLogoutMutation} from "../features/userApiSlice";
+// import {logout} from "../features/authSlice";
+// import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
@@ -26,7 +26,7 @@ export function ProjectsScreen() {
    // console.log(userId)
 
     const [createProject] = useCreateProjectMutation();
-    const [logoutApiCall] = useLogoutMutation();
+   // const [logoutApiCall] = useLogoutMutation();
     const [deleteProject] = useDeleteProjectMutation();
 
     const [openEdit, setOpenEdit] = useState(false);
@@ -99,17 +99,17 @@ export function ProjectsScreen() {
         }
     };
 
-    const logoutHandler = async () => {
-        try {
-            // @ts-ignore
-            await logoutApiCall().unwrap()
-            // @ts-ignore
-            dispatch(logout())
-            navigate("/login");
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // const logoutHandler = async () => {
+    //     try {
+    //         // @ts-ignore
+    //         await logoutApiCall().unwrap()
+    //         // @ts-ignore
+    //         dispatch(logout())
+    //         navigate("/login");
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     // Get data from Reduxs
     const {data: projects, refetch, isLoading, isError} = useGetAllProjectsQuery<any>({keyword});

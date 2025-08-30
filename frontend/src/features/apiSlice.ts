@@ -1,7 +1,7 @@
 
 
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {BASE_URL, PUB_URL} from "../util/urlconstants";
+import {PUB_URL} from "../util/urlconstants";
 
 // Development && Published URL
 const baseQuery = fetchBaseQuery({

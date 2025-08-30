@@ -7,7 +7,7 @@ import {
 import React from "react";
 import SideBar from "../components/Layout/Graph & Tables/SideBar";
 import StackCard from "../components/Layout/StackCard";
-import {useNavigate, useParams} from "react-router-dom";
+import { useParams} from "react-router-dom";
 import {useGetAllEquipmentsQuery} from "../features/equipmentApiSlice";
 
 
@@ -16,7 +16,6 @@ import PieChartComponent from "../components/Layout/Graph & Tables/PieChartCompo
 import {LineChartComponent} from "../components/Layout/Graph & Tables/LineChartComponent";
 
 export default function EquipmentAnalyticsScreen() {
-    const navigate = useNavigate();
     const {keyword} = useParams();
     const {data: equipments} = useGetAllEquipmentsQuery<any>({keyword});
 
@@ -72,17 +71,6 @@ export default function EquipmentAnalyticsScreen() {
 
 // Sort by real Date
     monthlyCostData?.sort((a, b) => a.date.getTime() - b.date.getTime());
-
-    // Internal vs External Pie Chart Data
-    // const pieInternalExternalData = equipments?.items?.reduce((acc : any[], item: any) => {
-    //     const existingData = acc.find((e: any) => e.name === item.internalExternal);
-    //     if (existingData) {
-    //         existingData.value += 1;
-    //     } else {
-    //         acc.push({name: item.internalExternal || "Unknown Category", value: 1});
-    //     }
-    //     return acc;
-    // }, [])
 
     return (
         <>

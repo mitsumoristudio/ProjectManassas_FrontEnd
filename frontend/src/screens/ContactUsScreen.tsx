@@ -12,12 +12,12 @@ export default function ContactUsScreen() {
     const onSubmitHandler = async (e: any) => {
         e.preventDefault();
         // @ts-ignore
-        const res = await fetch("/api/contactUs", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(formData),
-        });
-        const data = await res.json();
+        // const res = await fetch("/api/contactUs", {
+        //     method: "POST",
+        //     headers: {"Content-Type": "application/json"},
+        //     body: JSON.stringify(formData),
+        // });
+       // const data = await res.json();
         //   alert(data.message);
         toast.success("Message sent successfully.");
         navigate("/");
