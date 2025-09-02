@@ -15,6 +15,7 @@ import MyProjectScreen from "./screens/admin/MyProjectScreen";
 import MyEquipmentScreen from "./screens/admin/MyEquipmentScreen";
 import ContactUsScreen from "./screens/ContactUsScreen";
 import AboutUsScreen from "./screens/AboutUsScreen";
+import ProjectAnalyticsScreen from "./screens/ProjectAnalyticsScreen";
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
                 <Route path={"/contactUs"} element={<ContactUsScreen />} />
                 <Route path={"/about"} element={<AboutUsScreen />} />
                 <Route path={"/settings"} element={<SettingsScreen />} />
+                <Route path={"/projectAnalytics"} element={<ProjectAnalyticsScreen />} />
 
             </Routes>
 

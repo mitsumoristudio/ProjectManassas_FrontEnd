@@ -16,6 +16,7 @@ import {
     LogOutIcon,
     TrendingUp,
     UserCircle2Icon,
+    BarChart4Icon,
     User
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
@@ -41,6 +42,7 @@ export default function SideBar() {
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "My Equipment", icon: UserCircle2Icon, color: "#6324f1", href: `/equipments/user/${userInfo?.id}`},
         {name: "Equipment Analytic", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
+        {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
 

@@ -99,18 +99,6 @@ export function ProjectsScreen() {
         }
     };
 
-    // const logoutHandler = async () => {
-    //     try {
-    //         // @ts-ignore
-    //         await logoutApiCall().unwrap()
-    //         // @ts-ignore
-    //         dispatch(logout())
-    //         navigate("/login");
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-
     // Get data from Reduxs
     const {data: projects, refetch, isLoading, isError} = useGetAllProjectsQuery<any>({keyword});
     const totalProjects = projects?.items?.length || 0;
