@@ -1,7 +1,7 @@
 
 import React from "react";
 import {Helmet} from "react-helmet";
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../components/Layout/SideBar";
 import {useParams} from "react-router-dom";
 import DashboardHeader from "../components/Layout/DashBoardHeader";
 import {BarChartGraph} from "../components/Layout/Graph & Tables/BarChartGraph";

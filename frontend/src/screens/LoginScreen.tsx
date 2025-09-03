@@ -12,18 +12,6 @@ export default function LoginScreen() {
     const navigate = useNavigate();
     const [login, {isLoading}] = useLoginMutation();
 
-    // const handleLogin = async () => {
-    //     try {
-    //         console.log("Posting to:", `${USERS_URL}/login`);
-    //        const result = await login({ email: "john@gmail.com", password: "123456" }).unwrap();
-    //        // @ts-ignore
-    //         console.log("JWT:", result.token);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    //
-    // };
-
     // @ts-ignore
     const {userInfo} = useSelector((state) => state.auth)
     const {search} = useLocation();
@@ -41,7 +29,7 @@ export default function LoginScreen() {
             dispatch(setCredentials({...res}));
             navigate(redirect);
         } catch (error: any) {
-            toast.error(error?.data?.message || error.message);
+            toast.error("Password or email is incorrect. Please try again.");
         }
     }
 

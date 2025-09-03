@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs} from 'lucide-react';
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../components/Layout/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
 import StackCard from "../components/Layout/StackCard";
