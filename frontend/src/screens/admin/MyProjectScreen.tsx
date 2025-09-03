@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { MoreVertical, ZapIcon, DollarSignIcon, TrashIcon} from 'lucide-react';
-import SideBar from "../../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../../components/Layout/SideBar";
 import { useParams} from "react-router-dom";
 import StackCard from "../../components/Layout/StackCard";
 import {useSelector} from "react-redux";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Plus, ZapIcon, DollarSignIcon, CalendarIcon, FileBarChart, MoreVertical } from "lucide-react";
-import SideBar from "./Layout/Graph & Tables/SideBar";
+import SideBar from "./Layout/SideBar";
 import { CiSearch } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";

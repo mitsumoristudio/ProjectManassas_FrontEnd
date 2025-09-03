@@ -7,7 +7,7 @@ import {
     CalendarIcon,
     ChevronDownIcon, TrashIcon, NotebookTabs
 } from 'lucide-react';
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../components/Layout/SideBar";
 import {useParams, useNavigate} from "react-router-dom";
 import {useGetAllEquipmentsQuery, useCreateEquipmentMutation, useDeleteEquipmentMutation} from "../features/equipmentApiSlice";
 import {useGetAllProjectsQuery} from "../features/projectApiSlice";

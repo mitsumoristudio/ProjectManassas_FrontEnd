@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 
 import React from "react";
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../components/Layout/SideBar";
 import StackCard from "../components/Layout/StackCard";
 import { useParams} from "react-router-dom";
 import {useGetAllEquipmentsQuery} from "../features/equipmentApiSlice";
