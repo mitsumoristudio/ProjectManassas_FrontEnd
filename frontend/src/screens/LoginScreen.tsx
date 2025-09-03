@@ -29,7 +29,7 @@ export default function LoginScreen() {
             dispatch(setCredentials({...res}));
             navigate(redirect);
         } catch (error: any) {
-            toast.error(error?.data?.message || error.message);
+            toast.error("Password or Email does not match");
         }
     }
 
