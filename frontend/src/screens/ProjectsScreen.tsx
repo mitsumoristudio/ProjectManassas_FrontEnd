@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon} from 'lucide-react';
+import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs} from 'lucide-react';
 import SideBar from "../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
 import StackCard from "../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
-// import {logout} from "../features/authSlice";
-// import {useLogoutMutation} from "../features/userApiSlice";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
@@ -26,10 +24,10 @@ export function ProjectsScreen() {
    // console.log(userId)
 
     const [createProject] = useCreateProjectMutation();
-   // const [logoutApiCall] = useLogoutMutation();
     const [deleteProject] = useDeleteProjectMutation();
 
     const [openEdit, setOpenEdit] = useState(false);
+    const [openDescription, setOpenDescription] = useState(false);
     const [projectName, setProjectName] = useState<string>("");
     const [projectNumber, setProjectNumber] = useState<string>("");
     const [estimate, setEstimate] = useState<string>("");
@@ -54,6 +52,14 @@ export function ProjectsScreen() {
     const requireAuth = (callback: () => void) => {
         if (!userInfo) {
             toast.error("You must be logged in to create a project");
+            return;
+        }
+        callback();
+    }
+
+    const requireAuthDescription = (callback: () => void) => {
+        if (!userInfo) {
+            toast.error("You must be logged in to see the description");
             return;
         }
         callback();
@@ -183,8 +189,8 @@ export function ProjectsScreen() {
     return (
         <>
             <Helmet>
-                <title>Project Table</title>
-                    <meta name="description" content="Project Table page" />
+                <title>Projects </title>
+                    <meta name="description" content="Projects page" />
             </Helmet>
             {isLoading ? (
                 <CustomLoader/>
@@ -400,6 +406,7 @@ export function ProjectsScreen() {
                                                 <th className="p-4 text-sm font-semibold text-gray-400">Project Manager</th>
                                                 <th className="p-4 text-sm font-semibold text-gray-400">Created</th>
                                                 <th className="p-4 text-sm font-semibold text-gray-400">Status</th>
+                                                <th className="p-4 text-sm font-semibold text-gray-400">Info</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -426,26 +433,47 @@ export function ProjectsScreen() {
                                                     {project.status}
                                                 </span>
                                                     </td>
-                                                    {}
                                                     <td className="p-4 text-right">
 
                                                         {/* Open Project Edit page */}
                                                         <button onClick={() => requireAuth(() => requirefilteredUser(() => navigate(`/projects/${project.id}`)))}
-                                                                className="text-gray-400 hover:text-white">
+                                                                className="text-gray-400 py-1 hover:text-white">
                                                             <MoreVertical size={20}/>
                                                         </button>
 
-                                                        {userInfo?.isAdmin && (
+                                                        {(userInfo?.isAdmin || filteredUserProjectId) && (
                                                             <>
                                                                 <button onClick={() => deleteProjectHandler(project.id)}
-                                                                    className={"flex flex-row text-gray-400 hover:text-white"}>
+                                                                    className={"flex flex-row text-gray-400 mx-auto hover:text-white"}>
                                                                     <TrashIcon size={20}/>
                                                                 </button>
 
                                                             </>
                                                         )}
-
                                                     </td>
+
+                                                    {/* Open Project description page */}
+                                                    <div className="flex flex-1 mx-auto my-2">
+                                                        <button
+                                                            onClick={() =>
+                                                                requireAuthDescription(() => setOpenDescription((prev) => !prev))
+                                                            }
+                                                            className="text-gray-400 hover:text-white my-4 flex items-center"
+                                                        >
+                                                            <NotebookTabs size={20} className="mr-2" />
+                                                            {openDescription ? "Hide" : "Show"}
+                                                        </button>
+
+                                                        {openDescription && (
+                                                            <div className="flex flex-col mx-auto gap-2">
+                                                                <h3 className="text-gray-300 font-medium text-center">
+                                                                    {project.description}
+                                                                </h3>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+
 
                                                 </tr>
                                             ))}

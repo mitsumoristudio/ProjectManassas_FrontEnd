@@ -32,7 +32,8 @@ export default function SideBar() {
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
         { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
-        {name: "Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
+        {name: "Equipment Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
+        {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
     ]
 
     const AUTH_SIDEBAR_ITEMS = [

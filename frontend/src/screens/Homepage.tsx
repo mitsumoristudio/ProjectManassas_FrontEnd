@@ -1,43 +1,19 @@
 import React from 'react';
 import {ArrowRight } from 'lucide-react';
-// import {useNavigate} from "react-router-dom";
-// import {logout} from "../features/authSlice";
-// import{ useSelector, useDispatch} from "react-redux";
-// import {useLogoutMutation} from "../features/userApiSlice";
 import NavBarComponent from "../components/Layout/Graph & Tables/NavBarComponent";
+import {Helmet} from "react-helmet";
 
 // Main App Component
 export default function Homepage() {
-  //  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  //  const {userInfo} = useSelector((state: any) => state.auth);
-
- //   const dispatch = useDispatch();
- //   const navigate = useNavigate();
-
-  //  const [logoutApiCall] = useLogoutMutation();
-
-    // const logoutHandler = async () => {
-    //     try {
-    //         // @ts-ignore
-    //         await logoutApiCall().unwrap()
-    //         // @ts-ignore
-    //         dispatch(logout())
-    //         navigate("/login");
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-
-    // const navLinks = [
-    //     { name: 'Home', href: '/' },
-    //     { name: 'Projects', href: '/projects' },
-    //     { name: 'Contact', href: '/contactUs' },
-    //     { name: 'About', href: '/about' },
-    // ];
 
     return (
-        <div className="bg-[#0B0B0B] text-white font-sans overflow-x-hidden">
+        <>
+            <Helmet>
+                <title>Home</title>
+                <meta name="description" content="Home page" />
+            </Helmet>
+
+            <div className="bg-[#0B0B0B] text-white font-sans overflow-x-hidden">
             {/* Navigation & Header */}
             <NavBarComponent/>
 
@@ -123,5 +99,7 @@ export default function Homepage() {
                 </div>
             </footer>
         </div>
+        </>
+
     );
 }
