@@ -21,7 +21,6 @@ import {DownloadEquipmentCSVbutton} from "../components/Layout/Graph & Tables/Do
 import CustomLoader from "../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 
-
 export default function EquipmentScreen() {
 
     const {keyword} = useParams();
@@ -501,7 +500,7 @@ export default function EquipmentScreen() {
 
                                                         {(filterUserByEquipmentId || userInfo?.isAdmin)  && (
                                                             <>
-                                                                <button onClick={() => deleteEquipmentHandler(equipment.id)}
+                                                                <button onClick={() => requireAuth(() => deleteEquipmentHandler(equipment.id))}
                                                                         className={"flex flex-row text-gray-400 mx-auto hover:text-white"}>
                                                                     <TrashIcon size={20}/>
                                                                 </button>

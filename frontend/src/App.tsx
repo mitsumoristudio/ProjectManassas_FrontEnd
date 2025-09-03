@@ -16,6 +16,7 @@ import MyEquipmentScreen from "./screens/admin/MyEquipmentScreen";
 import ContactUsScreen from "./screens/ContactUsScreen";
 import AboutUsScreen from "./screens/AboutUsScreen";
 import ProjectAnalyticsScreen from "./screens/ProjectAnalyticsScreen";
+import EquipmentEditScreen from "./screens/admin/EquipmentEditScreen";
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
                 <Route path="/register" element={<RegisterScreen />} />
                 <Route path={"/projects"} element={<ProjectsScreen />} />
                 <Route path={"/projects/:id"} element={<ProjectEditScreen />} />
+                <Route path={"/equipments/:id"} element={<EquipmentEditScreen />} />
                 <Route path={"/equipments"} element={<EquipmentScreen />} />
                 <Route path={"/equipmentAnalytics"} element={<EquipmentAnalyticsScreen />} />
                 <Route path={"/projects/user/:id"} element={<MyProjectScreen />} />
