@@ -6,8 +6,8 @@ import {PUB_URL, BASE_URL, DEVELOPMENT_URL} from "../util/urlconstants";
 
 // Development && Published URL
 const baseQuery = fetchBaseQuery({
-    baseUrl: BASE_URL
- //  baseUrl: PUB_URL,
+//    baseUrl: BASE_URL
+   baseUrl: PUB_URL,
   //  baseUrl: DEVELOPMENT_URL
 
 });
