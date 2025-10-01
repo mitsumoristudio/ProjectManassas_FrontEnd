@@ -17,6 +17,8 @@ import ContactUsScreen from "./screens/ContactUsScreen";
 import AboutUsScreen from "./screens/AboutUsScreen";
 import ProjectAnalyticsScreen from "./screens/ProjectAnalyticsScreen";
 import EquipmentEditScreen from "./screens/admin/EquipmentEditScreen";
+import VerifyEmailScreen from "./screens/admin/VerifyEmailScreen";
+import ForgotPasswordPage from "./screens/admin/ForgotPasswordPage";
 
 
 function App() {
@@ -41,6 +43,8 @@ function App() {
                 <Route path={"/contactUs"} element={<ContactUsScreen />} />
                 <Route path={"/about"} element={<AboutUsScreen />} />
                 <Route path={"/settings"} element={<SettingsScreen />} />
+                <Route path={"/verifyEmail"} element={<VerifyEmailScreen />} />
+                <Route path={"/forgotPassword"} element={<ForgotPasswordPage />} />
                 <Route path={"/projectAnalytics"} element={<ProjectAnalyticsScreen />} />
 
             </Routes>
