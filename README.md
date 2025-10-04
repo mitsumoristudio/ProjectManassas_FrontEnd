@@ -23,6 +23,7 @@ https://www.nashmanassas.org
 - Security Features and End-to-End testing using Cypress
 - Followed MVC pattern for developing the .Net Web API
 
+## Tech Stack Applied
 - Front-End Development
 * Languages: [JavaScript (ES6+), HTML5, CSS3]
 * Frameworks/Libraries: [React.js]
@@ -30,13 +31,13 @@ https://www.nashmanassas.org
 * State Management: [Redux Tool Kit]
 * Build Tools: [Webpack]
 
-* Back-End Development
+- Back-End Development
 * Languages: [C#]
 * Frameworks: [ASP .NET CORE]
 * APIs: [RESTful APIs]
 * Authentication: [JWT (JSON WEB TOKEN]
 
-* Database
+- Database
 * POSTGRET SQL: [Neon DB]
 * Version Control: [Github]
 * Deployment: [Azure & Versel]
