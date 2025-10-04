@@ -6,6 +6,7 @@ Build for on demand, fast pace project environment and tracks key financial metr
 
 Built with React, ASP .Net Core, Postgres SQL, NeonDB and Redux.
 
+
 <a ><img src="https://github.com/mitsumoristudio/ProjectManassas_FrontEnd/blob/main/Screenshot.png" width= "1080" height = "600" /></a>
 
 ### Link
@@ -38,7 +39,7 @@ https://www.nashmanassas.org
 * Database
 * POSTGRET SQL: [Neon DB]
 * Version Control: [Github]
-* Deployment: [Render]
+* Deployment: [Azure & Versel]
 * Testing: Cypress for End-to-End Testing
 * Postman: Tesing API routes and logistics
 * ORM (Object Relational Mapping)
