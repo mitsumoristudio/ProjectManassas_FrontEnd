@@ -24,20 +24,21 @@ https://www.nashmanassas.org
 - Followed MVC pattern for developing the .Net Web API
 
 ## Tech Stack Applied
-- Front-End Development
+
+ ### Front-End Development
 * Languages: [JavaScript (ES6+), HTML5, CSS3]
 * Frameworks/Libraries: [React.js]
 * Styling: [Tailwind CSS]
 * State Management: [Redux Tool Kit]
 * Build Tools: [Webpack]
 
-- Back-End Development
+ ### Back-End Development
 * Languages: [C#]
 * Frameworks: [ASP .NET CORE]
 * APIs: [RESTful APIs]
 * Authentication: [JWT (JSON WEB TOKEN]
 
-- Database
+ ### Database
 * POSTGRET SQL: [Neon DB]
 * Version Control: [Github]
 * Deployment: [Azure & Versel]
