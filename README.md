@@ -46,4 +46,8 @@ https://www.nashmanassas.org
 * Postman: Tesing API routes and logistics
 * ORM (Object Relational Mapping)
 
+## In Development
+- Adding MCP Server to interact with LLM such as OpenAI, Claude or Gemini
+- AI Tooling to estabish connection between AI chat agent and User to improve productivity and user experience
+
 
