@@ -1,5 +1,6 @@
-# ProjectManassas_Frontend
+# ProjectManassas_Frontend - Project Analytic Dashboard App
 
+Project Analytic software designed to reduce frustration by integrating project scope and onsite Equipment at ease.
 
-- Frontend application written in React and ASP .NET Core for backend. 
-- Utilized Typescript, and Redux toolkit for CSS styling framework and state management. 
+Build for on demand, fast pace project environment and tracks key financial metrics across the board.
+
