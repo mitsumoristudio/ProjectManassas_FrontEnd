@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, GanttChartSquare, DollarSign, Settings, LifeBuoy } from 'lucide-react';
+import { LayoutDashboard, GanttChartSquare, DollarSign, Settings, LifeBuoy} from 'lucide-react';
 import {NavLink} from "react-router-dom";
 
 export default function DashboardSideBar() {
@@ -53,7 +53,6 @@ export default function DashboardSideBar() {
                     </nav>
                 </aside>
             </div>
-
         </>
     )
 }

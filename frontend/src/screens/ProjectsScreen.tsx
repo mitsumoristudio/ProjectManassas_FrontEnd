@@ -169,7 +169,7 @@ export function ProjectsScreen() {
         //     setFilteredProjects(filtered);
         // }
         setCurrentPage(1); // Reset Page if filter changes
-    }, [projectItems, searchTerm, ]);
+    }, [projectItems, searchTerm]);
 
     // Delete Project
     const deleteProjectHandler = async (id: any) => {
@@ -194,9 +194,7 @@ export function ProjectsScreen() {
             </Helmet>
             {isLoading ? (
                 <CustomLoader/>
-            ) : isError ? (
-                <div className={"text-red-600"}>Error Loading Project Data</div>
-            ) : (
+            )  : (
                 <motion.div
                     initial={{opacity: 0, y: 20}}
                     animate={{opacity: 1, y: 0}}

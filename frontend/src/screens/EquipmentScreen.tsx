@@ -209,8 +209,6 @@ export default function EquipmentScreen() {
             </Helmet>
             {isLoading ? (
                 <CustomLoader/>
-            ) : isError ? (
-                <div className={"text-red-600"}>Error Loading Equipment Data</div>
             ) : (
                 <main>
                     <div className={"bg-[#0A0A0A] text-white font-sans min-h-screen flex"}>

@@ -17,7 +17,8 @@ import {
     TrendingUp,
     UserCircle2Icon,
     BarChart4Icon,
-    User
+    User,
+    MessageCircleMoreIcon
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 
@@ -34,6 +35,8 @@ export default function SideBar() {
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "Equipment Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
         {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
+        {name: "Chat Example", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chatexample"},
+
     ]
 
     const AUTH_SIDEBAR_ITEMS = [
@@ -46,7 +49,6 @@ export default function SideBar() {
         {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
-
     ]
 
     const logoutHandler = async () => {
@@ -154,10 +156,7 @@ export default function SideBar() {
 
                         </section>
                     )}
-
-
                 </div>
-
             </motion.div>
         </main>
     )
