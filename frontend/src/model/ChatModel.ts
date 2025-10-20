@@ -7,9 +7,16 @@ export interface ChatMessageModel {
     messageContent: string;
     sessionId: string;
     createdAt: string;
+    sources: ChatSnippetModel[];
 }
 
 export interface ChatSessionModel {
     sessionId: string;
     messageContent: ChatMessageModel[];
+}
+
+export interface ChatSnippetModel {
+    documentId: string;
+    pageNumber: number;
+    snippet: string;
 }

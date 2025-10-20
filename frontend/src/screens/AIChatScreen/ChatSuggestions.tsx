@@ -1,42 +1,32 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from "react";
-import {useSearchMessageQuery} from "../../features/chatapiSlice";
+import React, { forwardRef, useImperativeHandle, useState } from "react";
 
-const ChatSuggestions = forwardRef(({ onSelected }: any, ref) => {
-    const [query, setQuery] = useState("");
-    const [suggestions, setSuggestions] = useState<string[]>([]);
+interface ChatSuggestionsProps {
+    onSelected: (msg: { role: string; text: string }) => void;
+}
 
-    const { data } = useSearchMessageQuery(
-        { query },
-        { skip: query.length === 0 }
-    );
+export const ChatSuggestions = forwardRef<{ clear: () => void }, ChatSuggestionsProps>(
+    ({ onSelected }, ref) => {
+        const [suggestions, setSuggestions] = useState<string[]>([]);
 
-    useEffect(() => {
-        if (data) {
-            setSuggestions(data);
-        }
-    }, [data]);
+        useImperativeHandle(ref, () => ({
+            clear: () => setSuggestions([]),
+            update: (msgs: string[]) => setSuggestions(msgs),
+        }));
 
-    useImperativeHandle(ref, () => ({
-        clear: () => setSuggestions([]),
-        update: (messages: any[]) => {
-            const lastUserMsg = messages.filter(m => m.role === "user").slice(-1)[0];
-            if (lastUserMsg) setQuery(lastUserMsg.messageContent);
-        },
-    }));
+        return (
+            <div className="flex gap-2">
+                {suggestions.map((s, idx) => (
+                    <button
+                        key={idx}
+                        className="bg-gray-200 px-2 py-1 rounded"
+                        onClick={() => onSelected({ role: "user", text: s })}
+                    >
+                        {s}
+                    </button>
+                ))}
+            </div>
+        );
+    }
+);
 
-    return (
-        <div className="chat-suggestions flex flex-col gap-1">
-            {suggestions.map((s: string, idx: number) => (
-                <button
-                    key={idx}
-                    className="text-left text-sm text-gray-700 hover:text-gray-900"
-                    onClick={() => onSelected(s)}
-                >
-                    {s}
-                </button>
-            ))}
-        </div>
-    );
-});
 
-export default ChatSuggestions;

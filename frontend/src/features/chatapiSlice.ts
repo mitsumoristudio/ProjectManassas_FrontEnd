@@ -7,8 +7,8 @@ const CHAT_URL = "/api/chats";
 export const chatApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder: any) => {
         return ({
-            sendMessage: builder.mutation({
-                query: (session: ChatSessionModel) => ({
+            sendAIMessage: builder.mutation({
+                query: (session: any) => ({
                     url: `${CHAT_URL}/send`,
                     method: "POST",
                     body: session,
@@ -16,19 +16,28 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 invalidatesTags:["Chat"]
             }),
             searchMessage: builder.query({
-                query: (query: string, filesystem: string) => ({
+                query: ({ query, filesystem }: { query: string; filesystem?: string }) => ({
                     url: `${CHAT_URL}/search`,
                     method: "GET",
                     params: { query, filesystem }
                 }),
                 providesTags: ["Chat"],
                 keepUnusedDataFor: 5,
+            }),
+            sendSemanticAIMessage: builder.mutation({
+                query: (session: any) => ({
+                    url: `${CHAT_URL}/semantic_search`,
+                    method: "POST",
+                    body: session,
+                }),
+                invalidatesTags: ["Chat"],
             })
         });
     }
 })
 
 export const {
-    useSendMessageMutation,
+    useSendAIMessageMutation,
+    useSendSemanticAIMessageMutation,
     useSearchMessageQuery,
 } = chatApiSlice;

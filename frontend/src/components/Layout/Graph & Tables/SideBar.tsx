@@ -31,16 +31,17 @@ export default function SideBar() {
 
     const SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
+        {name: "AI Construction Agent", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
         { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "Equipment Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
         {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
-        {name: "Chat Example", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chatexample"},
 
     ]
 
     const AUTH_SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
+        { name: "AI Construction Chat ", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
         { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "My Projects", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
