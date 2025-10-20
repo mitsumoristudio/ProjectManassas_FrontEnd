@@ -1,6 +1,6 @@
 
 import {apiSlice} from "./apiSlice";
-import {ChatSessionModel, ChatMessageModel} from "../model/ChatModel";
+// import {ChatSessionModel, ChatMessageModel} from "../model/ChatModel";
 
 const CHAT_URL = "/api/chats";
 

@@ -2,7 +2,7 @@ import {useEffect, useRef} from "react";
 import CustomLoader from "../../components/Layout/CustomLoader";
 import ChatMessageItem from "./ChatMessageItem";
 
-export default function ChatMessageList({ messages, inProgressMessage, noMessagesContent }: any) {
+export function ChatMessageList({ messages, inProgressMessage, noMessagesContent }: any) {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -14,7 +14,7 @@ export default function ChatMessageList({ messages, inProgressMessage, noMessage
 
     return (
         <div className="flex-1 overflow-y-auto p-2" ref={containerRef}>
-            {messages.map((m: any, idx: number) => (
+            {messages?.map((m: any, idx: number) => (
                 <ChatMessageItem key={idx} message={m} />
             ))}
             {inProgressMessage && (

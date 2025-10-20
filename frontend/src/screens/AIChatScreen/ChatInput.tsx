@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import ToggleSwitch from "../../components/ToggleSwitch";
+
 
 interface ChatInputProps {
     onSend: (message: string) => void;
     disabled?: boolean;
+    onToggle?: (isOn: boolean )=> void;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle = false }) => {
     const [inputValue, setInputValue] = useState("");
 
     const handleSend = () => {
@@ -37,12 +40,15 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false }) => {
                 disabled={disabled}
                 className={`px-4 py-2 rounded-full text-white ${
                     disabled
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
+                        ? "bg-gray-200 cursor-not-allowed"
+                        : "bg-blue-400 hover:bg-blue-800"
                 }`}
             >
                 Send
             </button>
+            {/* Example 1: Switch with a label */}
+            <ToggleSwitch labelOn={"Document Mode"} labelOff={"Normal Mode"} onToggle={onToggle} />
+
         </div>
     );
 };

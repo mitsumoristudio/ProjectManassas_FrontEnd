@@ -20,7 +20,7 @@ import EquipmentEditScreen from "./screens/admin/EquipmentEditScreen";
 import VerifyEmailScreen from "./screens/admin/VerifyEmailScreen";
 import ForgotPasswordPage from "./screens/admin/ForgotPasswordPage";
 import {ChatMainScreen} from "./screens/AIChatScreen/ChatMainScreen";
-import {ChatPage} from "./screens/AIChatScreen/ChatPageScreen";
+
 
 function App() {
   return (
@@ -47,9 +47,7 @@ function App() {
                 <Route path={"/verifyEmail"} element={<VerifyEmailScreen />} />
                 <Route path={"/forgotPassword"} element={<ForgotPasswordPage />} />
                 <Route path={"/projectAnalytics"} element={<ProjectAnalyticsScreen />} />
-                <Route path={"/chatpage"} element={<ChatPage/>} />
                 <Route path={"/chat"} element={<ChatMainScreen />} />
-
 
             </Routes>
 
