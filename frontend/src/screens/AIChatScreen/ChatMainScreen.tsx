@@ -21,45 +21,44 @@ export function ChatMainScreen() {
     const [sendMessage, {isLoading}] = useSendAIMessageMutation();
     const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
 
+
     // ✅ Handles toggle change
     const handleSwitch = (state: boolean) => {
-        console.log("Switch is now:", state ? "Document Mode" : "Normal Mode");
+        console.log("Switch is now:", state ? "Document AI Mode" : "Normal AI Mode");
         setIsDocumentMode(state);
     };
 
-    const handleSemanticAIMessage = async (text: string) => {
-        if (!text.trim()) return;
+    const handleSemanticAIMessage = async (snippet: string) => {
+        if (!snippet.trim()) return;
 
-        // 1️⃣ Add user reference message (optional)
         const userMessage = {
             role: "user",
-            messageContent: text,
-            createdAt: new Date().toISOString()
+            messageContent: snippet,
+            createdAt: new Date().toISOString(),
         };
+
         setMessages((prev) => [...prev, userMessage]);
         setInProgressMessage({ role: "assistant", messageContent: "..." });
 
         try {
-            // 2️⃣ Send to semantic AI endpoint
             const session = { sessionId, messages: [userMessage] };
             const response: any = await sendSemanticAIMessage(session).unwrap();
 
+            console.log("📄 Full Semantic AI Response:", response);
+            console.log("🔗 Sources:", response.sources);
+
             if (response?.messageContent) {
-                // 3️⃣ Add AI response to messages
                 const assistantMessage = {
                     role: "assistant",
                     messageContent: response.messageContent,
-                    pageNumber: response.pageNumber,
                     createdAt: response.createdAt,
+                    sources: response.sources,
                 };
                 setMessages((prev) => [...prev, assistantMessage]);
-
-                // 4️⃣ Extract sources and store separately (optional)
-                const sources = response.sources || [];
-                setSources(sources); // setSources should be a useState or Redux state
+             //   setSources(response.sources);
             }
         } catch (err) {
-            console.error("Error sending semantic AI message:", err);
+            console.error("❌ Error sending semantic AI message:", err);
         } finally {
             setInProgressMessage(null);
         }
@@ -90,6 +89,7 @@ export function ChatMainScreen() {
                     {
                         role: response.role,
                         messageContent: response.messageContent,
+                        sources: response.sources,
                         createdAt: response.createdAt,
                     },
                 ]);
@@ -106,7 +106,7 @@ export function ChatMainScreen() {
     const handleSendMessage = async (text: string) => {
         if (!text.trim()) return;
 
-        if (isDocumentMode) {
+        if (!isDocumentMode) {
             await handleSemanticAIMessage(text);
         } else {
             await handleStandardAIMessage(text);
@@ -138,6 +138,7 @@ export function ChatMainScreen() {
                                     <ChatMessageList
                                         messages={messages}
                                         inProgressMessage={inProgressMessage}
+                                        showSources={isDocumentMode}
                                         noMessagesContent="Start a conversation with AI agent ...."
                                     />
                                     <h2 className={"p-2 text-blue-700 font-medium text-sm text-center"}>Please note that AI agent may give inaccurate information</h2>

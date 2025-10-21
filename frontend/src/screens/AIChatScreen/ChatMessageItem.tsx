@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ChatCitation from "./ChatCitation";
 import Markdown from "react-markdown";
+import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
 
+export default function ChatMessageItem({ message, inProgress = false, showSources = false, }: {
+    message: any; inProgress?: boolean, showSources?: boolean  }) {
 
-export default function ChatMessageItem({ message, inProgress = false }: { message: any; inProgress?: boolean }) {
     const [citations, setCitations] = useState<{ file: string; page: number | null; quote: string }[]>([]);
+    const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
 
     useEffect(() => {
         if (!inProgress && message?.role === "assistant" && message?.text?.length > 0) {
@@ -51,9 +54,39 @@ export default function ChatMessageItem({ message, inProgress = false }: { messa
                 <div className="ml-2">
                     <Markdown>{message.text || message.messageContent}</Markdown>
                     {citations?.map((c, i) => (
-                        <ChatCitation file={c.file} page={c.page} quote={c.quote} pageNumber={c.page} />
+                        <ChatCitation file={c.file}
+                                      page={c.page}
+                                      quote={c.quote}
+                                      pageNumber={c.page} />
                     ))}
                 </div>
+
+
+                {/* Render sources if toggle is on */}
+                {showSources &&
+                    message.sources?.length > 0 && (
+                        <div className="mt-2 border-t border-gray-400 pt-2">
+                            <div className={"text-sm text-gray-800 font-medium mb-1"}>
+                                Sources:
+                            </div>
+                            <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                                {message.sources.map((src: any, i: number) => (
+                                    <li key={i}>
+                                        <ChatCitation
+                                            file={src.documentId}
+                                            page={src.pageNumber}
+                                            quote={src.snippet}
+                                            pageNumber={src.pageNumber}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                    )}
+
+
+
             </div>
         );
     }

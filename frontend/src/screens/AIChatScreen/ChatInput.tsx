@@ -8,8 +8,9 @@ interface ChatInputProps {
     onToggle?: (isOn: boolean )=> void;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle = false }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle}) => {
     const [inputValue, setInputValue] = useState("");
+    const [isDocumentMode, setIsDocumentMode] = useState(false);
 
     const handleSend = () => {
         if (!inputValue.trim()) return;
@@ -22,6 +23,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
             e.preventDefault();
             handleSend();
         }
+    };
+
+    const handleToggle = () => {
+        setIsDocumentMode(prev => {
+            const newState = !prev;
+            if (onToggle) onToggle(newState);
+            return newState;
+        });
     };
 
     return (
@@ -47,7 +56,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
                 Send
             </button>
             {/* Example 1: Switch with a label */}
-            <ToggleSwitch labelOn={"Document Mode"} labelOff={"Normal Mode"} onToggle={onToggle} />
+            <ToggleSwitch labelOn={"Document Mode"} labelOff={"Normal Mode"} onToggle={handleToggle} />
 
         </div>
     );
