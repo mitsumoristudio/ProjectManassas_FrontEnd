@@ -16,8 +16,8 @@ export default function ProjectAnalyticsScreen() {
     const projectItems = projects?.items;
 
     const chartData = projectItems?.map((p: any) => ({
-        name: p.projectname,
-        estimate: p.projectestimate,
+        name: p.projectName,
+        estimate: p.projectEstimate,
     })) || [];
 
     return (

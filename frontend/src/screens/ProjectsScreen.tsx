@@ -106,9 +106,9 @@ export function ProjectsScreen() {
     };
 
     // Get data from Reduxs
-    const {data: projects, refetch, isLoading, isError} = useGetAllProjectsQuery<any>({keyword});
-    const totalProjects = projects?.items?.length || 0;
-    const totalEstimate = projects?.items?.reduce((acc: any, item: any) => acc + item.projectestimate, 0) || 0;
+    const {data: projects, refetch, isLoading} = useGetAllProjectsQuery<any>({keyword});
+    const totalProjects = projects?.items.length || 0;
+    const totalEstimate = projects?.items?.reduce((acc: any, item: any) => acc + item.projectEstimate, 0) || 0;
     // console.log("Project Response", projects);
 
     const filteredUserProjectId = projects?.items?.filter((project: {userId: string}) => project.userId  === userId);
@@ -141,7 +141,7 @@ export function ProjectsScreen() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 7;
 
-    const filterProjects = projectItems?.filter((item: any) => item?.projectname?.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filterProjects = projectItems?.filter((item: any) => item?.projectName?.toLowerCase().includes(searchTerm.toLowerCase()));
 
     // Pagination Calculation
     const totalPages = Math.ceil(projectItems?.length / itemsPerPage);
@@ -412,12 +412,12 @@ export function ProjectsScreen() {
                                             {currentProjects?.map((project: any, index: number) => (
                                                 <tr key={`${project}-${index}`}
                                                     className="border-t border-gray-800 hover:bg-gray-900/50 transition-colors">
-                                                    <td className="p-4 text-white font-medium">{project.projectname}</td>
-                                                    <td className="p-4 text-gray-300">{project.projectnumber}</td>
-                                                    <td className="p-4 text-gray-300">${project.projectestimate}</td>
+                                                    <td className="p-4 text-white font-medium">{project.projectName}</td>
+                                                    <td className="p-4 text-gray-300">{project.projectNumber}</td>
+                                                    <td className="p-4 text-gray-300">${project.projectEstimate}</td>
                                                     <td className="p-4 text-gray-300">{project.location}</td>
                                                     <td className="p-4 text-gray-300">{project.contractor}</td>
-                                                    <td className="p-4 text-gray-300">{project.projectmanager}</td>
+                                                    <td className="p-4 text-gray-300">{project.projectManager}</td>
                                                     <td className="p-4 text-gray-300">{new Date(project.createdAt).toLocaleDateString(
                                                         "en-US", {
                                                             year: "numeric",
@@ -451,7 +451,7 @@ export function ProjectsScreen() {
                                                     </td>
 
                                                     {/* Open Project description page */}
-                                                    <div className="flex flex-1 mx-auto my-2">
+                                                    <div className="flex flex-1 mx-auto my-2 px-2">
                                                         <button
                                                             onClick={() =>
                                                                 requireAuthDescription(() => setOpenDescription((prev) => !prev))
