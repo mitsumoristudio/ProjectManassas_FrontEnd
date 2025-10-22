@@ -385,8 +385,8 @@ export default function EquipmentScreen() {
                                                                 className={"w-full appearance-none rounded-md bg-white py-2 pl-3 pr-8 text-base text-gray-800 border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-800" }>
                                                                 <option value={""}>Select a Project</option>
                                                                 {projectItems?.map((project: any) => (
-                                                                    <option key={project.id} value={project.projectname}>
-                                                                        {project.projectname}
+                                                                    <option key={project.id} value={project.projectName}>
+                                                                        {project.projectName}
                                                                     </option>
                                                                 ))}
                                                             </select>

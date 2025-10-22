@@ -26,7 +26,7 @@ export default function DashboardHeader() {
                                           d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z"
                                           fill="#30E0A5"/>
                                 </svg>
-                                <h1 className="text-2xl font-semibold">Manassas</h1>
+                                <h1 className="text-2xl font-semibold">NashAI</h1>
                             </NavLink>
 
                         </div>
