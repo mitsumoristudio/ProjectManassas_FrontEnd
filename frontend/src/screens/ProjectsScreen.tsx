@@ -79,7 +79,7 @@ export function ProjectsScreen() {
                 id: newId,
                 projectName,
                 projectNumber,
-                projectestimate: parseFloat(estimate),
+                projectEstimate: parseFloat(estimate),
                 location: location,
                 contractor: contractor,
                 projectManager: projectManager,
@@ -141,7 +141,7 @@ export function ProjectsScreen() {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 7;
 
-    const filterProjects = projectItems?.filter((item: any) => item.projectname.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filterProjects = projectItems?.filter((item: any) => item?.projectname?.toLowerCase().includes(searchTerm.toLowerCase()));
 
     // Pagination Calculation
     const totalPages = Math.ceil(projectItems?.length / itemsPerPage);
