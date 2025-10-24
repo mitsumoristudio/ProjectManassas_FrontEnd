@@ -46,7 +46,7 @@ export default function ChatMessageItem({ message, inProgress = false, showSourc
 
     if (message.role === "assistant") {
         return (
-            <div className="bg-gray-300 px-4 py-3 text-md rounded-md max-w-lg mb-2 flex flex-col gap-2">
+            <div className="bg-gray-200 px-4 py-3 text-md rounded-md max-w-lg mb-2 flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                     <div className="font-semibold">Assistant</div>
                 </div>

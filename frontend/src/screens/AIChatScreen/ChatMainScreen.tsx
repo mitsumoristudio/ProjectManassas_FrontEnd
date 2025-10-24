@@ -103,15 +103,16 @@ export function ChatMainScreen() {
 
     };
 
-    const handleSendMessage = async (text: string) => {
-        if (!text.trim()) return;
-
-        if (!isDocumentMode) {
-            await handleSemanticAIMessage(text);
-        } else {
-            await handleStandardAIMessage(text);
-        }
-    }
+    // Not applied using Agent search
+    // const handleSendMessage = async (text: string) => {
+    //     if (!text.trim()) return;
+    //
+    //     if (!isDocumentMode) {
+    //         await handleSemanticAIMessage(text);
+    //     } else {
+    //         await handleStandardAIMessage(text);
+    //     }
+    // }
 
     return (
         <>
@@ -145,7 +146,7 @@ export function ChatMainScreen() {
                                 </div>
 
                                 <div className="p-4 border-t bg-white items-center">
-                                    <ChatInput onSend={handleSendMessage} disabled={isLoading} onToggle={handleSwitch}/>
+                                    <ChatInput onSend={handleSemanticAIMessage} disabled={isLoading} onToggle={handleSwitch}/>
                                 </div>
 
                             </div>

@@ -22,10 +22,11 @@ export default function Homepage() {
                 {/* Hero Section */}
                 <section className="text-center container mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-tight">
-                        The cloud solution for <br className="hidden sm:block"/> successful project
+                        The AI solution for <br className="hidden sm:block"/> successful project
                     </h1>
                     <p className="max-w-2xl mx-auto mt-6 text-lg sm:text-xl text-gray-400">
-                        Manassas is the fully managed project management platform for General Contractors. Based out of Nashville TN, we have decade of experience developing solutions to our clients.
+                        NashAI is a fully managed project management platform for General Contractors. AI agent trained through federal standard specification of construction methods.
+                        Based out of Nashville TN, we have decade of experience developing solutions to our clients.
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <a href="/projects" className="w-full sm:w-auto px-6 py-3 text-base font-medium hover:text-white text-black bg-[#30E0A5] rounded-md hover:bg-opacity-90 transition-all flex items-center justify-center space-x-2">

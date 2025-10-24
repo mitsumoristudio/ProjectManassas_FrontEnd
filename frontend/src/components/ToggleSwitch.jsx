@@ -4,7 +4,9 @@ export default function ToggleSwitch({ labelOn, labelOff, onToggle }) {
     const [isEnabled, setIsEnabled] = useState(false);
 
     const toggleState = () => {
-        setIsEnabled(!isEnabled);
+        const newState = !isEnabled;
+        setIsEnabled(newState);
+        if (onToggle) onToggle(newState); // ✅ Notify parent component (ChatInput)
     };
 
     return (
