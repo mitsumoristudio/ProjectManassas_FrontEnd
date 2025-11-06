@@ -1,7 +1,9 @@
 import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
-// import DashboardHeader from "../../components/Layout/DashBoardHeader";
+// import ChatMessageExample from "../../components/Layout/ChatMessageExample";
+import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
+import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 
 import {useSendAIMessageMutation, useSendSemanticAIMessageMutation, useSearchMessageQuery} from "../../features/chatapiSlice";
 import React, {useRef, useState} from "react";
@@ -9,6 +11,27 @@ import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import ToggleSwitch from "../../components/Layout/ToggleSwitch";
+
+const models: AIModel[] = [
+    {
+        id: "summary-gpt",
+        name: "Summary AI",
+        description: "Specialized for providing contract summary",
+        icon: "tree",
+    },
+    {
+        id: "contract-ai",
+        name: "Contract AI",
+        description: "Optimized for contract review and drafting",
+        icon: "zap",
+    },
+    {
+        id: "safety-ai",
+        name: "Safety AI",
+        description: "Expert in OSHA Law and safety regulations",
+        icon: "sparkles",
+    },
+];
 
 export function ChatMainScreen() {
     const [messages, setMessages] = useState<any[]>([]);
@@ -20,6 +43,8 @@ export function ChatMainScreen() {
 
     const [sendMessage, {isLoading}] = useSendAIMessageMutation();
     const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
+
+    const [selectedModelId, setSelectedModelId] = useState("legal-gpt");
 
 
     // ✅ Handles toggle change
@@ -103,17 +128,6 @@ export function ChatMainScreen() {
 
     };
 
-    // Not applied using Agent search
-    // const handleSendMessage = async (text: string) => {
-    //     if (!text.trim()) return;
-    //
-    //     if (!isDocumentMode) {
-    //         await handleSemanticAIMessage(text);
-    //     } else {
-    //         await handleStandardAIMessage(text);
-    //     }
-    // }
-
     return (
         <>
             <Helmet>
@@ -124,14 +138,26 @@ export function ChatMainScreen() {
                 <CustomLoader/>
             ) : (
                 <motion.div
-                    initial={{opacity: 0, y: 20}}
+                    initial={{opacity: 0, y: 60}}
                     animate={{opacity: 1, y: 0}}
                     transition={{delay: 0.2}}
                 >
-                    <div className={"bg-[#0A0A0A] text-white font-sans min-h-screen flex"}>
+                    <div className={"bg-[#0A0A0A] h-screen text-white font-sans flex"}>
                         <SideBar/>
 
-                        <div className={"flex-1 flex flex-col"}>
+
+                        <div className={"flex-1 flex flex-col min-w-1 bg-[#f7f7f7]"}>
+                            {/*<ChatMessageExample/>*/}
+                            <div className="h-14 border-b border-border px-4 flex items-center justify-between flex-shrink-0">
+                                <ChatMenuSelector
+                                    models={models}
+                                    selectedModelId={selectedModelId}
+                                    onSelectModel={(id) => {
+                                        console.log("Selected model:", id);
+                                        setSelectedModelId(id);
+                                    }}
+                                />
+                            </div>
 
 
                             <div className="flex flex-col h-screen bg-gray-50">
@@ -152,6 +178,7 @@ export function ChatMainScreen() {
                             </div>
 
                         </div>
+
 
                     </div>
 
