@@ -1,5 +1,6 @@
 
 import {useMemo} from "react";
+import React from "react";
 
 export default function ChatCitation({file, pageNumber, quote}: {
     file: any,
@@ -44,8 +45,8 @@ export default function ChatCitation({file, pageNumber, quote}: {
             </svg>
 
             <div className="flex flex-col">
-                <div className="font-semibold">{file}</div>
-                <div className="text-gray-700">{quote}</div>
+                <div className="font-medium">{file}</div>
+                <div className="text-gray-500">{quote}</div>
             </div>
         </a>
     );

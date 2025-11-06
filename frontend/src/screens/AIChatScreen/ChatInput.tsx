@@ -1,21 +1,28 @@
 import React, { useState } from "react";
 import ToggleSwitch from "../../components/ToggleSwitch";
+import PromptSelector from "../../components/Layout/PromptSelector";
+
 
 
 interface ChatInputProps {
     onSend: (message: string) => void;
     disabled?: boolean;
     onToggle?: (isOn: boolean )=> void;
+    value?: string;
+    onChange?: (value: string) => void;
+
+
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle}) => {
-    const [inputValue, setInputValue] = useState("");
+const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle, value, onChange }) => {
+ //   const [inputValue, setInputValue] = useState("");
     const [isDocumentMode, setIsDocumentMode] = useState(false);
 
+
     const handleSend = () => {
-        if (!inputValue.trim()) return;
-        onSend(inputValue.trim());
-        setInputValue(""); // Clear input after send
+        if (!value?.trim()) return;
+        onSend(value.trim());
+        if (onChange) onChange("");
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -34,16 +41,20 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
     };
 
     return (
+        <div className={"flex flex-col gap-2"}>
+
+            {/* Input + send + toggle */}
         <div className="flex items-center gap-2">
             <input
                 type="text"
                 placeholder="Type your message..."
                 className="flex-1 border border-gray-300 text-gray-900 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-100"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
+                value={value}
+                onChange={(e) => onChange?.(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
             />
+
             <button
                 onClick={handleSend}
                 disabled={disabled}
@@ -56,8 +67,11 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
                 Send
             </button>
             {/* Example 1: Switch with a label */}
-            <ToggleSwitch labelOn={"Document Mode"} labelOff={"Normal Mode"} onToggle={handleToggle} />
+            <ToggleSwitch labelOn={"Document Mode"}
+                          labelOff={"Normal Mode"}
+                          onToggle={handleToggle} />
 
+        </div>
         </div>
     );
 };

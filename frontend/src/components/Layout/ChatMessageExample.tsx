@@ -1,6 +1,6 @@
 
-import {Scale, User} from "lucide-react";
-import React = require("react");
+import {BotIcon, User} from "lucide-react";
+import React from "react";
 import cn from "../../util/util";
 
 interface ChatMessageProps {
@@ -15,7 +15,7 @@ export default function ChatMessageExample({role, message, timestamp}: ChatMessa
         <>
             <div
                 className={cn(
-                    "flex w-full gap-3 mb-4",
+                    "flex w-full gap-3 mb-6",
                     isUser ? "justify-end" : "justify-start"
                 )}
             >
@@ -23,7 +23,7 @@ export default function ChatMessageExample({role, message, timestamp}: ChatMessa
                 {!isUser && (
                     <div className="flex items-start">
                         <div className="p-2 rounded-full bg-blue-50 border border-blue-100">
-                            <Scale className="h-5 w-5 text-blue-700" />
+                            <BotIcon className="h-6 w-6 text-blue-700" />
                         </div>
                     </div>
                 )}
@@ -31,7 +31,7 @@ export default function ChatMessageExample({role, message, timestamp}: ChatMessa
                 {/* Message Bubble */}
                 <div
                     className={cn(
-                        "max-w-[75%] rounded-2xl px-4 py-3 text-sm shadow-sm whitespace-pre-line",
+                        "max-w-[95%] rounded-2xl px-6 py-6 text-lg shadow-lg whitespace-normal",
                         isUser
                             ? "bg-blue-600 text-white rounded-br-sm"
                             : "bg-gray-100 text-gray-800 rounded-bl-sm"
@@ -55,7 +55,7 @@ export default function ChatMessageExample({role, message, timestamp}: ChatMessa
                 {isUser && (
                     <div className="flex items-start">
                         <div className="p-2 rounded-full bg-gray-100 border border-gray-200">
-                            <User className="h-5 w-5 text-gray-600" />
+                            <User className="h-6 w-6 text-gray-600" />
                         </div>
                     </div>
                 )}

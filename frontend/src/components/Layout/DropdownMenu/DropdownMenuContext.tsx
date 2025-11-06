@@ -44,7 +44,7 @@ export function DropdownMenuContent({
             ref={contentRef}
             role="menu"
             className={(
-                "absolute mt-2 min-w-[10rem] rounded-lg border bg-popover shadow-md p-1 z-50 animate-in fade-in-0 zoom-in-95")}
+                "absolute mt-2 min-w-[10rem] bg-gray-300 rounded-lg border bg-popover shadow-md p-1 z-50 animate-in fade-in-0 zoom-in-95")}
         >
             {children}
         </div>

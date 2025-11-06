@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ChatCitation from "./ChatCitation";
 import Markdown from "react-markdown";
 import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
+import {BotIcon, User} from "lucide-react";
 
 export default function ChatMessageItem({ message, inProgress = false, showSources = false, }: {
     message: any; inProgress?: boolean, showSources?: boolean  }) {
@@ -38,56 +39,70 @@ export default function ChatMessageItem({ message, inProgress = false, showSourc
 
     if (message.role === "user") {
         return (
-            <div className="bg-blue-300 text-blue-800 px-4 py-2 my-4 rounded-md self-end max-w-md break-words ">
-                {message.text || message.messageContent}
+            <div className={"flex flex-1 my-4 gap-4 mx-2 items-start justify-end px-4"}>
+                <div className="p-2 rounded-full bg-gray-100 border border-gray-200">
+                    <User className="h-6 w-6 text-gray-600" />
+                </div>
+                <div className="my-2 bg-blue-600 text-white rounded-br-sm break-words max-w-[95%] rounded-2xl px-6 py-6 text-lg shadow-lg whitespace-normal ">
+                    {message.text || message.messageContent}
+
+                </div>
+
             </div>
+
         );
     }
 
     if (message.role === "assistant") {
         return (
-            <div className="bg-gray-200 px-4 py-3 text-md rounded-md max-w-lg mb-2 flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                    <div className="font-semibold">Assistant</div>
+            <section className={"flex flex-1 my-1 gap-4 items-start justify-items-start px-6 py-6"}>
+                <div className="p-2 rounded-full bg-blue-50 border border-blue-100">
+                    <BotIcon className="h-6 w-6 text-blue-700" />
                 </div>
+                <div className="bg-gray-100 px-6 py-3 text-md rounded-lg shadow-lg max-w-xl mb-2 flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                        <div className="font-semibold">AI Assistant</div>
+                    </div>
 
-                <div className="ml-2">
-                    <Markdown>{message.text || message.messageContent}</Markdown>
-                    {citations?.map((c, i) => (
-                        <ChatCitation file={c.file}
-                                      page={c.page}
-                                      quote={c.quote}
-                                      pageNumber={c.page} />
-                    ))}
-                </div>
+                    <div className="ml-2 rounded-br-sm break-words max-w-[95%] text-gray-700 text-xl ">
+                        <Markdown>{message.text || message.messageContent}</Markdown>
+                        {citations?.map((c, i) => (
+                            <ChatCitation file={c.file}
+                                          page={c.page}
+                                          quote={c.quote}
+                                          pageNumber={c.page} />
+                        ))}
+                    </div>
 
 
-                {/* Render sources if toggle is on */}
-                {showSources &&
-                    message.sources?.length > 0 && (
-                        <div className="mt-2 border-t border-gray-400 pt-2">
-                            <div className={"text-sm text-gray-800 font-medium mb-1"}>
-                                Sources:
+                    {/* Render sources if toggle is on */}
+                    {showSources &&
+                        message.sources?.length > 0 && (
+                            <div className="mt-2 border-t border-gray-400 pt-2">
+                                <div className={"text-sm text-gray-800 font-medium mb-1"}>
+                                    Sources:
+                                </div>
+                                <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
+                                    {message.sources.map((src: any, i: number) => (
+                                        <li key={i}>
+                                            <ChatCitation
+                                                file={src.documentId}
+                                                page={src.pageNumber}
+                                                quote={src.snippet}
+                                                pageNumber={src.pageNumber}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                            <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                                {message.sources.map((src: any, i: number) => (
-                                    <li key={i}>
-                                        <ChatCitation
-                                            file={src.documentId}
-                                            page={src.pageNumber}
-                                            quote={src.snippet}
-                                            pageNumber={src.pageNumber}
-                                        />
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
 
-                    )}
+                        )}
 
 
 
-            </div>
+                </div>
+            </section>
+
         );
     }
 

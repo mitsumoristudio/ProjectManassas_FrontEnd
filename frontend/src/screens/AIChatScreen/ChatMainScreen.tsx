@@ -1,7 +1,6 @@
 import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
-// import ChatMessageExample from "../../components/Layout/ChatMessageExample";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 
@@ -10,7 +9,16 @@ import React, {useRef, useState} from "react";
 import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
-import ToggleSwitch from "../../components/Layout/ToggleSwitch";
+import PromptSelector from "../../components/Layout/PromptSelector";
+
+const promptList = [
+    { id: "1", title: "Understand scope of work", description: "Please summarize contract" },
+    { id: "2", title: "List key obligations", description: "Extract main responsibilities and obligations" },
+    { id: "3", title: "Identify risks", description: "What are project timeline" },
+    { id: "4", title: "Payment", description: "What are the payment terms?" },
+    { id: "5", title: "Delay and Obstruction", description: "What are the terms for construction delay?" },
+
+];
 
 const models: AIModel[] = [
     {
@@ -44,7 +52,19 @@ export function ChatMainScreen() {
     const [sendMessage, {isLoading}] = useSendAIMessageMutation();
     const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
 
-    const [selectedModelId, setSelectedModelId] = useState("legal-gpt");
+    const [selectedModelId, setSelectedModelId] = useState("construction-gpt");
+    const [selectedPrompt, setSelectedPrompt] = useState<any>(null);
+    const [selectedPromptId, setSelectedPromptId] = useState<string>();
+    const [inputValue, setInputValue] = useState("");
+
+    // When a prompt is selected from the dropdown
+    const handleSelectedPrompt = (promptId: string) => {
+        setSelectedPromptId(promptId);
+        const prompt = promptList.find((prompt) => prompt.id === promptId);
+        if (prompt) {
+            setInputValue(prompt.description);
+        }
+    }
 
 
     // ✅ Handles toggle change
@@ -157,6 +177,8 @@ export function ChatMainScreen() {
                                         setSelectedModelId(id);
                                     }}
                                 />
+
+                                <PromptSelector prompts={promptList} onSelectPrompt={handleSelectedPrompt} selectedPromptId={selectedPromptId} />
                             </div>
 
 
@@ -166,13 +188,20 @@ export function ChatMainScreen() {
                                         messages={messages}
                                         inProgressMessage={inProgressMessage}
                                         showSources={isDocumentMode}
-                                        noMessagesContent="Start a conversation with AI agent ...."
+                                        noMessagesContent="Start a conversation with AI agents ...."
                                     />
                                     <h2 className={"p-2 text-blue-700 font-medium text-sm text-center"}>Please note that AI agent may give inaccurate information</h2>
                                 </div>
+                               {/*<ChatWindow/>*/}
+
 
                                 <div className="p-4 border-t bg-white items-center">
-                                    <ChatInput onSend={handleSemanticAIMessage} disabled={isLoading} onToggle={handleSwitch}/>
+                                    <ChatInput onSend={handleSemanticAIMessage}
+                                               disabled={isLoading}
+                                               onToggle={handleSwitch}
+                                               value={inputValue}
+                                               onChange={setInputValue}
+                                    />
                                 </div>
 
                             </div>
