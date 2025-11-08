@@ -31,6 +31,22 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     body: session,
                 }),
                 invalidatesTags: ["Chat"],
+            }),
+            sendSummaryAIMessage: builder.mutation({
+                query: (session: any) => ({
+                    url: `${CHAT_URL}/summary`,
+                    method: "POST",
+                    body: session,
+                }),
+                invalidatesTags: ["Chat"],
+            }),
+            sendSafetyAIMessage: builder.mutation({
+                query: (session: any) => ({
+                    url: `${CHAT_URL}/safety_search`,
+                    method: "POST",
+                    body: session,
+                }),
+                invalidatesTags: ["Chat"],
             })
         });
     }
@@ -40,4 +56,6 @@ export const {
     useSendAIMessageMutation,
     useSendSemanticAIMessageMutation,
     useSearchMessageQuery,
+    useSendSummaryAIMessageMutation,
+    useSendSafetyAIMessageMutation,
 } = chatApiSlice;

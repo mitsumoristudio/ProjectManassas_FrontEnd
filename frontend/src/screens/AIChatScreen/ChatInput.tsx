@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ToggleSwitch from "../../components/ToggleSwitch";
+import ToggleSwitch from "../../components/Layout/ToggleSwitch.jsx";
 import PromptSelector from "../../components/Layout/PromptSelector";
 
 

@@ -1,22 +1,40 @@
+import { useState } from "react";
 
-const ToggleSwitch = ({ label, isOn, onToggle }) => {
+export default function ToggleSwitch({ labelOn, labelOff, onToggle }) {
+    const [isEnabled, setIsEnabled] = useState(false);
+
+    const toggleState = () => {
+        const newState = !isEnabled;
+        setIsEnabled(newState);
+        if (onToggle) onToggle(newState); // ✅ Notify parent component (ChatInput)
+    };
+
     return (
-        <div className='flex items-center justify-between py-3'>
-            <span className='text-gray-300'>{label}</span>
-            <button
-                className={`
-        relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none
-        ${isOn ? "bg-indigo-600" : "bg-gray-600"}
-        `}
-                onClick={onToggle}
-            >
-				<span
-                    className={`inline-block size-4 transform transition-transform bg-white rounded-full 
-            ${isOn ? "translate-x-6" : "translate-x-1"}
-            `}
-                />
-            </button>
-        </div>
+        <label className="relative inline-flex items-center cursor-pointer">
+            <input
+                type="checkbox"
+                checked={isEnabled}
+                onChange={toggleState}
+                className="sr-only peer" // This checkbox is hidden
+            />
+
+            {/* This is the background of the switch */}
+            <div
+                className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-purple-300 rounded-full peer dark:bg-gray-700
+                   peer-checked:after:translate-x-full peer-checked:after:border-white
+                   after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                   after:bg-white after:border-gray-300 after:border after:rounded-full
+                   after:h-5 after:w-5 after:transition-all
+                   dark:border-gray-600 peer-checked:bg-purple-700"
+            ></div>
+
+            {/* --- THIS IS THE CHANGED PART --- */}
+            <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-800">
+        {isEnabled ? labelOn : labelOff}
+      </span>
+            {/* ---------------------------------- */}
+
+        </label>
+
     );
-};
-export default ToggleSwitch;
+}
