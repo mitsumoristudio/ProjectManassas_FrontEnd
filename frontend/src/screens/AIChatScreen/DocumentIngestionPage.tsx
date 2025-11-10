@@ -2,6 +2,7 @@
 import React, {useState} from "react";
 import DocumentIngestion, {UploadedDocumentProp} from "../AIChatScreen/DocumentIngestion";
 import {useSendDocumentEmbeddingMutation} from "../../features/chatapiSlice";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 
 export default function DocumentIngestionPage() {
     const [documents, setDocuments] = React.useState<UploadedDocumentProp[]>([]);
@@ -58,12 +59,16 @@ export default function DocumentIngestionPage() {
 
     return (
         <>
-            <div className={"max-w-2xl mx-auto p-6"}>
-                <DocumentIngestion
-                    documents={documents}
-                    onUpload={handleUpload}
-                    onRemove={handleRemove}
-                    />
+            <div className={"bg-[#0A0A0A] text-white font-sans min-h-screen flex"}>
+                    <SideBar/>
+
+                <div className={"max-w-2xl mx-auto p-6"}>
+                    <DocumentIngestion
+                        documents={documents}
+                        onUpload={handleUpload}
+                        onRemove={handleRemove}
+                        />
+                </div>
             </div>
         </>
     )
