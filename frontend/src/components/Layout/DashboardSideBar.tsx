@@ -37,7 +37,7 @@ export default function DashboardSideBar() {
                                       fill="#30E0A5"/>
                             </svg>
                             <NavLink to={"/"}>
-                                <span className="font-semibold text-xl">Manassas</span>
+                                <span className="font-semibold text-xl">Mori Solution</span>
                             </NavLink>
 
                         </div>

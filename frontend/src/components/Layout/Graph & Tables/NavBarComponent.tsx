@@ -29,7 +29,7 @@ export default function NavBarComponent() {
 
     const navLinks = [
         { name: 'Home', href: '/' },
-        { name: 'Projects', href: '/projects' },
+        { name: 'Demo', href: '/projects' },
         { name: 'Contact', href: '/contactUs' },
         { name: 'About', href: '/about' },
     ];

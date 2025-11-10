@@ -3,6 +3,7 @@ import {apiSlice} from "./apiSlice";
 // import {ChatSessionModel, ChatMessageModel} from "../model/ChatModel";
 
 const CHAT_URL = "/api/chats";
+const PDF_URL = "/api/pdfs";
 
 export const chatApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder: any) => {
@@ -47,8 +48,22 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     body: session,
                 }),
                 invalidatesTags: ["Chat"],
+            }),
+            sendDocumentEmbedding: builder.mutation({
+                query: ({file, documentId} : { file: File; documentId: string }) => {
+                    const formData = new FormData();
+                    formData.append("formFile", file);
+                    formData.append("documentId", documentId);
+
+                    return {
+                        url: `${PDF_URL}/ingest`,
+                        method: "POST",
+                        body: formData,
+                    }
+                }
             })
         });
+
     }
 })
 
@@ -56,6 +71,7 @@ export const {
     useSendAIMessageMutation,
     useSendSemanticAIMessageMutation,
     useSearchMessageQuery,
+    useSendDocumentEmbeddingMutation,
     useSendSummaryAIMessageMutation,
     useSendSafetyAIMessageMutation,
 } = chatApiSlice;

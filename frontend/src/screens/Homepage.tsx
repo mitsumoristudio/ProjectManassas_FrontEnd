@@ -25,8 +25,9 @@ export default function Homepage() {
                         The AI solution for <br className="hidden sm:block"/> successful project
                     </h1>
                     <p className="max-w-2xl mx-auto mt-6 text-lg sm:text-xl text-gray-400">
-                        NashAI is a fully managed project management platform for General Contractors. AI agent trained through federal standard specification of construction methods.
-                        Based out of Nashville TN, we have decade of experience developing solutions to our clients.
+                        Mori Solution is a construction AI tool for Project Manager and Superintendent designed to analyze shear amount of contract documents and simplifying the context.
+                        We are built to scale and ready to solve all your pain points on your next project.
+
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <a href="/projects" className="w-full sm:w-auto px-6 py-3 text-base font-medium hover:text-white text-black bg-[#30E0A5] rounded-md hover:bg-opacity-90 transition-all flex items-center justify-center space-x-2">

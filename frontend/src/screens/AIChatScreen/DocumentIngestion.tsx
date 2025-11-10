@@ -5,22 +5,25 @@ import cn from "../../util/util";
 import {Upload, FileText, XOctagon, BadgeCheckIcon} from "lucide-react";
 import {Button} from "@mui/material";
 
-export interface UploadedDocument {
+
+export interface UploadedDocumentProp {
     id: string;
-    name: string;
+    filename: string;
     size: string;
     type: string;
+    status?: "uploading" | "analyzed" | "error";
 }
 
 interface LegalDocumentUploadProps {
-    documents: UploadedDocument[];
+    documents: UploadedDocumentProp [];
     onUpload?: (file: FileList) => void;
     onRemove?: (id: string) => void;
     maxFiles?: number;
 }
 
-export default function DocumentIngestion({documents, onUpload, onRemove, maxFiles = 10}: LegalDocumentUploadProps) {
-    const [isDragging, setIsDragging] = React.useState(false);
+export default function DocumentIngestion({documents, onUpload, onRemove, maxFiles = 5}: LegalDocumentUploadProps) {
+    const [isDragging, setIsDragging] = useState(false);
+
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault();
@@ -68,20 +71,19 @@ export default function DocumentIngestion({documents, onUpload, onRemove, maxFil
                     </p>
                     <input
                         type="file"
-                        multiple
-                        accept=".pdf,.docx,.doc,.txt"
+                        accept=".pdf"
                         onChange={handleFileInput}
                         className="hidden"
                         id="file-upload"
                         data-testid="input-file-upload"
                     />
                     <label htmlFor="file-upload">
-                        {/*<Button asChild variant="outline" size="sm">*/}
-                        {/*    <span>Select Files</span>*/}
-                        {/*</Button>*/}
+                        <Button variant={"outlined"} component={"span"} size={"small"} startIcon={<Upload />}>
+                        Select PDF
+                        </Button>
                     </label>
-                    <p className="text-xs text-muted-foreground mt-2">
-                        PDF, DOCX, DOC, TXT (Max {maxFiles} files)
+                    <p className="text-xs  my-2 py-2 text-muted-foreground mt-2">
+                        PDF (Max {maxFiles} files)
                     </p>
                 </div>
 
@@ -99,26 +101,42 @@ export default function DocumentIngestion({documents, onUpload, onRemove, maxFil
                                 <FileText className="h-5 w-5 text-primary flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-foreground truncate">
-                                        {doc.name}
+                                        {doc.filename}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
                                         {doc.type} • {doc.size}
                                     </p>
                                 </div>
+
+                                {/* Status indicator */}
+                                <div className="flex items-center gap-1">
+                                    {doc.status === "uploading" && (
+                                        <span className="text-blue-500 text-xs">Uploading...</span>
+                                    )}
+                                    {doc.status === "analyzed" && (
+                                        <span className="flex items-center text-green-600 text-xs font-medium">
+                                            <BadgeCheckIcon className="h-4 w-4 mr-1" /> Analyzed
+                                        </span>
+                                    )}
+                                    {doc.status === "error" && (
+                                        <span className="text-red-500 text-xs">Error</span>
+                                    )}
+                                </div>
+
                                 <BadgeCheckIcon className="flex-shrink-0">
                                     Analyzed
                                 </BadgeCheckIcon>
-                                {/*{onRemove && (*/}
-                                {/*    <Button*/}
-                                {/*        size="icon"*/}
-                                {/*        variant="ghost"*/}
-                                {/*        onClick={() => onRemove(doc.id)}*/}
-                                {/*        className="h-8 w-8 flex-shrink-0"*/}
-                                {/*        data-testid={`remove-document-${doc.id}`}*/}
-                                {/*    >*/}
-                                {/*        <XOctagon className="h-4 w-4" />*/}
-                                {/*    </Button>*/}
-                                {/*)}*/}
+
+                                {/*Remove PDF button */}
+                                {onRemove && (
+                                    <Button variant={"outlined"}
+                                            size={"small"}
+                                            onClick={() => onRemove(doc.id)}>
+                                        <XOctagon className={"h-4 w-4"} />
+                                        )
+                                    </Button>
+                                )}
+
                             </div>
                         ))}
                     </div>

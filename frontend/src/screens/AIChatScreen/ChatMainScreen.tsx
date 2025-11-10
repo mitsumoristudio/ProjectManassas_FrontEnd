@@ -3,9 +3,12 @@ import {Helmet} from "react-helmet";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
+import {useSelector} from "react-redux";
+import {NavLink} from "react-router-dom";
+import {PaperclipIcon} from "lucide-react"
 
 import {useSendAIMessageMutation, useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation} from "../../features/chatapiSlice";
-import React, {useRef, useState} from "react";
+import React, { useState} from "react";
 import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
@@ -45,8 +48,8 @@ export function ChatMainScreen() {
     const [messages, setMessages] = useState<any[]>([]);
     const [sessionId] = useState("session-1234");
     const [inProgressMessage, setInProgressMessage] = useState<any>(null);
-    const responseControllerRef = useRef(null);
-    const [sources, setSources] = useState<any[]>([]);
+    // const responseControllerRef = useRef(null);
+    // const [sources, setSources] = useState<any[]>([]);
     const [isDocumentMode, setIsDocumentMode] = useState(false);
 
     const [sendMessage, {isLoading}] = useSendAIMessageMutation();
@@ -55,9 +58,11 @@ export function ChatMainScreen() {
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
 
     const [selectedModelId, setSelectedModelId] = useState("contract-ai");
-    const [selectedPrompt, setSelectedPrompt] = useState<any>(null);
+    // const [selectedPrompt, setSelectedPrompt] = useState<any>(null);
     const [selectedPromptId, setSelectedPromptId] = useState<string>();
     const [inputValue, setInputValue] = useState("");
+
+    const {userInfo} = useSelector((state: any) => state.auth);
 
     // When a prompt is selected from the dropdown
     const handleSelectedPrompt = (promptId: string) => {
@@ -206,44 +211,44 @@ export function ChatMainScreen() {
         }
     }
 
-        const handleStandardAIMessage = async (text: string) => {
-            if (!text.trim()) return;
-
-            const userMessage = {
-                role: "user",
-                messageContent: text,
-                createdAt: new Date().toISOString()
-            };
-            setMessages((prev) => [...prev, userMessage]);
-            setInProgressMessage({role: "assistant", messageContent: "..."});
-
-            try {
-                const session = {
-                    sessionId,
-                    messages: [userMessage],
-                };
-
-                const response: any = await sendMessage(session).unwrap();
-
-                if (response?.messageContent) {
-                    setMessages((prev) => [
-                        ...prev,
-                        {
-                            role: response.role,
-                            messageContent: response.messageContent,
-                            sources: response.sources,
-                            createdAt: response.createdAt,
-                        },
-                    ]);
-                }
-
-            } catch (err) {
-                console.error("Error sending message:", err);
-            } finally {
-                setInProgressMessage(null);
-            }
-
-        };
+    // Standard AI Assistant
+    //     const handleStandardAIMessage = async (text: string) => {
+    //         if (!text.trim()) return;
+    //
+    //         const userMessage = {
+    //             role: "user",
+    //             messageContent: text,
+    //             createdAt: new Date().toISOString()
+    //         };
+    //         setMessages((prev) => [...prev, userMessage]);
+    //         setInProgressMessage({role: "assistant", messageContent: "..."});
+    //
+    //         try {
+    //             const session = {
+    //                 sessionId,
+    //                 messages: [userMessage],
+    //             };
+    //
+    //             const response: any = await sendMessage(session).unwrap();
+    //
+    //             if (response?.messageContent) {
+    //                 setMessages((prev) => [
+    //                     ...prev,
+    //                     {
+    //                         role: response.role,
+    //                         messageContent: response.messageContent,
+    //                         sources: response.sources,
+    //                         createdAt: response.createdAt,
+    //                     },
+    //                 ]);
+    //             }
+    //
+    //         } catch (err) {
+    //             console.error("Error sending message:", err);
+    //         } finally {
+    //             setInProgressMessage(null);
+    //         }
+    //     };
 
         return (
             <>
@@ -259,7 +264,7 @@ export function ChatMainScreen() {
                         animate={{opacity: 1, y: 0}}
                         transition={{delay: 0.2}}
                     >
-                        <div className={"bg-[#0A0A0A] h-screen text-white font-sans flex"}>
+                        <div className={"bg-[#0A0A0A] max-h-screen text-white font-sans flex"}>
                             <SideBar/>
 
 
@@ -267,14 +272,24 @@ export function ChatMainScreen() {
                                 {/*<ChatMessageExample/>*/}
                                 <div
                                     className="h-14 border-b border-border px-4 flex items-center justify-between flex-shrink-0">
-                                    <ChatMenuSelector
-                                        models={models}
-                                        selectedModelId={selectedModelId}
-                                        onSelectModel={(id) => {
-                                            console.log("Selected model:", id);
-                                            setSelectedModelId(id);
-                                        }}
-                                    />
+                                    <div className={" flex flex-1 justify-items-start mx-1 px-2 gap-x-4"}>
+                                        <ChatMenuSelector
+                                            models={models}
+                                            selectedModelId={selectedModelId}
+                                            onSelectModel={(id) => {
+                                                console.log("Selected model:", id);
+                                                setSelectedModelId(id);
+                                            }}
+                                        />
+
+                                        {userInfo && userInfo.isAdmin && (
+                                            <NavLink to={"/documentingestion"}>
+                                                <PaperclipIcon size={24} color={"black"} className={"my-2"}/>
+                                            </NavLink>
+                                        )}
+
+                                    </div>
+
 
                                     <PromptSelector prompts={promptList} onSelectPrompt={handleSelectedPrompt}
                                                     selectedPromptId={selectedPromptId}/>
