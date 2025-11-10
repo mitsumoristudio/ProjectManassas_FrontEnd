@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ChatCitation from "./ChatCitation";
 import Markdown from "react-markdown";
-import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
+// import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
 import {BotIcon, User} from "lucide-react";
 
 export default function ChatMessageItem({ message, inProgress = false, showSources = false, }: {
     message: any; inProgress?: boolean, showSources?: boolean  }) {
 
     const [citations, setCitations] = useState<{ file: string; page: number | null; quote: string }[]>([]);
-    const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
+    // const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
 
     useEffect(() => {
         if (!inProgress && message?.role === "assistant" && message?.text?.length > 0) {

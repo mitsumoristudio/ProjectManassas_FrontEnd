@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import ToggleSwitch from "../../components/Layout/ToggleSwitch.jsx";
 // import PromptSelector from "../../components/Layout/PromptSelector";
 
-
-
 interface ChatInputProps {
     onSend: (message: string) => void;
     disabled?: boolean;
@@ -33,11 +31,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
     };
 
     const handleToggle = () => {
-        setIsDocumentMode(prev => {
-            const newState = !prev;
-            if (onToggle) onToggle(newState);
-            return newState;
-        });
+        if( isDocumentMode) {
+            setIsDocumentMode(prev => {
+                const newState = !prev;
+                if (onToggle) onToggle(newState);
+                return newState;
+            });
+        }
+
     };
 
     return (

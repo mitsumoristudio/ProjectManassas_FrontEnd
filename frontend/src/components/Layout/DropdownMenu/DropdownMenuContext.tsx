@@ -29,15 +29,15 @@ export function DropdownMenuContent({
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [setIsOpen]);
+    }, [setIsOpen], [triggerRef]);
 
     if (!isOpen) return null;
 
-    const alignment = {
-        start: "left-0",
-        end: "right-0",
-        center: "left-1/2 -translate-x-1/2",
-    }[align];
+    // const alignment = {
+    //     start: "left-0",
+    //     end: "right-0",
+    //     center: "left-1/2 -translate-x-1/2",
+    // }[align];
 
     return (
         <div

@@ -7,7 +7,7 @@ import {useSelector} from "react-redux";
 import {NavLink} from "react-router-dom";
 import {PaperclipIcon} from "lucide-react"
 
-import {useSendAIMessageMutation, useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation} from "../../features/chatapiSlice";
+import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation} from "../../features/chatapiSlice";
 import React, { useState} from "react";
 import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
@@ -52,8 +52,8 @@ export function ChatMainScreen() {
     // const [sources, setSources] = useState<any[]>([]);
     const [isDocumentMode, setIsDocumentMode] = useState(false);
 
-    const [sendMessage, {isLoading}] = useSendAIMessageMutation();
-    const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
+  //  const [sendMessage, {isLoading}] = useSendAIMessageMutation();
+    const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
     const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
 

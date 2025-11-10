@@ -70,7 +70,8 @@
     ]
   },
   "rules": {
-    "@typescript-eslint/no-unused-vars": "warn"
+    "@typescript-eslint/no-unused-vars": "warn",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
