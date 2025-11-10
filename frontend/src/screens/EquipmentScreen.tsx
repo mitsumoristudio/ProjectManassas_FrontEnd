@@ -48,7 +48,7 @@ export default function EquipmentScreen() {
     const newId = uuidv4();
 
     // Get data from Redux
-    const {data: equipments, isLoading, refetch, isError} = useGetAllEquipmentsQuery<any>({keyword});
+    const {data: equipments, isLoading, refetch} = useGetAllEquipmentsQuery<any>({keyword});
     const totalEquipments = equipments?.items?.length || 0;
     const totalEstimate = equipments?.items?.reduce((acc: any, item: any) => acc + Number(item.monthlyCost), 0) || 0;
 

@@ -1,5 +1,6 @@
 
 export const PUB_URL = "https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net";
+// backend API on Azure service created 9-9-25
 
 export const BASE_URL = "http://localhost:5000";
 export const PROJECT_URL = "/api/projects";

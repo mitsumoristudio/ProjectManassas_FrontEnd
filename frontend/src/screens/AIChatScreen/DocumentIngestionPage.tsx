@@ -5,7 +5,7 @@ import {useSendDocumentEmbeddingMutation} from "../../features/chatapiSlice";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 
 export default function DocumentIngestionPage() {
-    const [documents, setDocuments] = React.useState<UploadedDocumentProp[]>([]);
+    const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
     const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
 
     // When user selects or drags files

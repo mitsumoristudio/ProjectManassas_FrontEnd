@@ -27,15 +27,15 @@ export default function EquipmentEditScreen() {
     const [monthlyCost, setMonthlyCost] = useState<string>("");
 
     // Pass a number in textfield
-    const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        const parsedValue = newValue === "" ? "" : parseFloat(newValue)
-
-        if (!isNaN(parsedValue as number) || newValue === "") {
-            // @ts-ignore
-            setMonthlyCost(newValue as number);
-        }
-    }
+    // const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const newValue = e.target.value;
+    //     const parsedValue = newValue === "" ? "" : parseFloat(newValue)
+    //
+    //     if (!isNaN(parsedValue as number) || newValue === "") {
+    //         // @ts-ignore
+    //         setMonthlyCost(newValue as number);
+    //     }
+    // }
 
     const editOnSubmitHandler = async (e:any) => {
         e.preventDefault();
