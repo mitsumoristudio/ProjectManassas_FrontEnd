@@ -1,6 +1,6 @@
 
-export const PUB_URL = "https://backpro3-awg6dqf8dpg6eqbc.eastus2-01.azurewebsites.net";
-export const DEVELOPMENT_URL = "https://backpro3-awg6dqf8dpg6eqbc.eastus2-01.azurewebsites.net";
+export const PUB_URL = "https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net";
+
 export const BASE_URL = "http://localhost:5000";
 export const PROJECT_URL = "/api/projects";
 export const USERS_URL = "/api/users";
