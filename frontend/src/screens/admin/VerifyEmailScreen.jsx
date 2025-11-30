@@ -1,5 +1,5 @@
 
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {motion} from "framer-motion";
 import {toast} from "react-toastify";
@@ -59,11 +59,11 @@ export default function VerifyEmailScreen() {
     };
 
     // Auto submit when all fields are filled
-    useEffect(() => {
-        if (code.every((digit) => digit !== "")) {
-            onhandleSubmit(new Event("submit"));
-        }
-    }, [code], [onhandleSubmit]);
+    // useEffect(() => {
+    //     if (code.every((digit) => digit !== "")) {
+    //         onhandleSubmit(new Event("submit"));
+    //     }
+    // }, [code], []);
 
     return (
         <div className='max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden'>

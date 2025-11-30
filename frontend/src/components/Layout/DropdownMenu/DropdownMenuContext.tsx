@@ -21,15 +21,14 @@ export function DropdownMenuContent({
         function handleClickOutside(event: MouseEvent) {
             if (
                 contentRef.current &&
-                !contentRef.current.contains(event.target as Node) &&
-                !triggerRef.current?.contains(event.target as Node)
+                !contentRef.current.contains(event.target as Node)
             ) {
                 setIsOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, [setIsOpen], [triggerRef]);
+    }, [setIsOpen]);
 
     if (!isOpen) return null;
 
