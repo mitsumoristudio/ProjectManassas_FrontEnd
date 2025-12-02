@@ -10,6 +10,8 @@ type ChatContextType = {
     streamingMessage: string | null;
     isTyping: boolean;
     projects: any[];
+    openCreateProject: boolean;
+    setOpenCreateProject: (project: any) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -19,6 +21,8 @@ const ChatContext = createContext<ChatContextType>({
     streamingMessage: null,
     isTyping: false,
     projects: [],
+    setOpenCreateProject: () => {},
+    openCreateProject: false,
 });
 
 export const useChat = () => useContext(ChatContext);
@@ -32,6 +36,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     const [isConnected, setIsConnected] = useState(false);
     const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null);
     const [projects, setProjects] = useState([]);
+    const [openCreateProject, setOpenCreateProject] = useState(false);
 
     async function sendChatCommand(text: string) {
         let rpcBody;
@@ -152,6 +157,16 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     const sendMessage = async (user: string, message: string) => {
         const text = message.toLowerCase();
 
+        if (text.startsWith("create project")
+            || text.startsWith("new project") ||
+                text.startsWith("create a project")
+            || text.startsWith("setup new project") ||
+            text.startsWith("establish new project") ||
+            text.startsWith("create new project")) {
+            setOpenCreateProject(true);
+            return;
+        }
+
         // Routing
         const commandRoute = [
             {
@@ -176,7 +191,9 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
                 action: sendChatCommand
             },
             {
-                match: (t: string) => t.startsWith("create project"),
+                match: (t: string) => t.startsWith("create project") || t.startsWith("create a project")
+                                    || t.startsWith("new project") || t.startsWith("create new project") ||
+                                         t.startsWith("setup new project"),
                 action: sendChatCommand
             }
         ];
@@ -198,7 +215,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     };
 
     return (
-        <ChatContext.Provider value={{ messages, sendMessage, isConnected, streamingMessage, isTyping, projects }}>
+        <ChatContext.Provider value={{ openCreateProject, setOpenCreateProject, messages, sendMessage, isConnected, streamingMessage, isTyping, projects }}>
             {children}
         </ChatContext.Provider>
     );

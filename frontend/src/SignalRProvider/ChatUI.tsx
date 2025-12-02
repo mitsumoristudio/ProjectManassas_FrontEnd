@@ -4,9 +4,12 @@ import MessageBubble from "../SignalRProvider/MessageBubble"
 import TypingIndicator from "./TypingIndicator";
 import ChatProjectList from "../SignalRProvider/ChatProjectList";
 import ChatProjectDetail from "../SignalRProvider/ChatProjectDetail";
+import {NavLink} from "react-router-dom";
+import ChatCreateProject from "../SignalRProvider/ChatCreateProject";
 
 
 export function ChatUI() {
+
     const {
         messages,
         streamingMessage,
@@ -33,9 +36,15 @@ export function ChatUI() {
     return (
         <div className="flex flex-col h-screen bg-white">
 
+            {/* ChatCreateProject*/}
+            <ChatCreateProject />
+
             {/* HEADER */}
             <div className="p-4 border-b text-xl font-semibold bg-gray-50">
-                Mori Solution Chat
+                <NavLink to={"/"}>
+                    Mori Solution Chat
+                </NavLink>
+
             </div>
 
             {/* MESSAGE LIST */}
