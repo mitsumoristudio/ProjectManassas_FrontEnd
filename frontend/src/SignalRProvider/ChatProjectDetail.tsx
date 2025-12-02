@@ -12,7 +12,7 @@ export default function ChatProjectDetail({project, onBack}: ProjectDetailProps)
     return (
         <div>
             <div className="p-4 border rounded-xl bg-gray-50 shadow-md max-w-md mx-auto mt-4">
-                <CircleX size={22} onClick={() => onBack()} />
+                <CircleX className={"float-right transition-all ease-in-out scale-120 duration-200"} size={26} onClick={() => onBack()} />
 
                 <h2 className="text-xl font-bold mb-2">{project.projectName}</h2>
 

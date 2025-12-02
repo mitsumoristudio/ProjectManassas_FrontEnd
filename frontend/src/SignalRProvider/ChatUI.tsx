@@ -28,6 +28,10 @@ export function ChatUI() {
         setInput("");
     };
 
+    const handleQuickFill = (text: string) => {
+        setInput(text);
+    }
+
     // Auto-scroll on new messages or streamed chunks
     useEffect(() => {
         bottomRef.current?.scrollIntoView({behavior: "smooth"});
@@ -52,7 +56,7 @@ export function ChatUI() {
 
                 {/* Intro panel before any messages */}
                 {messages.length === 0 && !streamingMessage && projects.length === 0 && (
-                    <ChatIntroPanel />
+                    <ChatIntroPanel onSelectAction={handleQuickFill} />
                 )}
 
                 {selectedProject ? (
