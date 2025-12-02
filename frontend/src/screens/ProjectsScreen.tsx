@@ -513,7 +513,7 @@ export function ProjectsScreen() {
                                 <div className="fixed bottom-6 right-6 z-40">
                                     <button
                                         className="bg-white rounded-full p-3 shadow-xl hover:scale-110 transition"
-                                        onClick={() => requireAuthDescription(() => setOpenChatMessage(true))}
+                                        onClick={() => requireAuth(() => setOpenChatMessage(true))}
                                     >
                                         <MessageCircle size={40} color="#EC4899" />
                                     </button>
