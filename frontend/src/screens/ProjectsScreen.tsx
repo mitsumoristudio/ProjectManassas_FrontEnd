@@ -531,8 +531,8 @@ export function ProjectsScreen() {
                                         {/* CHAT PANEL */}
                                         <div
                                             className="
-                                                        fixed bottom-6 right-6
-                                                        w-[440px] h-[600px]
+                                                        fixed bottom-6 right-3
+                                                        w-[460px] h-[680px]
                                                         bg-[#1A1A1A] text-gray-800
                                                         rounded-2xl shadow-2xl border border-gray-700
                                                         z-50 p-4
