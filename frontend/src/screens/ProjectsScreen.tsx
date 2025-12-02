@@ -512,7 +512,7 @@ export function ProjectsScreen() {
                                 {/* Floating Chat Button */}
                                 <div className="fixed bottom-6 right-6 z-40">
                                     <button
-                                        className="bg-white rounded-full p-3 shadow-xl hover:scale-110 transition"
+                                        className="bg-white rounded-full p-3 shadow-xl hover:scale-125 transition"
                                         onClick={() => requireAuth(() => setOpenChatMessage(true))}
                                     >
                                         <MessageCircle size={40} color="#EC4899" />
@@ -532,9 +532,9 @@ export function ProjectsScreen() {
                                         <div
                                             className="
                                                         fixed bottom-6 right-3
-                                                        w-[460px] h-[680px]
+                                                        w-[465px] h-[680px]
                                                         bg-[#1A1A1A] text-gray-800
-                                                        rounded-2xl shadow-2xl border border-gray-700
+                                                        rounded-2xl shadow-2xl border border-gray-600
                                                         z-50 p-4
                                                         animate-slide-up
                                                         flex flex-col
