@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs} from 'lucide-react';
+import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle} from 'lucide-react';
 import SideBar from "../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
@@ -13,6 +13,7 @@ import DownloadProjectCSVbutton from "../components/Layout/Graph & Tables/Downlo
 import CustomLoader from "../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import { motion } from 'framer-motion';
+import SignalRProvider from "../SignalRProvider/SignalRProvider";
 
 export function ProjectsScreen() {
 
@@ -35,6 +36,7 @@ export function ProjectsScreen() {
     const [contractor, setContractor] = useState<string>("");
     const [projectManager, setProjectManager] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [openChatMessage, setOpenChatMessage] = useState(false);
     const newId = uuidv4();
 
     // Pass a number in textfield
@@ -507,6 +509,51 @@ export function ProjectsScreen() {
                                     </button>
 
                                 </div>
+                                {/* Floating Chat Button */}
+                                <div className="fixed bottom-6 right-6 z-40">
+                                    <button
+                                        className="bg-white rounded-full p-3 shadow-xl hover:scale-110 transition"
+                                        onClick={() => requireAuthDescription(() => setOpenChatMessage(true))}
+                                    >
+                                        <MessageCircle size={40} color="#EC4899" />
+                                    </button>
+                                </div>
+
+                                {/* Chat Overlay */}
+                                {openChatMessage && (
+                                    <>
+                                        {/* BACKDROP */}
+                                        <div
+                                            onClick={() => setOpenChatMessage(false)}
+                                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+                                        />
+
+                                        {/* CHAT PANEL */}
+                                        <div
+                                            className="
+                                                        fixed bottom-6 right-6
+                                                        w-[440px] h-[600px]
+                                                        bg-[#1A1A1A] text-gray-800
+                                                        rounded-2xl shadow-2xl border border-gray-700
+                                                        z-50 p-4
+                                                        animate-slide-up
+                                                        flex flex-col
+            "
+                                        >
+                                            {/* Close button */}
+                                            <button
+                                                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                                                onClick={() => setOpenChatMessage(false)}
+                                            >
+                                                <XCircle size={36} />
+                                            </button>
+
+                                            {/* Your SignalR chat system */}
+                                            <SignalRProvider />
+                                        </div>
+                                    </>
+                                )}
+
 
                             </main>
                         </div>
