@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
-import {BASE_RPC, PRODUCTION_RPC} from "@/src/util/urlconstants";
+import {BASE_RPC, PRODUCTION_RPC} from "../util/urlconstants";
 
 export type ChatMessage = { user: string; message: string };
 
