@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
+import {PRODUCTION_RPC} from "../util/urlconstants";
 
 export type ChatMessage = { user: string; message: string };
 
@@ -81,7 +82,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     if (!rpcBody) return null;
 
     try {
-        const response = await fetch("http://localhost:5000/api/rpc", {
+      // const response = await fetch("http://localhost:5000/api/rpc", {
+        const response = await fetch(PRODUCTION_RPC, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(rpcBody)
