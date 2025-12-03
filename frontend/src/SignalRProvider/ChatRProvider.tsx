@@ -84,7 +84,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         {/* Use Production_RPC for production, BASE_RPC for development*/}
     try {
      //   const response = await fetch(BASE_RPC, {
-        const response = await fetch(PRODUCTION_RPC, {
+        const response = await fetch("https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net/api/rpc", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(rpcBody)
