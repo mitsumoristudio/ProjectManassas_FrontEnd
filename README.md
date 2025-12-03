@@ -1,4 +1,4 @@
-# ProjectManassas_Frontend - Project Analytic Dashboard App
+# ProjectManassas_Frontend - AI analytic app using Retrieval Augmented Generation pattern
 
 Project Analytic software designed to reduce frustration by integrating project scope and onsite Equipment at ease.
 
