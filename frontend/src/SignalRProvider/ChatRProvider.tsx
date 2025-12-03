@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
-import {BASE_RPC, PRODUCTION_RPC} from "../util/urlconstants";
 
 export type ChatMessage = { user: string; message: string };
 
@@ -81,10 +80,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
     if (!rpcBody) return null;
 
-        {/* Use Production_RPC for production, BASE_RPC for development*/}
     try {
-     //   const response = await fetch(BASE_RPC, {
-        const response = await fetch("https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net/api/rpc", {
+        const response = await fetch("http://localhost:5000/api/rpc", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(rpcBody)
