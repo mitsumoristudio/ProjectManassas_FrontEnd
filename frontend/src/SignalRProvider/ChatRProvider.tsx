@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
 import {PRODUCTION_RPC} from "../util/urlconstants";
+import ChatProjectCard from "../SignalRProvider/ChatProjectCard";
 
 export type ChatMessage = { user: string; message: string };
 
@@ -13,6 +14,9 @@ type ChatContextType = {
     projects: any[];
     openCreateProject: boolean;
     setOpenCreateProject: (project: any) => void;
+
+    selectedProject: any | null;
+    setSelectedProject: (project: any | null) => void;
 };
 
 const ChatContext = createContext<ChatContextType>({
@@ -24,6 +28,9 @@ const ChatContext = createContext<ChatContextType>({
     projects: [],
     setOpenCreateProject: () => {},
     openCreateProject: false,
+    selectedProject: {},
+    setSelectedProject: () => {},
+
 });
 
 export const useChat = () => useContext(ChatContext);
@@ -38,10 +45,13 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null);
     const [projects, setProjects] = useState([]);
     const [openCreateProject, setOpenCreateProject] = useState(false);
+    const [selectedProject, setSelectedProject] = useState<any | null>(null);
+
+    const connectionRef = useRef<signalR.HubConnection | null>(null);
 
     async function sendChatCommand(text: string) {
-        let rpcBody;
-        let lower = "list all projects";
+        let rpcBody: any = null;
+        let lower = text.toLowerCase();
 
         const isListCommand =
             lower.startsWith("list projects") ||
@@ -54,7 +64,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         if (isListCommand) {
             rpcBody = {
                 jsonrpc: "2.0",
-                id: "1",
+                id: Date.now(),
                 method: "list_projects",
                 params: {}
             };
@@ -63,9 +73,9 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
             rpcBody = {
                 jsonrpc: "2.0",
-                id: "1",
+                id: Date.now(),
                 method: "find_project",
-                params: {query}
+                params: {projectName: query}
             }
         }
 
@@ -73,9 +83,16 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
             const name = text.replace("create project", "").trim();
             rpcBody = {
                 jsonrpc: "2.0",
-                id: "1",
+                id: Date.now(),
                 method: "create_project",
-                params: { name }
+                params: {
+                    projectName: name,
+                    description: "",
+                    projectNumber: "",
+                    location: "",
+                    contractor: "",
+                    projectEstimate: 0,
+                    projectManager: "" }
             };
         }
 
@@ -94,15 +111,30 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
         if (Array.isArray(result)) {
             formatted = result
-                .map(p => `• ${p.projectName} (${p.location})\n  #${p.projectNumber} \n`)
+                .map(p => `• ${p.projectName} (${p.location})\n  ${p.projectNumber} \n`)
                 .join("\n\n");
+
             setProjects(result);
-        } else {
+            setSelectedProject(null);
+
+        } else if (result?.projectName) {
+            setProjects([]);
+
+            // @ts-ignore
+            setMessages(prev => [...prev, {
+                user: "assistant",
+                message: <ChatProjectCard project={result} />
+            }])
+        }
+
+        else {
             formatted = JSON.stringify(result, null, 2)
         }
+
         setMessages(prev => [...prev, {user: "assistant", message: formatted}]);
       //  setMessages(prev => [...prev, {user: "assistant", message: JSON.stringify(json.result ?? json.error, null, 2)}]);
-        return response.json;
+        return json;
+
     } catch (err) {
         console.error("JSON-RPC error:", err);
         setMessages(prev => [...prev, {user: "assistant", message: "Error calling backend"}]);
@@ -111,48 +143,70 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     }
 
     useEffect(() => {
-        let isMounted = true;
+        if (connectionRef.current) return;
+
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5000/projecthub", {
-                skipNegotiation: true, // default
-                transport: signalR.HttpTransportType.WebSockets, // or keep default
-                withCredentials: true
+        //   .withUrl("http://localhost:5000/chatHub", {
+            .withUrl("https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net/chatHub", {
+                withCredentials: true,
             })
-            .withAutomaticReconnect()
+            .withAutomaticReconnect([0, 2000, 5000, 10000])
+            .configureLogging(signalR.LogLevel.Information)
             .build();
 
-        setHubConnection(connection);
+        connectionRef.current = connection;
 
-        // Start the connection
-        connection
-            .start()
-            .then(() => setIsConnected(true))
-            .catch(err => console.error("SignalR connection error:", err));
+        let isCancelled = false;
 
-        // Normal messages
         connection.on("ReceiveChatMessage", (user: string, message: string) => {
             setMessages(prev => [...prev, { user, message }]);
         });
 
-        // Streaming messages
         connection.on("ReceiveStreamingMessage", (fullMessage: string) => {
             setIsTyping(true);
             setStreamingMessage("");
             let index = 0;
+
             const interval = setInterval(() => {
                 index++;
                 setStreamingMessage(fullMessage.slice(0, index));
+
                 if (index === fullMessage.length) {
                     clearInterval(interval);
                     setIsTyping(false);
                     setMessages(prev => [...prev, { user: "assistant", message: fullMessage }]);
                     setStreamingMessage(null);
                 }
-            }, 50);
+            }, 20);
         });
 
+        const startConnection = async () => {
+            try {
+                await connection.start();
+                if (!isCancelled) {
+                    console.log("✅ SignalR Connected");
+                    setIsConnected(true);
+                }
+            } catch (err) {
+                if (!isCancelled) {
+                    console.error("❌ SignalR start error:", err);
+                }
+            }
+        };
+
+        startConnection();
+
         return () => {
-            connection.stop().catch(err => console.error("SignalR stop error:", err));
+            isCancelled = true;
+
+            if (
+                connection.state === signalR.HubConnectionState.Connected ||
+                connection.state === signalR.HubConnectionState.Connecting
+            ) {
+                connection.stop().catch(() => {});
+            }
+
+            connectionRef.current = null;
         };
     }, []);
 
@@ -217,7 +271,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     };
 
     return (
-        <ChatContext.Provider value={{ openCreateProject, setOpenCreateProject, messages, sendMessage, isConnected, streamingMessage, isTyping, projects }}>
+        <ChatContext.Provider value={{ openCreateProject, setOpenCreateProject, messages, sendMessage, isConnected, streamingMessage,
+            isTyping, projects, selectedProject, setSelectedProject}}>
             {children}
         </ChatContext.Provider>
     );

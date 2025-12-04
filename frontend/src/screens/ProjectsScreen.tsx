@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle} from 'lucide-react';
+import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle, MenuIcon} from 'lucide-react';
 import SideBar from "../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
@@ -14,6 +14,7 @@ import CustomLoader from "../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import { motion } from 'framer-motion';
 import SignalRProvider from "../SignalRProvider/SignalRProvider";
+import {useSwipeable} from "react-swipeable";
 
 export function ProjectsScreen() {
 
@@ -37,6 +38,7 @@ export function ProjectsScreen() {
     const [projectManager, setProjectManager] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [openChatMessage, setOpenChatMessage] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const newId = uuidv4();
 
     // Pass a number in textfield
@@ -139,7 +141,7 @@ export function ProjectsScreen() {
 
     const [searchTerm, setSearchTerm] = useState<string>("");
 
-    // Pagination
+    {/* Pagination */}
     const [currentPage, setCurrentPage] = useState<number>(1);
     const itemsPerPage = 7;
 
@@ -150,6 +152,12 @@ export function ProjectsScreen() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = filterProjects?.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handlers = useSwipeable({
+        onSwipedLeft: () => setCurrentPage((p) => Math.min(p+1, totalPages)),
+        onSwipedRight: () => setCurrentPage((p) => Math.max(p-1, 1)),
+        trackMouse: true
+    });
 
  //   const [filteredProjects, setFilteredProjects] = useState(currentProjects);
 
@@ -203,11 +211,14 @@ export function ProjectsScreen() {
                     transition={{delay: 0.2}}
                 >
                     <div className="bg-[#0A0A0A] text-white font-sans min-h-screen flex">
-                        {/* Sidebar */}
-                        <SideBar/>
+                        {/* Sidebar hide on small screens, provides hamburger to open overlay*/}
+                        <div className={"hidden md:block"}>
+                            <SideBar/>
+                        </div>
 
                         {/* Main Content */}
                         <div className="flex-1 flex flex-col">
+
                             {/* Header */}
                             <DashboardHeader />
 
@@ -247,8 +258,8 @@ export function ProjectsScreen() {
                                     {openEdit && userInfo && (
                                         <div
                                             className={"fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"}>
-                                            <div className={"bg-white rounded-2xl shadow-xl p-8 w-full max-w-md"}>
-                                                <h2 className={"text-2xl font-semibold text-gray-900 mb-4"}>New Project</h2>
+                                            <div className={"bg-white rounded-2xl shadow-xl p-4 w-full max-w-md"}>
+                                                {/*<h2 className={"text-2xl font-semibold text-gray-900 mb-4"}>New Project</h2>*/}
                                                 <form className={"space-y-4"}
                                                       onSubmit={onCreateSubmit}>
                                                     <div>
@@ -359,7 +370,7 @@ export function ProjectsScreen() {
                                                             id="description"
                                                             name="description"
                                                             value={description}
-                                                            rows={5}
+                                                            rows={3}
                                                             data-cy={"description"}
                                                             data-cx={"input_description"}
                                                             placeholder="Your message here..."
@@ -391,8 +402,8 @@ export function ProjectsScreen() {
                                     <DownloadProjectCSVbutton />
                                 </div>
 
-                                {/* Projects Table */}
-                                <div className="bg-[#101010] border border-gray-800 rounded-lg overflow-hidden">
+                                {/* Projects Table (hidden on small screens) */}
+                                <div className="hidden sm:block bg-[#101010] border border-gray-800 rounded-lg overflow-hidden">
                                     <div className="overflow-x-auto">
 
                                         <table className="w-full text-left">
@@ -472,9 +483,6 @@ export function ProjectsScreen() {
                                                             </div>
                                                         )}
                                                     </div>
-
-
-
                                                 </tr>
                                             ))}
                                             </tbody>
@@ -483,7 +491,55 @@ export function ProjectsScreen() {
                                     </div>
                                 </div>
 
-                                {/* Pagination Button */}
+                                {/* MOBILE CARD LIST */}
+                                <div className="sm:hidden space-y-4">
+                                    {currentProjects?.map((project: any, index: number) => (
+                                        <div
+                                            key={project.id}
+                                            className="bg-[#111] border border-gray-800 rounded-xl p-4 shadow-lg"
+                                        >
+                                            <div className="flex justify-between items-start">
+                                                <h3 className="text-lg font-semibold text-white">
+                                                    {project.projectName}
+                                                </h3>
+
+                                                <button
+                                                    onClick={() =>
+                                                        requireAuth(() => requirefilteredUser(() => navigate(`/projects/${project.id}`)))
+                                                    }
+                                                    className="text-gray-400 hover:text-white"
+                                                >
+                                                    <MoreVertical size={20} />
+                                                </button>
+                                            </div>
+
+                                            <p className="text-gray-400 text-sm mt-2">{project.description}</p>
+
+                                            <div className="mt-4 space-y-1 text-gray-300 text-sm">
+                                                <p><b>Project #:</b> {project.projectNumber}</p>
+                                                <p><b>Estimate:</b> ${project.projectEstimate}</p>
+                                                <p><b>Location:</b> {project.location}</p>
+                                                <p><b>Contractor:</b> {project.contractor}</p>
+                                                <p><b>Manager:</b> {project.projectManager}</p>
+                                            </div>
+
+                                            <div className="flex justify-between items-center mt-4">
+                                                        <span className="px-2 py-1 text-xs rounded-full bg-green-500 text-black font-semibold">
+                                                          {project.status}
+                                                        </span>
+
+                                                <button
+                                                    onClick={() => deleteProjectHandler(project.id)}
+                                                    className="text-gray-400 hover:text-red-400"
+                                                >
+                                                    <TrashIcon size={20} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Desktop Pagination Button */}
                                 <div className={"flex justify-center space-x-2 mt-4"}>
                                     <button
                                         onClick={() => setCurrentPage((prev) => Math.max(prev -1, 1))}
@@ -525,7 +581,7 @@ export function ProjectsScreen() {
                                         {/* BACKDROP */}
                                         <div
                                             onClick={() => setOpenChatMessage(false)}
-                                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+                                            className="fixed inset-0 bg-black/50 items-center justify-end backdrop-blur-sm z-50"
                                         />
 
                                         {/* CHAT PANEL */}

@@ -20,7 +20,7 @@ export function ChatUI() {
 
     const [input, setInput] = useState("");
     const bottomRef = useRef<HTMLDivElement>(null);
-    const [selectedProject, setSelectedProject] = useState<any | null>(null);
+    const [selectedProjects, setSelectedProjects] = useState<any | null>(null);
 
     const handleSend = () => {
         if (!input.trim()) return;
@@ -59,24 +59,18 @@ export function ChatUI() {
                     <ChatIntroPanel onSelectAction={handleQuickFill} />
                 )}
 
-                {selectedProject ? (
-                    <ChatProjectDetail project={selectedProject} onBack={() => setSelectedProject(null)} />
+                {selectedProjects ? (
+                    <ChatProjectDetail project={selectedProjects} onBack={() => setSelectedProjects(null)} />
                 ) : (
                     projects.length > 0 && (
                         <ChatProjectList
                             projects={projects}
-                            onSelect={setSelectedProject}
+                            onSelect={setSelectedProjects}
                         />
                     )
                 )}
 
-                {/*{projects?.length > 0 && (*/}
-                {/*    <ChatProjectList*/}
-                {/*        projects={projects}*/}
-                {/*        onSelect={(p => sendMessage("SM", `find project ${p.projectNumber}`))}*/}
-                {/*/>*/}
-                {/*)}*/}
-
+                {/*ChatMessage */}
                 {messages.map((m: any, i: number) => (
                     <MessageBubble
                         key={i}

@@ -20,9 +20,7 @@ import VerifyEmailScreen from "./screens/admin/VerifyEmailScreen";
 import ForgotPasswordPage from "./screens/admin/ForgotPasswordPage";
 import {ChatMainScreen} from "./screens/AIChatScreen/ChatMainScreen";
 import DocumentIngestionPage from "../src/screens/AIChatScreen/DocumentIngestionPage"
-//import MCPChatClient from "../src/screens/AIChatScreen/MCPChatClient";
 import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
-
 
 function App() {
   return (
@@ -50,6 +48,7 @@ function App() {
                 <Route path={"/chat"} element={<ChatMainScreen />} />
                 <Route path={"/documentingestion"} element={<DocumentIngestionPage/>}/>
                 <Route path={"/signalr"} element={<SignalRProvider />} />
+
 
 
             </Routes>
