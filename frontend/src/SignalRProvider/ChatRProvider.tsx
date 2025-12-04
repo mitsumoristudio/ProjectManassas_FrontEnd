@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
-import {PRODUCTION_RPC} from "../util/urlconstants";
+import {PRODUCTION_CHATHUB, PRODUCTION_RPC} from "../util/urlconstants";
 import ChatProjectCard from "../SignalRProvider/ChatProjectCard";
 
 export type ChatMessage = { user: string; message: string };
@@ -147,7 +147,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
 
         const connection = new signalR.HubConnectionBuilder()
         //   .withUrl("http://localhost:5000/chatHub", {
-            .withUrl("https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net/chatHub", {
+            .withUrl(PRODUCTION_CHATHUB, {
                 withCredentials: true,
             })
             .withAutomaticReconnect([0, 2000, 5000, 10000])
