@@ -1,7 +1,7 @@
 
 import {Helmet} from "react-helmet";
-import {assets} from "../assets/assets";
-import NavBarComponent from "../components/Layout/Graph & Tables/NavBarComponent";
+import {assets} from "../../assets/assets";
+import NavBarComponent from "../../components/Layout/Graph & Tables/NavBarComponent";
 import React from "react";
 
 

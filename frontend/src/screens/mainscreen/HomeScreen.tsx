@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {NavLink, useNavigate,} from "react-router-dom";
 import {Search, ArrowRight, Menu, X, ChevronRight, Copy} from "lucide-react";
-import SearchBar from "../components/Layout/SearchBar";
+import SearchBar from "../../components/Layout/SearchBar";
 
 export default function HomeScreen() {
  //   const [isMenuOpen, setMenuOpen] = React.useState(false);

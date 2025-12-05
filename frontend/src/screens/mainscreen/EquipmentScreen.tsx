@@ -7,18 +7,18 @@ import {
     CalendarIcon,
     ChevronDownIcon, TrashIcon, NotebookTabs
 } from 'lucide-react';
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {useParams, useNavigate} from "react-router-dom";
-import {useGetAllEquipmentsQuery, useCreateEquipmentMutation, useDeleteEquipmentMutation} from "../features/equipmentApiSlice";
-import {useGetAllProjectsQuery} from "../features/projectApiSlice";
-import StackCard from "../components/Layout/StackCard";
+import {useGetAllEquipmentsQuery, useCreateEquipmentMutation, useDeleteEquipmentMutation} from "../../features/equipmentApiSlice";
+import {useGetAllProjectsQuery} from "../../features/projectApiSlice";
+import StackCard from "../../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
-import DashboardHeader from "../components/Layout/DashBoardHeader";
-import {DownloadEquipmentCSVbutton} from "../components/Layout/Graph & Tables/DownloadEquipmentCSVbutton";
-import CustomLoader from "../components/Layout/CustomLoader";
+import DashboardHeader from "../../components/Layout/DashBoardHeader";
+import {DownloadEquipmentCSVbutton} from "../../components/Layout/Graph & Tables/DownloadEquipmentCSVbutton";
+import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 
 export default function EquipmentScreen() {

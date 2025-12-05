@@ -1,19 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle, MenuIcon} from 'lucide-react';
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
-import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../features/projectApiSlice";
-import StackCard from "../components/Layout/StackCard";
+import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../../features/projectApiSlice";
+import StackCard from "../../components/Layout/StackCard";
 import {CiSearch} from "react-icons/ci";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
-import DashboardHeader from "../components/Layout/DashBoardHeader";
-import DownloadProjectCSVbutton from "../components/Layout/Graph & Tables/DownloadProjectCSVbutton";
-import CustomLoader from "../components/Layout/CustomLoader";
+import DashboardHeader from "../../components/Layout/DashBoardHeader";
+import DownloadProjectCSVbutton from "../../components/Layout/Graph & Tables/DownloadProjectCSVbutton";
+import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
 import { motion } from 'framer-motion';
-import SignalRProvider from "../SignalRProvider/SignalRProvider";
+import SignalRProvider from "../../SignalRProvider/SignalRProvider";
 import {useSwipeable} from "react-swipeable";
 
 export function ProjectsScreen() {

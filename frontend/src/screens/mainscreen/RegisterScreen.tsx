@@ -3,8 +3,8 @@ import {useEffect, useState} from "react";
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {toast} from "react-toastify";
-import {useRegisterMutation} from "../features/userApiSlice";
-import {setCredentials} from "../features/authSlice";
+import {useRegisterMutation} from "../../features/userApiSlice";
+import {setCredentials} from "../../features/authSlice";
 
 export default function RegisterScreen() {
     const [name, setName] = useState<string>("");

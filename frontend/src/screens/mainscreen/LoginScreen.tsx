@@ -1,10 +1,10 @@
-
+import React from "react";
 import {useState, useEffect} from 'react';
 import {Link,useLocation, useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 
-import {useLoginMutation} from "../features/userApiSlice";
-import {setCredentials} from "../features/authSlice";
+import {useLoginMutation} from "../../features/userApiSlice";
+import {setCredentials} from "../../features/authSlice";
 import {useDispatch, useSelector} from "react-redux";
 
 export default function LoginScreen() {

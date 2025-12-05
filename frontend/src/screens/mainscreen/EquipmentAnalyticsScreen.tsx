@@ -5,15 +5,15 @@ import {
 } from "lucide-react";
 
 import React from "react";
-import SideBar from "../components/Layout/Graph & Tables/SideBar";
-import StackCard from "../components/Layout/StackCard";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
+import StackCard from "../../components/Layout/StackCard";
 import { useParams} from "react-router-dom";
-import {useGetAllEquipmentsQuery} from "../features/equipmentApiSlice";
+import {useGetAllEquipmentsQuery} from "../../features/equipmentApiSlice";
 
 
-import DashboardHeader from "../components/Layout/DashBoardHeader";
-import PieChartComponent from "../components/Layout/Graph & Tables/PieChartComponent";
-import {LineChartComponent} from "../components/Layout/Graph & Tables/LineChartComponent";
+import DashboardHeader from "../../components/Layout/DashBoardHeader";
+import PieChartComponent from "../../components/Layout/Graph & Tables/PieChartComponent";
+import {LineChartComponent} from "../../components/Layout/Graph & Tables/LineChartComponent";
 
 export default function EquipmentAnalyticsScreen() {
     const {keyword} = useParams();

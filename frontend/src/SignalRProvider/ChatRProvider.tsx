@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
-import {PRODUCTION_CHATHUB, PRODUCTION_RPC} from "../util/urlconstants";
+import {BASE_RPC, CHAT_HUB_URL, PRODUCTION_CHATHUB, PRODUCTION_RPC} from "../util/urlconstants";
 import ChatProjectCard from "../SignalRProvider/ChatProjectCard";
 
 export type ChatMessage = { user: string; message: string };
@@ -99,7 +99,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     if (!rpcBody) return null;
 
     try {
-      // const response = await fetch("http://localhost:5000/api/rpc", {
+     //  const response = await fetch(BASE_RPC, {
         const response = await fetch(PRODUCTION_RPC, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -146,7 +146,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         if (connectionRef.current) return;
 
         const connection = new signalR.HubConnectionBuilder()
-        //   .withUrl("http://localhost:5000/chatHub", {
+        //   .withUrl(CHAT_HUB_URL, {
             .withUrl(PRODUCTION_CHATHUB, {
                 withCredentials: true,
             })
