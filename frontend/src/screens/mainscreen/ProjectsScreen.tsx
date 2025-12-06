@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle, MenuIcon} from 'lucide-react';
+import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle} from 'lucide-react';
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../../features/projectApiSlice";
