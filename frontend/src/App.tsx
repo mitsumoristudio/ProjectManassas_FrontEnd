@@ -21,6 +21,7 @@ import ForgotPasswordPage from "./screens/admin/ForgotPasswordPage";
 import {ChatMainScreen} from "./screens/AIChatScreen/ChatMainScreen";
 import DocumentIngestionPage from "../src/screens/AIChatScreen/DocumentIngestionPage"
 import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
+import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
 
 function App() {
   return (
@@ -48,8 +49,7 @@ function App() {
                 <Route path={"/chat"} element={<ChatMainScreen />} />
                 <Route path={"/documentingestion"} element={<DocumentIngestionPage/>}/>
                 <Route path={"/signalr"} element={<SignalRProvider />} />
-
-
+                <Route path={"/resetPassword"} element={<PasswordResetScreen />} />
 
             </Routes>
 

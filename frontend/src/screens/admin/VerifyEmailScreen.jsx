@@ -1,110 +1,132 @@
 
-import {useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useRef, useState, useEffect} from "react";
+import {useNavigate, useLocation} from "react-router-dom";
 import {motion} from "framer-motion";
 import {toast} from "react-toastify";
-import {useVerifyEmailMutation} from "../../features/userApiSlice"
+import {useVerifyEmailMutation, useResendVerificationCodeMutation} from "../../features/userApiSlice"
+
+//const inputRefs = useRef([]);
 
 export default function VerifyEmailScreen() {
-    const [code, setCode] = useState(["", "", "", "", "", ""]);
-    const inputRefs = useRef([]);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const {verifyEmail } = useVerifyEmailMutation();
+    const stateEmail = location.state?.email;
+    const queryEmail = new URLSearchParams(location.search).get("email");
 
+    const email = stateEmail || queryEmail;
 
-    const handleChange = (index, value) => {
-        const newCode = [...code];
+    const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+    const [resendCode] = useResendVerificationCodeMutation();
 
-        // Handle pasted content
-        if (value.length > 1) {
-            const pastedCode = value.slice(0, 6).split("");
-            for (let i = 0; i < 6; i++) {
-                newCode[i] = pastedCode[i] || "";
-            }
-            setCode(newCode);
+    const [digits, setDigits] = useState(["", "", "", "", "", ""]);
+    const inputs = useRef([]);
 
-            // Focus on the last non-empty input or the first empty one
-            const lastFilledIndex = newCode.findLastIndex((digit) => digit !== "");
-            const focusIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : 5;
-            inputRefs.current[focusIndex].focus();
-        } else {
-            newCode[index] = value;
-            setCode(newCode);
+    useEffect(() => {
+        if (!email) {
+            toast.error("Missing Email - Verification link is invalid");
+            navigate("/register");
+        }
+    })
 
-            // Move focus to the next input field if value is entered
-            if (value && index < 5) {
-                inputRefs.current[index + 1].focus();
-            }
+    const handleChange = (value: string, index: number) => {
+        if (!/^[0-9]?$/.test(value)) return;
+
+        const newDigits = [...digits];
+        newDigits[index] = value;
+        setDigits(newDigits);
+
+        if (value && index < 5) {
+            inputs.current[index + 1].focus();
         }
     };
 
-    const handleKeyDown = (index, e) => {
-        if (e.key === "Backspace" && !code[index] && index > 0) {
-            inputRefs.current[index - 1].focus();
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        if (e.key === "Backspace" && !digits[index] && index > 0) {
+            inputs.current[index - 1].focus();
         }
     };
 
-    const onhandleSubmit = async (e) => {
-        e.preventDefault();
-        const verificationCode = code.join("");
+    const submitHandler = async () => {
+        const code = digits.join("");
+
+        if (code.length !== 6) {
+            toast.error("Please enter the full 6-digit code.");
+            return;
+        }
+
         try {
-            await verifyEmail(verificationCode);
+            await verifyEmail({ email, code }).unwrap();
 
-            navigate("/");
-            toast.success("Email verified successfully");
+            console.log("Sending Payload:", { email, code});
+
+            toast.success("Email verified!");
+            navigate("/login");
+
         } catch (error) {
-            console.log(error);
+            toast.error(error?.data?.message || "Invalid code");
         }
     };
 
-    // Auto submit when all fields are filled
-    // useEffect(() => {
-    //     if (code.every((digit) => digit !== "")) {
-    //         onhandleSubmit(new Event("submit"));
-    //     }
-    // }, [code], []);
+    const resendHandler = async () => {
+        try {
+            await resendCode(email).unwrap();
+            toast.success("Code resent!");
+            setDigits(["", "", "", "", "", ""]);
+            inputs.current[0].focus();
+        } catch (error) {
+            toast.error("Unable to resend code.");
+        }
+    };
 
     return (
-        <div className='max-w-md w-full bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden'>
-            <motion.div
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className='bg-gray-800 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md'
-            >
-                <h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-green-400 to-emerald-500 text-transparent bg-clip-text'>
+        <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+            <div className="bg-white w-full max-w-md rounded-xl shadow-lg p-6 text-center">
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">
                     Verify Your Email
                 </h2>
-                <p className='text-center text-gray-300 mb-6'>Enter the 6-digit code sent to your email address.</p>
 
-                <form onSubmit={onhandleSubmit} className='space-y-6'>
-                    <div className='flex justify-between'>
-                        {code.map((digit, index) => (
-                            <input
-                                key={index}
-                                ref={(el) => (inputRefs.current[index] = el)}
-                                type='text'
-                                maxLength='6'
-                                value={digit}
-                                onChange={(e) => handleChange(index, e.target.value)}
-                                onKeyDown={(e) => handleKeyDown(index, e)}
-                                className='w-12 h-12 text-center text-2xl font-bold bg-gray-700 text-white border-2 border-gray-600 rounded-lg focus:border-green-500 focus:outline-none'
-                            />
-                        ))}
-                    </div>
-                    {/*{error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}*/}
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        type='submit'
-                        // disabled={isLoading || code.some((digit) => !digit)}
-                        className='w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 disabled:opacity-50'
+                <p className="text-gray-600 mb-6">
+                    Enter the 6-digit verification code sent to:
+                    <span className="font-semibold block mt-1">{email}</span>
+                </p>
+
+                {/* 6 Digit Inputs */}
+                <div className="flex justify-center gap-3 mb-6">
+                    {digits.map((digit, idx) => (
+                        <input
+                            key={idx}
+                            type="text"
+                            maxLength={1}
+                            value={digit}
+                            ref={(el) => (inputs.current[idx] = el)}
+                            onChange={(e) => handleChange(e.target.value, idx)}
+                            onKeyDown={(e) => handleKeyDown(e, idx)}
+                            className="w-12 h-12 border border-gray-300 rounded-lg text-center text-2xl font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        />
+                    ))}
+                </div>
+
+                {/* Submit */}
+                <button
+                    disabled={isLoading}
+                    onClick={submitHandler}
+                    className="w-full bg-indigo-600 text-white py-2 rounded-lg font-semibold hover:bg-indigo-700 transition"
+                >
+                    Verify Email
+                </button>
+
+                {/* Resend Code */}
+                <p className="mt-4 text-gray-600">
+                    Didn’t get the code?
+                    <button
+                        onClick={resendHandler}
+                        className="ml-2 text-indigo-600 font-semibold hover:underline"
                     >
-                        {/*{isLoading ? "Verifying..." : "Verify Email"}*/}
-                    </motion.button>
-                </form>
-            </motion.div>
+                        Resend Code
+                    </button>
+                </p>
+            </div>
         </div>
     );
 }

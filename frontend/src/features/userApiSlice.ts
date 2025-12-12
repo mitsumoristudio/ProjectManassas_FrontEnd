@@ -29,15 +29,6 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 }),
             }),
 
-            // login: builder.mutation({
-            //     query: (data: any) => ({
-            //         url: `${USERS_URL}/login`,
-            //         method: "POST",
-            //         body: data,
-            //     })
-            // }),
-
-
             logout: builder.mutation({
                 query: () => ({
                     url: `${USERS_URL}/logout`,
@@ -50,6 +41,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
                     method: "POST",
                     body: data,
                 })
+            }),
+            registerWEmail: builder.mutation({
+               query: (data: any) => ({
+                   url: `${USERS_URL}/registerEmail`,
+                   method: "POST",
+                   body: data,
+               })
             }),
             profile: builder.mutation({
                 query: (data: any) => ({
@@ -87,11 +85,18 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 invalidateTags: ["User"]
             }),
             verifyEmail: builder.mutation({
-                query: (data: any) => ({
-                    url: `${USERS_URL}/verifyEmail`,
+                query: (email: any) => ({
+                    url: `${USERS_URL}/verifyEmail?email=${email.code}`,
                     method: "POST",
-                    body: data,
+                    body: email,
+                    headers: { "Content-Type": "application/json"}
                 })
+            }),
+            resendVerificationCode: builder.mutation({
+               query: (email: string) => ({
+                   url: `${USERS_URL}/resendCode?email=${email}`,
+                   method: "POST",
+               })
             }),
             forgotPassword: builder.mutation({
                 query: (data: any) => ({
@@ -101,10 +106,13 @@ export const userApiSlice = apiSlice.injectEndpoints({
                 })
             }),
             resetPassword: builder.mutation({
-                query: (data: any) => ({
-                    url: `${USERS_URL}/resetPassword`,
+                query: (data: {token: string; newPassword: string}) => ({
+                    url: `${USERS_URL}/resetPassword?token=${data.token}`,
                     method: "POST",
-                    body: data,
+                    body: {
+                        newPassword: data.newPassword
+                    },
+                    headers: { "Content-Type": "application/json"}
                 })
             })
         };
@@ -119,6 +127,8 @@ export const {
     useDeleteUserMutation,
     useGetAllUsersQuery,
     useVerifyEmailMutation,
+    useRegisterWEmailMutation,
+    useResendVerificationCodeMutation,
     useResetPasswordMutation,
     useForgotPasswordMutation,
     useGetUserDetailsQuery,

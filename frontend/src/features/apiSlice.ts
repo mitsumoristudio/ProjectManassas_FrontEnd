@@ -6,7 +6,7 @@ import {BASE_URL, PRODUCTION_URL} from "../util/urlconstants";
 
 // Development && Published URL
 const baseQuery = fetchBaseQuery({
- //   baseUrl: BASE_URL
+  //  baseUrl: BASE_URL
     baseUrl: PRODUCTION_URL
 
 });
@@ -14,7 +14,7 @@ const baseQuery = fetchBaseQuery({
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: baseQuery,
-    tagTypes: ["Project", "User", "ImageFile", "Equipment", "Chat"],
+    tagTypes: ["Project", "User", "ImageFile", "Equipment", "Chat", "Message"],
     endpoints: () =>({
 
     })

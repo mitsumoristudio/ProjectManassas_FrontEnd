@@ -2,7 +2,7 @@
 import React, {useState} from "react";
 import {toast} from "react-toastify";
 import { useLocation, useNavigate} from "react-router-dom";
-import {useForgotPasswordMutation, useGetAllUsersQuery} from "../../features/userApiSlice"
+import {useForgotPasswordMutation} from "../../features/userApiSlice"
 
 
 export default function ForgotPasswordPage() {
@@ -13,27 +13,20 @@ export default function ForgotPasswordPage() {
     const sp = new URLSearchParams(search);
     const redirect = sp.get("redirect") || "/";
 
-    const [forgotPassword, ] = useForgotPasswordMutation();
-    const {data: userdata} = useGetAllUsersQuery();
-
- //   console.log("User Data", userdata);
+    const [forgotPassword, {isLoading} ] = useForgotPasswordMutation();
 
     const onSubmitHandler = async (e) => {
         e.preventDefault()
 
-        const foundUser = await userdata?.users?.find(user => user.email === email)
         try {
-            if (foundUser) {
-                await forgotPassword({email});
+            await forgotPassword({ email }).unwrap();
 
-                toast.success("Sent Password reset instructions");
-                redirect("/");
-                navigate("/");
-            } else {
-                toast.error("Email Account not found. Please try again");
-            }
-        } catch (err) {
-            toast.error(err?.response?.data?.message || err.message);
+            toast.success("Email sent successfully.", {
+                onClose: () => navigate("/"),
+            });
+
+        } catch (error) {
+            toast.error(error.data?.message || error.message);
         }
     }
 
@@ -62,7 +55,7 @@ export default function ForgotPasswordPage() {
                         type="submit"
                         className="flex max-w-xs ml-20 cursor-pointer mt-2 flex-1 items-center justify-center rounded-lg border border-transparent bg-indigo-600 px-8 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
                     >
-                        Submit
+                        {isLoading ? "Sending..." : "Submit"}
                     </button>
 
 

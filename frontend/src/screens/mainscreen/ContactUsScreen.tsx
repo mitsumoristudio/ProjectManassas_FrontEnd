@@ -2,25 +2,36 @@ import React, {useState} from "react";
 import {toast} from "react-toastify";
 import {useNavigate} from "react-router-dom";
 import {Helmet} from "react-helmet";
-
+import {useSendEmailAsyncMutation , useSendContactAsyncMutation} from "../../features/sendGridapiSlice";
 
 export default function ContactUsScreen() {
     const [formData, setFormData] = useState({ name: "", email: "", message: "" });
     const navigate = useNavigate();
     const handleChange = (e: any) => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const [createEmail] = useSendEmailAsyncMutation();
+
 
     const onSubmitHandler = async (e: any) => {
         e.preventDefault();
-        // @ts-ignore
-        // const res = await fetch("/api/contactUs", {
-        //     method: "POST",
-        //     headers: {"Content-Type": "application/json"},
-        //     body: JSON.stringify(formData),
-        // });
-       // const data = await res.json();
-        //   alert(data.message);
-        toast.success("Message sent successfully.");
-        navigate("/");
+
+        try {
+            await createEmail({
+                to: "mitsumori@nashmanassas.org",
+                subject: `New contact message from ${formData.name}`,
+                message: `
+                        Name: ${formData.name} <br/>
+                        Email: ${formData.email} <br/>
+                        Message: ${formData.message}`
+            }).unwrap();
+
+            toast.success("Message sent successfully.");
+            navigate("/");
+
+        } catch (error) {
+            toast.error("Failed to send message");
+            console.error(error);
+        }
+
     };
 
     return (
