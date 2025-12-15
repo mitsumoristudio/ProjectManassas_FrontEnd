@@ -95,7 +95,7 @@ export default function NavBarComponent() {
                                     </a>
                                 ))}
                                 <div className="flex flex-col items-center space-y-4 mt-4">
-                                    <NavLink to={"/login"} className={"text-sm font-medium text-gray-300 hover:text-white transition-colors"}>Log in</NavLink>
+                                    <NavLink to={"/login"} className={"text-lg font-medium text-gray-300 hover:text-white transition-colors"}>Log in</NavLink>
 
                                     <NavLink to={"/register"} className={"px-4 py-2 text-sm font-medium text-black bg-[#30E0A5] rounded-md hover:bg-opacity-90 transition-colors"}>Sign up</NavLink>
                                 </div>
