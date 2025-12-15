@@ -5,7 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useGetAllProjectsQuery } from "../../features/projectApiSlice";
-import StackCard from "./Layout/StackCard";
+import StackCard from "../Layout/StackCard";
 
 export function ProjectFilters() {
     const { userInfo } = useSelector((state: any) => state.auth);
