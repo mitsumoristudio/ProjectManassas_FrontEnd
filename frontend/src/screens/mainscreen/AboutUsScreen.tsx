@@ -3,6 +3,7 @@ import {Helmet} from "react-helmet";
 import {assets} from "../../assets/assets";
 import NavBarComponent from "../../components/Layout/Graph & Tables/NavBarComponent";
 import React from "react";
+import {NavLink} from "react-router-dom";
 
 
 export default function AboutUsScreen() {
@@ -87,9 +88,13 @@ export default function AboutUsScreen() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
                         <div className="col-span-2 md:col-span-4 lg:col-span-2">
-                            <svg width="30" height="30" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" clipRule="evenodd" d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z" fill="#30E0A5"/>
-                            </svg>
+                            <NavLink to={"/"} className={"flex flex-row"}>
+                                <svg width="30" height="30" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z" fill="#30E0A5"/>
+                                </svg>
+                                <h1 className="px-4 text-2xl font-semibold text-white">Mori Solution</h1>
+                            </NavLink>
+
                             <p className="mt-4 text-md text-gray-400">© 2025, By Satoshi Mitsumori. All rights reserved.</p>
                         </div>
                         {['Product', 'Resources', 'About', 'Contact'].map((heading) => (

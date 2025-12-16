@@ -13,6 +13,7 @@ import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";
+import {chatConnection, startChatConnection} from "../../util/chatHub";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -210,6 +211,81 @@ export function ChatMainScreen() {
                 break;
         }
     }
+
+    const streamChat = async (text: string, mode: string) => {
+        if (!text.trim()) return;
+
+        await startChatConnection();
+
+        const userMessage = {
+            role: "user",
+            messageContent: text,
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages(prev => [...prev, userMessage]);
+
+        // Create placeholder assistant message
+        const assistantMessage = {
+            role: "assistant",
+            messageContent: "",
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages(prev => [...prev, assistantMessage]);
+
+        const session = {
+            sessionId,
+            messages: [userMessage],
+        };
+
+        const stream = chatConnection.stream<string>(
+            "StreamSemanticChatAsync", // or StreamChatAsync
+            session,
+            mode
+        );
+
+        stream.subscribe({
+            next: (token) => {
+                setMessages(prev => {
+                    const updated = [...prev];
+                    updated[updated.length - 1] = {
+                        ...updated[updated.length - 1],
+                        messageContent:
+                            updated[updated.length - 1].messageContent + token,
+                    };
+                    return updated;
+                });
+            },
+            complete: () => {
+                console.log("✅ Stream complete");
+            },
+            error: (err) => {
+                console.error("❌ Stream error:", err);
+            },
+        });
+    };
+
+    const handleStreamAIModel = async (text: string) => {
+        switch (selectedModelId) {
+            case "summary-gpt":
+                await streamChat(text, "summary");
+                break;
+
+            case "contract-ai":
+                await streamChat(text, "contract");
+                break;
+
+            case "safety-ai":
+                await streamChat(text, "safety");
+                break;
+
+            default:
+                await streamChat(text, "contract");
+                break;
+        }
+    }
+
 
     // Standard AI Assistant
     //     const handleStandardAIMessage = async (text: string) => {

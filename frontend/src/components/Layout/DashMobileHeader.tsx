@@ -4,16 +4,16 @@ import {Bell, Search, Menu, XIcon} from "lucide-react";
 import React from "react";
 import {useSelector} from "react-redux";
 
-export default function DashboardHeader() {
+export default function DashMobileHeader() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const {userInfo} = useSelector((state: any) => state.auth);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navLinks = [
         { name: 'Home', href: '/' },
-        { name: 'Demo', href: '/projects' },
-        { name: 'Contact', href: '/contactUs' },
-        { name: 'About', href: '/about' },
+        { name: 'AI Construction Agent', href: '/chat' },
+        { name: 'Equipment Analytics', href: '/equipmentAnalytics' },
+        { name: 'Project Analytic', href: '/projectAnalytics' },
     ];
 
     return (
@@ -67,7 +67,7 @@ export default function DashboardHeader() {
                             </div>
                             <div className={"md:hidden flex items-center"}>
                                 <button onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                    className={"text-gray-300 hover:text-white"}>
+                                        className={"text-gray-300 hover:text-white"}>
                                     {isMenuOpen ? <XIcon size={24} /> : <Menu size={24} />}
                                 </button>
                             </div>
@@ -82,6 +82,7 @@ export default function DashboardHeader() {
                                         {link.name}
                                     </a>
                                 ))}
+
                                 <div className="flex flex-col items-center space-y-4 mt-4">
                                     <NavLink to={"/login"} className={"text-lg font-medium text-gray-300 hover:text-white transition-colors"}>Log in</NavLink>
 

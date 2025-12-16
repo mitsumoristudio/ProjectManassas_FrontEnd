@@ -6,7 +6,7 @@ import {BASE_URL, PRODUCTION_URL} from "../util/urlconstants";
 
 // Development && Published URL
 const baseQuery = fetchBaseQuery({
-   // baseUrl: BASE_URL
+  //  baseUrl: BASE_URL
     baseUrl: PRODUCTION_URL
 
 });

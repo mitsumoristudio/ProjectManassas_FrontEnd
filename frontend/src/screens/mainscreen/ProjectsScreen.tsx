@@ -15,6 +15,7 @@ import {Helmet} from "react-helmet";
 import { motion } from 'framer-motion';
 import SignalRProvider from "../../SignalRProvider/SignalRProvider";
 import {useSwipeable} from "react-swipeable";
+import DashMobileHeader from "../../components/Layout/DashMobileHeader";
 
 export function ProjectsScreen() {
 
@@ -220,7 +221,7 @@ export function ProjectsScreen() {
                         <div className="flex-1 flex flex-col">
 
                             {/* Header */}
-                            <DashboardHeader />
+                            <DashMobileHeader />
 
                             {/* Page Content */}
                             <main className=" p-4 sm:p-6 flex-shrink-0 lg:p-8 container mx-auto">

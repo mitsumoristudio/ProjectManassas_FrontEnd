@@ -1,6 +1,6 @@
 import React from "react";
 import {useState, useEffect} from 'react';
-import {Link,useLocation, useNavigate} from 'react-router-dom';
+import {Link, NavLink, useLocation, useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 
 import {useLoginMutation} from "../../features/userApiSlice";
@@ -43,6 +43,17 @@ export default function LoginScreen() {
     return (
         <>
             <main >
+
+                <NavLink to={"/"} className={" py-2 px-2 flex items-center gap-2 hover:text-gray-700"}>
+                    <svg width="30" height="30" viewBox="0 0 96 96" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fillRule="evenodd" clipRule="evenodd"
+                              d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z"
+                              fill="#30E0A5"/>
+                    </svg>
+                    <h1 className="text-2xl font-semibold">Mori Solution</h1>
+                </NavLink>
+
             <form className={'min-h-[80vh] flex items-center'}
                   onSubmit={onSubmitHandler}>
                 <div

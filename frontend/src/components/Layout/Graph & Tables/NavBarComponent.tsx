@@ -94,6 +94,7 @@ export default function NavBarComponent() {
                                         {link.name}
                                     </a>
                                 ))}
+
                                 <div className="flex flex-col items-center space-y-4 mt-4">
                                     <NavLink to={"/login"} className={"text-lg font-medium text-gray-300 hover:text-white transition-colors"}>Log in</NavLink>
 
