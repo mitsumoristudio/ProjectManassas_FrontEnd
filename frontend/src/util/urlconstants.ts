@@ -20,6 +20,7 @@ export const BASE_RPC = `${BASE_URL}/api/rpc`;
 /* ✅ SignalR */
 export const PRODUCTION_RPC = `${PRODUCTION_URL}/api/rpc`;
 export const PRODUCTION_CHATHUB = `${PRODUCTION_URL}/chatHub`;
+export const PROJECT_CHAT = `http://localhost:5000/api/projects/projectChat`;
 
 
 export const CHAT_HUB_URL = `${LOCAL_URL}/chatHub`;

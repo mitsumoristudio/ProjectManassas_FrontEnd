@@ -8,6 +8,7 @@ import {NavLink} from "react-router-dom";
 import {PaperclipIcon} from "lucide-react"
 
 import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation} from "../../features/chatapiSlice";
+import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import React, { useState} from "react";
 import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
@@ -43,6 +44,12 @@ const models: AIModel[] = [
         description: "Expert in OSHA law and safety regulations",
         icon: "sparkles",
     },
+    {
+        id: "project-ai",
+        name: "Project AI",
+        description: "Ask about ongoing project",
+        icon: "sparkles",
+    },
 ];
 
 export function ChatMainScreen() {
@@ -57,6 +64,7 @@ export function ChatMainScreen() {
     const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
     const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
+    const [sendProjectAIMessage] = useSendAIProjectMessageMutation();
 
     const [selectedModelId, setSelectedModelId] = useState("contract-ai");
     // const [selectedPrompt, setSelectedPrompt] = useState<any>(null);
@@ -80,6 +88,45 @@ export function ChatMainScreen() {
         console.log("Switch is now:", state ? "Document AI Mode" : "Normal AI Mode");
         setIsDocumentMode(state);
     };
+
+    const handleProjectAIMessage = async (message: string) => {
+        if (!message.trim()) return;
+
+        const userMessage = {
+            role: "user",
+            messageContent: message,
+            createdAt: new Date().toISOString(),
+        }
+
+        setMessages((prev) => [...prev, userMessage]);
+        setInProgressMessage({role:"assistant", messageContent: "..."});
+
+        try {
+            const session = {sessionId, messages : [userMessage]};
+            const response = await sendProjectAIMessage(session).unwrap();
+
+            console.log("📄 Full Semantic AI Response:", response);
+
+            // @ts-ignore
+            if (response?.messageContent) {
+                const assistantMessage = {
+                    role: "assistant",
+                    // @ts-ignore
+                    messageContent: response.messageContent,
+                    // @ts-ignore
+                    createdAt: response.createdAt,
+                    // @ts-ignore
+                    sources: response.sources,
+                };
+                setMessages((prev) => [...prev, assistantMessage]);
+            }
+
+        } catch (err) {
+            console.error("❌ Error sending semantic AI message:", err);
+        } finally {
+            setInProgressMessage(null);
+        }
+    }
 
     const handleSemanticAIMessage = async (snippet: string) => {
         if (!snippet.trim()) return;
@@ -206,6 +253,11 @@ export function ChatMainScreen() {
                 await handleSafetyAIMessage(`${text}`);
                 break;
 
+            case "project-ai":
+                await handleProjectAIMessage(`${text}`);
+                break;
+
+
             default:
                 await handleSemanticAIMessage(text);
                 break;
@@ -280,6 +332,10 @@ export function ChatMainScreen() {
                 await streamChat(text, "safety");
                 break;
 
+            case "project-ai":
+                await streamChat(text, "project");
+                break;
+
             default:
                 await streamChat(text, "contract");
                 break;
@@ -340,7 +396,7 @@ export function ChatMainScreen() {
                         animate={{opacity: 1, y: 0}}
                         transition={{delay: 0.2}}
                     >
-                        <div className={"bg-[#0A0A0A] max-h-screen text-white font-sans flex"}>
+                        <div className={"bg-[#0A0A0A] h-full text-white font-sans flex"}>
                             <SideBar/>
 
 

@@ -27,7 +27,7 @@ export default function ChatHeader({ onNewChat }: any) {
             </div>
 
             <h1 className="max-w-5xl mx-auto text-white text-2xl font-bold">
-                NashAI app
+                Mori Solution
             </h1>
         </div>
     );

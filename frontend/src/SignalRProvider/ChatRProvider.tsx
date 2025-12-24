@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
 import * as signalR from "@microsoft/signalr";
 import {BASE_RPC, CHAT_HUB_URL, PRODUCTION_CHATHUB, PRODUCTION_RPC} from "../util/urlconstants";
+import {useSendAIProjectMessageMutation} from "../../src/features/projectApiSlice";
 import ChatProjectCard from "../SignalRProvider/ChatProjectCard";
 
 export type ChatMessage = { user: string; message: string };
@@ -43,11 +44,15 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     const [isTyping, setIsTyping] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null);
+
     const [projects, setProjects] = useState([]);
     const [openCreateProject, setOpenCreateProject] = useState(false);
     const [selectedProject, setSelectedProject] = useState<any | null>(null);
 
+    const [useAIHandleChat, {isLoading, isError}] = useSendAIProjectMessageMutation();
+
     const connectionRef = useRef<signalR.HubConnection | null>(null);
+
 
     async function sendChatCommand(text: string) {
         let rpcBody: any = null;

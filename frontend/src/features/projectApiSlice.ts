@@ -52,6 +52,14 @@ export const projectApiSlice = apiSlice.injectEndpoints({
                 method: "DELETE",
             })
         }),
+        sendAIProjectMessage: builder.mutation({
+            query: (session: any) => ({
+                url: `${PROJECT_URL}/projectChat`,
+                method: "POST",
+                body: session,
+            }),
+            invalidatesTags:["Chat"]
+        }),
         uploadProjectImage: builder.mutation({
             query: (data: any) => ({
                 url: `${UPLOAD_URL}`,
@@ -69,6 +77,7 @@ export const {
     useCreateProjectMutation,
     useUpdateProjectMutation,
     useDeleteProjectMutation,
+    useSendAIProjectMessageMutation,
     useUploadProjectImageMutation,
 } = projectApiSlice;
 
