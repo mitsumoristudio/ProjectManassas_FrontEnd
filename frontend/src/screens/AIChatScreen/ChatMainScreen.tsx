@@ -15,6 +15,7 @@ import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";
 import {chatConnection, startChatConnection} from "../../util/chatHub";
+import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -84,9 +85,8 @@ export function ChatMainScreen() {
 
 
     // ✅ Handles toggle change
-    const handleSwitch = (state: boolean) => {
-        console.log("Switch is now:", state ? "Document AI Mode" : "Normal AI Mode");
-        setIsDocumentMode(state);
+    const handleSwitch = (enabled: boolean) => {
+        setIsDocumentMode(enabled);
     };
 
     const handleProjectAIMessage = async (message: string) => {
@@ -428,7 +428,7 @@ export function ChatMainScreen() {
                                 </div>
 
 
-                                <div className="flex flex-col h-screen bg-gray-50">
+                                <div className="flex flex-auto overflow-hidden h-screen bg-gray-50">
                                     <div className="flex-1 overflow-y-auto p-4 text-gray-800 text-2xl">
                                         <ChatMessageList
                                             messages={messages}
@@ -439,18 +439,23 @@ export function ChatMainScreen() {
                                         <h2 className={"p-2 text-blue-700 font-medium text-sm text-center"}>Please note
                                             that AI agent may give inaccurate information</h2>
                                     </div>
-                                    {/*<ChatWindow/>*/}
+                                    {/* PDF outline */}
+                                    {!isDocumentMode && (
+                                        <div className={"w-80 border-1 bg-white overflow-y-auto"}>
+                                            <PdfOutlinePanel messages={messages} />
+                                        </div>
+                                    )}
 
+                                </div>
 
-                                    <div className="p-4 border-t bg-white items-center">
-                                        <ChatInput onSend={(text) => handleAISendBasedOnModel(text)}
-                                                   disabled={isLoading}
-                                                   onToggle={handleSwitch}
-                                                   value={inputValue}
-                                                   onChange={setInputValue}
-                                        />
-                                    </div>
-
+                                {/*<ChatWindow/>*/}
+                                <div className="p-4 border-t bg-white items-center">
+                                    <ChatInput onSend={(text) => handleAISendBasedOnModel(text)}
+                                               disabled={isLoading}
+                                               onToggle={(checked) => handleSwitch(checked)}
+                                               value={inputValue}
+                                               onChange={setInputValue}
+                                    />
                                 </div>
 
                             </div>
