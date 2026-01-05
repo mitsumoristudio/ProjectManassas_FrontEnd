@@ -43,6 +43,14 @@ export const equipmentApiSlice = apiSlice.injectEndpoints({
             }),
             invalidateTags:["Equipment"]
         }),
+        sendAIEquipmentMessage: builder.mutation({
+            query: (session: any) => ({
+                url: `${EQUIPMENTS_URL}/equipmentChat`,
+                method: "POST",
+                body: session,
+            }),
+            invalidatesTags:["Chat"]
+        }),
         deleteEquipment: builder.mutation({
             query: (id:string) => ({
                 url: `${EQUIPMENTS_URL}/${id}`,
@@ -58,5 +66,6 @@ export const {
     useGetMyEquipmentsQuery,
     useCreateEquipmentMutation,
     useUpdateEquipmentMutation,
-    useDeleteEquipmentMutation
+    useDeleteEquipmentMutation,
+    useSendAIEquipmentMessageMutation,
 } = equipmentApiSlice;

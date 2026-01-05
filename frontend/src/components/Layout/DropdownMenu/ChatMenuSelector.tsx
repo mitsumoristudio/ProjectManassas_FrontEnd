@@ -1,5 +1,5 @@
 
-import { Check, ChevronDown, Sparkles, Zap, TreeDeciduous } from "lucide-react";
+import { Check, ChevronDown, Sparkles, Zap, TreeDeciduous, FolderOpenDot, TractorIcon} from "lucide-react";
 import {DropdownMenu} from "./DropdownMenu";
 import {DropdownMenuContent} from "./DropdownMenuContext";
 import {DropdownMenuItem} from "./DropdownMenuItem";
@@ -11,7 +11,7 @@ export interface AIModel {
     id: string;
     name: string;
     description: string;
-    icon: "sparkles" | "zap" | "tree";
+    icon: "sparkles" | "zap" | "tree" | "folder" | "tractor";
 }
 
 interface ModelSelectorProps {
@@ -24,6 +24,8 @@ const iconMap = {
     sparkles: Sparkles,
     zap: Zap,
     tree: TreeDeciduous,
+    folder: FolderOpenDot,
+    tractor: TractorIcon,
 };
 
 export default function ChatMenuSelector({models, selectedModelId, onSelectModel}: ModelSelectorProps) {

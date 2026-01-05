@@ -17,6 +17,9 @@ export const EQUIPMENTS_URL = "/api/equipments";
 /* ✅ JSON-RPC */
 export const BASE_RPC = `${BASE_URL}/api/rpc`;
 
+export const PDF_URL = `${BASE_URL}/api/pdfs/preview`;
+export const PRODUCTION_PDF_URL = `${PRODUCTION_URL}/api/pdfs/preview`;
+
 /* ✅ SignalR */
 export const PRODUCTION_RPC = `${PRODUCTION_URL}/api/rpc`;
 export const PRODUCTION_CHATHUB = `${PRODUCTION_URL}/chatHub`;

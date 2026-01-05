@@ -4,11 +4,14 @@ import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector} from "react-redux";
-import {NavLink} from "react-router-dom";
-import {PaperclipIcon} from "lucide-react"
+import {NavLink, useParams} from "react-router-dom";
+import {PaperclipIcon, NotebookTabs} from "lucide-react"
+import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
 
-import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation} from "../../features/chatapiSlice";
+import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation,
+    useGetPdfIngestedQuery, useDeletePdfIngestedMutation, useDeleteEntirePdfMutation} from "../../features/chatapiSlice";
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
+import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState} from "react";
 import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
@@ -16,6 +19,7 @@ import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";
 import {chatConnection, startChatConnection} from "../../util/chatHub";
 import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
+import {toast} from "react-toastify";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -23,7 +27,6 @@ const promptList = [
     { id: "3", title: "Identify risks and mitigation", description: "Tell me about OSHA Fall protection requirements" },
     { id: "4", title: "Payment and Terms", description: "How are payments handled for this project?" },
     { id: "5", title: "Safety in project workspace", description: "Please explain OSHA trench requirements ?" },
-
 ];
 
 const models: AIModel[] = [
@@ -49,23 +52,44 @@ const models: AIModel[] = [
         id: "project-ai",
         name: "Project AI",
         description: "Ask about ongoing project",
-        icon: "sparkles",
+        icon: "folder",
     },
+    {
+        id: "equipment-ai",
+        name: "Equipment AI",
+        description: "Ask about equipment",
+        icon: "tractor",
+    },
+
 ];
 
 export function ChatMainScreen() {
     const [messages, setMessages] = useState<any[]>([]);
     const [sessionId] = useState("session-1234");
     const [inProgressMessage, setInProgressMessage] = useState<any>(null);
-    // const responseControllerRef = useRef(null);
-    // const [sources, setSources] = useState<any[]>([]);
     const [isDocumentMode, setIsDocumentMode] = useState(false);
+    const [openPdfList, setOpenPdfList] = useState(false);
+    const [previewPdfId, setPreviewPdfId] = useState<string | null>(null);
 
   //  const [sendMessage, {isLoading}] = useSendAIMessageMutation();
     const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
     const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
     const [sendProjectAIMessage] = useSendAIProjectMessageMutation();
+    const [sendEquipmentAIMessage] = useSendAIEquipmentMessageMutation();
+
+    const keyword = useParams();
+    //@ts-ignore
+    const {
+        data: pdfs = [],
+        isLoading: isPdfLoading,
+        isError: isPdfError,
+        refetch,
+    } = useGetPdfIngestedQuery({keyword});
+
+    const [deleteEmbedPdf] = useDeletePdfIngestedMutation();
+    const [deleteEntirePdf] = useDeleteEntirePdfMutation();
+
 
     const [selectedModelId, setSelectedModelId] = useState("contract-ai");
     // const [selectedPrompt, setSelectedPrompt] = useState<any>(null);
@@ -82,7 +106,6 @@ export function ChatMainScreen() {
             setInputValue(prompt.description);
         }
     }
-
 
     // ✅ Handles toggle change
     const handleSwitch = (enabled: boolean) => {
@@ -121,6 +144,42 @@ export function ChatMainScreen() {
                 setMessages((prev) => [...prev, assistantMessage]);
             }
 
+        } catch (err) {
+            console.error("❌ Error sending semantic AI message:", err);
+        } finally {
+            setInProgressMessage(null);
+        }
+    }
+
+    const handleEquipmentAIMessage = async (snippet: string) => {
+        if (!snippet.trim()) return;
+
+        const userMessage = {
+            role: "user",
+            messageContent: snippet,
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setInProgressMessage({role: "assistant", messageContent: "..."});
+
+        try {
+            const session = {sessionId, messages: [userMessage]};
+            const response: any = await sendEquipmentAIMessage(session).unwrap();
+
+            console.log("📄 Full Semantic AI Response:", response);
+            console.log("🔗 Sources:", response.sources);
+
+            if (response?.messageContent) {
+                const assistantMessage = {
+                    role: "assistant",
+                    messageContent: response.messageContent,
+                    createdAt: response.createdAt,
+                    sources: response.sources,
+                };
+                setMessages((prev) => [...prev, assistantMessage]);
+                //   setSources(response.sources);
+            }
         } catch (err) {
             console.error("❌ Error sending semantic AI message:", err);
         } finally {
@@ -241,6 +300,11 @@ export function ChatMainScreen() {
         console.log("Selected Model:", selectedModelId);
 
         switch (selectedModelId) {
+
+            case "equipment-ai":
+                await handleEquipmentAIMessage(`${text}`);
+                break;
+
             case "summary-gpt":
                 await handleSummaryAIMessage(`${text}`);
                 break;
@@ -257,10 +321,39 @@ export function ChatMainScreen() {
                 await handleProjectAIMessage(`${text}`);
                 break;
 
-
             default:
                 await handleSemanticAIMessage(text);
                 break;
+        }
+    }
+
+    // Delete PDF
+    const deletePdfHandler = async (id: any) => {
+        if (window.confirm("Are you sure you want to delete this PDF now?")) {
+            try {
+                await deleteEntirePdf(id)
+                refetch();
+
+                toast.success("PDF deleted successfully.");
+
+            } catch (error) {
+                toast.error("Problem with deleting this PDF.");
+            }
+        }
+    }
+
+    // Delete Embedded PDF
+    const deleteEmbedPDF = async (documentid: any) => {
+        if (window.confirm("Are you sure you want to delete embedded PDF now?")) {
+            try {
+                await deleteEmbedPdf(documentid);
+                refetch();
+
+                toast.success("Embedded PDF deleted successfully.");
+
+            } catch (error) {
+                toast.error("Problem with deleting embedded PDF.");
+            }
         }
     }
 
@@ -336,6 +429,12 @@ export function ChatMainScreen() {
                 await streamChat(text, "project");
                 break;
 
+
+            case "equipment-ai":
+                await streamChat(text, "equipment");
+                break;
+
+
             default:
                 await streamChat(text, "contract");
                 break;
@@ -382,7 +481,9 @@ export function ChatMainScreen() {
     //         }
     //     };
 
-        return (
+        // @ts-ignore
+    // @ts-ignore
+    return (
             <>
                 <Helmet>
                     <title>Chat App</title>
@@ -403,7 +504,7 @@ export function ChatMainScreen() {
                             <div className={"flex-1 flex flex-col min-w-1 bg-[#f7f7f7]"}>
                                 {/*<ChatMessageExample/>*/}
                                 <div
-                                    className="h-14 border-b border-border px-4 flex items-center justify-between flex-shrink-0">
+                                    className="h-14 border-b border-border px-4 my-2 flex items-center justify-between flex-shrink-0">
                                     <div className={" flex flex-1 justify-items-start mx-1 px-2 gap-x-4"}>
                                         <ChatMenuSelector
                                             models={models}
@@ -414,11 +515,120 @@ export function ChatMainScreen() {
                                             }}
                                         />
 
+                                        {/* Open PDF Ingestion if the user is admin */}
                                         {userInfo && userInfo.isAdmin && (
                                             <NavLink to={"/documentingestion"}>
-                                                <PaperclipIcon size={24} color={"black"} className={"my-2"}/>
+                                                <PaperclipIcon size={24} color={"black"} className={"my-4 mx-2"}/>
                                             </NavLink>
                                         )}
+
+                                        <div className={"flex flex-1"}>
+                                            <button onClick={() => setOpenPdfList(true)}
+                                            className={"text-gray-800 hover:text-blue-700 my-4 flex items-center"}>
+                                                <NotebookTabs size={22}   />
+                                            </button>
+
+                                            {openPdfList && userInfo?.isAdmin && (
+                                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                                                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                                                        <div className="flex justify-between items-center mb-4">
+                                                            <h2 className="text-lg font-semibold text-gray-800">
+                                                                Ingested PDFs
+                                                            </h2>
+                                                            <button
+                                                                onClick={() => setOpenPdfList(false)}
+                                                                className="text-gray-500 hover:text-gray-800"
+                                                            >
+                                                                ✕
+                                                            </button>
+                                                        </div>
+
+                                                        {isPdfLoading && <p className="text-gray-500">Loading PDFs...</p>}
+                                                        {isPdfError && <p className="text-red-500">Failed to load PDFs</p>}
+
+                                                        {!isPdfLoading && pdfs.length === 0 && (
+                                                            <p className="text-gray-500">No PDFs ingested</p>
+                                                        )}
+
+                                                        <ul className="space-y-3">
+                                                            {pdfs?.map((doc: any) => (
+                                                                <li
+                                                                    key={doc.documentId}
+                                                                    className="border rounded-lg p-4 flex justify-between items-start"
+                                                                >
+                                                                    <div className="text-gray-800 text-sm space-y-1">
+                                                                        <p><strong>ID:</strong> {doc.documentId}</p>
+                                                                        <p>📄 Pages: {doc.pageCount}</p>
+                                                                        <p>🧩 Chunks: {doc.chunkCount}</p>
+                                                                    </div>
+
+
+                                                                    <div className={"flex flex-col gap-2"}>
+                                                                        {/* 🔍 PREVIEW */}
+                                                                        <button
+                                                                            onClick={() => setPreviewPdfId(doc.documentId)}
+                                                                            className={"text-blue-600 hover:text-blue-900 text-sm"}>
+                                                                            Preview
+                                                                        </button>
+
+                                                                        {/* 🗑 DELETE */}
+                                                                        <button
+                                                                            // onClick={async () => {
+                                                                            //     await deleteEmbedPdf(doc.documentId).unwrap();
+                                                                            //
+                                                                            // }}
+                                                                            onClick={() => deleteEmbedPDF(doc.documentId)}
+                                                                            className="text-red-600 hover:text-red-800 text-sm"
+                                                                        >
+                                                                            Delete Embedding
+                                                                        </button>
+
+                                                                        {/* Delete PDF */}
+                                                                        <button
+                                                                            onClick={ () => deletePdfHandler(doc.documentId)
+                                                                            }
+                                                                            className="text-red-400 hover:text-red-800 text-sm"
+                                                                        >
+                                                                            Delete PDF
+                                                                        </button>
+                                                                    </div>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+
+                                                        {previewPdfId && (
+                                                            <div className={"fixed inset-0 py-20 px-20 z-50 items-center bg-black/60"}>
+                                                                <div className="bg-white rounded-xl shadow-xl w-1/4 h-fit flex flex-col">
+
+                                                                    {/* Header */}
+                                                                    <div className="flex justify-between items-center p-4 border-b">
+                                                                        <h2 className="font-semibold text-gray-800 truncate">
+                                                                            {previewPdfId}
+                                                                        </h2>
+                                                                        <button
+                                                                            onClick={() => setPreviewPdfId(null)}
+                                                                            className="text-gray-500 hover:text-gray-800"
+                                                                        >
+                                                                            ✕
+                                                                        </button>
+                                                                    </div>
+
+                                                                    {/* PDF iframe change to PDF_URL for development, */}
+                                                                    <iframe
+                                                                        src={`${PRODUCTION_PDF_URL}/${encodeURIComponent(previewPdfId)}`}
+                                                                        className="flex-1 w-full"
+                                                                        title="PDF Preview"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            )}
+
+
+                                        </div>
+
 
                                     </div>
 

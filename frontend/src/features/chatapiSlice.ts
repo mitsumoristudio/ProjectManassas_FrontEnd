@@ -1,5 +1,6 @@
 
 import {apiSlice} from "./apiSlice";
+import {PROJECT_URL} from "@/src/util/urlconstants";
 // import {ChatSessionModel, ChatMessageModel} from "../model/ChatModel";
 
 const CHAT_URL = "/api/chats";
@@ -61,6 +62,33 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                         body: formData,
                     }
                 }
+            }),
+            getPdfIngested: builder.query({
+                //@ts-ignore
+                query: ({keyword}) => ({
+                    url: `${PDF_URL}/list_pdf`,
+                    method: "GET",
+                    params: {keyword},
+                }),
+                keepUnusedDataFor: 5,
+                //@ts-ignore
+                providesTags: ["Chats"],
+            }),
+
+            deletePdfIngested: builder.mutation({
+                query: (documentId: string) => ({
+                    url: `${PDF_URL}/${documentId}`,
+                    method: "DELETE",
+                }),
+                invalidatesTags: ["Chats"],
+            }),
+
+            deleteEntirePdf: builder.mutation({
+                query: (documentId: string) => ({
+                    url: `${PDF_URL}/preview/${documentId}`,
+                    method: "DELETE",
+                }),
+                invalidatesTags: ["Chat"],
             })
         });
 
@@ -69,9 +97,12 @@ export const chatApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useSendAIMessageMutation,
+    useDeletePdfIngestedMutation,
     useSendSemanticAIMessageMutation,
+    useDeleteEntirePdfMutation,
     useSearchMessageQuery,
     useSendDocumentEmbeddingMutation,
     useSendSummaryAIMessageMutation,
     useSendSafetyAIMessageMutation,
+    useGetPdfIngestedQuery,
 } = chatApiSlice;
