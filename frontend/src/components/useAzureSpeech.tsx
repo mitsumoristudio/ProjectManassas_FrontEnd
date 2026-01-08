@@ -1,5 +1,6 @@
 
 import { useState, useRef} from "react";
+import {WEBSOCKET_URL, PRODUCTION_WEBSOCKET_URL} from "../util/urlconstants";
 
 type UsePushToTalkProps = {
     onResult: (text: string) => void;
@@ -18,8 +19,9 @@ export function useAzureSpeech({onResult, onError}: UsePushToTalkProps) {
         if (isListening) return;
 
         try {
+            // NOTE: CHANGE TO WEBSOCKET_URL for development
             // 1️⃣ WebSocket → ASP.NET Core
-            wsRef.current = new WebSocket("ws://localhost:5000/ws/speech");
+            wsRef.current = new WebSocket(PRODUCTION_WEBSOCKET_URL);
             wsRef.current.onmessage = e => onResult(e.data);
 
             // 2️⃣ Microphone access
@@ -40,6 +42,7 @@ export function useAzureSpeech({onResult, onError}: UsePushToTalkProps) {
             // 6️⃣ AudioWorkletNode
             const workletNode = new AudioWorkletNode(audioContext, "pcm-processor");
             workletNodeRef.current = workletNode;
+
 
             // 7️⃣ Receive PCM from worklet
             workletNode.port.onmessage = (event) => {

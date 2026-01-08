@@ -54,7 +54,7 @@ export default function ChatMessageItem({message, inProgress = false, showSource
                 <div className="p-2 rounded-full bg-gray-100 border border-gray-200">
                     <User className="h-6 w-6 text-gray-600" />
                 </div>
-                <div className="my-2 bg-blue-600 text-white rounded-br-sm break-words max-w-[95%] rounded-2xl px-6 py-6 text-lg shadow-lg whitespace-normal ">
+                <div className="my-2 bg-blue-400 text-gray-100 rounded-br-sm break-words max-w-[95%] rounded-2xl px-6 py-6 text-lg shadow-lg whitespace-normal ">
                     {message.text || message.messageContent}
 
                 </div>

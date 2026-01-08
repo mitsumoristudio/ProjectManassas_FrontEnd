@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback } from "react";
-import {SPEECH_TO_TEXT_URL} from "../../util/urlconstants"
+import {SPEECH_TO_TEXT_URL, PRODUCTION_SPEECH_TO_TEXT_URL} from "../../util/urlconstants"
 
 export function useAzureTextToSpeech() {
     const audioRef = useRef<HTMLAudioElement>(null)
@@ -15,8 +15,8 @@ export function useAzureTextToSpeech() {
             audioRef.current.src = "";
             audioRef.current = null;
         }
-
-        const res = await fetch(SPEECH_TO_TEXT_URL, {
+// Change to SPEECH_TO_TEXT_URL for development
+        const res = await fetch(PRODUCTION_SPEECH_TO_TEXT_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept":"speech.wav"},
             body: JSON.stringify(text)

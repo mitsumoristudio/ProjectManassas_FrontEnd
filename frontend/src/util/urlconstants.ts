@@ -26,7 +26,9 @@ export const PRODUCTION_CHATHUB = `${PRODUCTION_URL}/chatHub`;
 export const PROJECT_CHAT = `http://localhost:5000/api/projects/projectChat`;
 
 export const SPEECH_TO_TEXT_URL = "http://localhost:5000/api/speech/tts"
+export const PRODUCTION_SPEECH_TO_TEXT_URL = `${PRODUCTION_URL}/api/speech/tts`;
 
+export const WEBSOCKET_URL = "ws://localhost:5000/ws/speech"
+export const PRODUCTION_WEBSOCKET_URL = `${PRODUCTION_URL}/ws/speech`;
 
 export const CHAT_HUB_URL = `${LOCAL_URL}/chatHub`;
-//nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net/chatHub"

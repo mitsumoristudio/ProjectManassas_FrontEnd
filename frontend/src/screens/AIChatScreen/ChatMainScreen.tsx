@@ -22,6 +22,7 @@ import PromptSelector from "../../components/Layout/PromptSelector";
 import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 import {toast} from "react-toastify";
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
+import { sanitizeTextForTTS} from "../../screens/AIChatScreen/sanitizeTextForTTS";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -98,12 +99,15 @@ export function ChatMainScreen() {
     // Authentication
     const {userInfo} = useSelector((state: any) => state.auth);
 
-    // Use Azure Speech Service
+    // Use Azure Speech Service with sanitize Asterisk in conversation BOT
     const {speak: speakSpeech, stopSpeech: stopTheSpeech, resumeSpeech, pauseSpeech, isPaused, isPlaying } = useAzureTextToSpeech();
 
     const handleAssistantAzureMessageHandler = (text: string) => {
         if (!text?.trim()) return;
-        speakSpeech(text);
+
+        const cleanText = sanitizeTextForTTS(text);
+
+        speakSpeech(cleanText);
     }
 
     // When a prompt is selected from the dropdown
