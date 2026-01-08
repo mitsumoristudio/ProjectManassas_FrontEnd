@@ -6,10 +6,8 @@ interface ChatInputProps {
     onSend: (message: string) => void;
     disabled?: boolean;
     onToggle?: (isOn: boolean )=> void;
-    value?: string;
-    onChange?: (value: string) => void;
-
-
+    value: string;
+    onChange : (value: string) => void;
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle, value, onChange }) => {
@@ -20,7 +18,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
     const handleSend = () => {
         if (!value?.trim()) return;
         onSend(value.trim());
-        if (onChange) onChange("");
+        onChange("");
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -31,15 +29,13 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
     };
 
     const handleToggle = () => {
-        if( isDocumentMode) {
-            setIsDocumentMode(prev => {
-                const newState = !prev;
-                if (onToggle) onToggle(newState);
-                return newState;
-            });
-        }
-
+        setIsDocumentMode(prev => {
+            const newState = !prev;
+            onToggle?.(newState);
+            return newState;
+        });
     };
+
 
     return (
         <div className={"flex flex-col gap-2"}>
@@ -51,7 +47,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
                 placeholder="Type your message..."
                 className="flex-1 border border-gray-300 text-gray-900 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-100"
                 value={value}
-                onChange={(e) => onChange?.(e.target.value)}
+                onChange={(e) => onChange(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={disabled}
             />

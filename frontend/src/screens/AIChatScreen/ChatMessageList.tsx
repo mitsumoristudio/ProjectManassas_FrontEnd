@@ -3,11 +3,18 @@ import {useEffect, useRef} from "react";
 //import CustomLoader from "../../components/Layout/CustomLoader";
 import ChatMessageItem from "./ChatMessageItem";
 
-export function ChatMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false}:
+export function ChatMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false, onSpeakHandler,
+                                    onPause, onResume, onStop, isPlaying, isPaused }:
                                 {   messages: any,
                                     inProgressMessage: any,
                                     noMessagesContent: any,
-                                    showSources?: boolean
+                                    showSources?: boolean,
+                                    onSpeakHandler?: (text: string) => void,
+                                    onPause?: () => void,
+                                    onResume?: () => void,
+                                    onStop?: () => void,
+                                    isPlaying?: boolean,
+                                    isPaused?: boolean,
                                     }) {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -25,14 +32,20 @@ export function ChatMessageList({ messages, inProgressMessage, noMessagesContent
                     key={idx}
                     message={m}
                     showSources={showSources}
-                    />
+                    onSpeak={onSpeakHandler}
+                    inProgress={inProgressMessage}
+                    onPause={onPause}
+                    onResume={onResume}
+                    onStop={onStop}
+                    isPlaying={isPlaying}
+                    isPaused={isPaused}
+                />
             ))}
 
             {inProgressMessage && (
                 <>
-                    <ChatMessageItem message={inProgressMessage}
-                                     showSources={showSources}
-                    />
+                    <ChatMessageItem message={messages}
+                                     showSources={showSources} inProgress={inProgressMessage}                    />
                     <div
                         /*Loader Component*/
                         className="grid min-h-[180px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">

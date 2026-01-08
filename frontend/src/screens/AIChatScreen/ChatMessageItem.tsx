@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ChatCitation from "./ChatCitation";
 import Markdown from "react-markdown";
 // import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
-import {BotIcon, User} from "lucide-react";
+import {BotIcon, User, MicIcon, PauseIcon, CircleStop, PlayCircle} from "lucide-react";
+import {Button} from "@mui/material";
 
-export default function ChatMessageItem({ message, inProgress = false, showSources = false, }: {
-    message: any; inProgress?: boolean, showSources?: boolean  }) {
+interface ChatMessageItemProps {
+    message: any,
+    inProgress: boolean,
+    showSources?: boolean,
+    onSpeak?: (text: string) => void,
+    onPause?: () => void,
+    onResume?: () => void,
+    onStop?: () => void,
+    isPlaying?: boolean,
+    isPaused?: boolean,
+}
+
+export default function ChatMessageItem({message, inProgress = false, showSources = false, onSpeak, onPause, onResume, onStop, isPaused, isPlaying}: ChatMessageItemProps) {
 
     const [citations, setCitations] = useState<{ file: string; page: number | null; quote: string }[]>([]);
-    // const [sendSemanticAIMessage] = useSendSemanticAIMessageMutation();
 
     useEffect(() => {
         if (!inProgress && message?.role === "assistant" && message?.text?.length > 0) {
@@ -60,9 +71,49 @@ export default function ChatMessageItem({ message, inProgress = false, showSourc
                     <BotIcon className="h-6 w-6 text-blue-700" />
                 </div>
                 <div className="bg-gray-100 px-6 py-3 text-md rounded-lg shadow-lg max-w-xl mb-2 flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
+                    <div className="flex mx-2 gap-y-4 my-2 justify-between">
                         <div className="font-semibold">AI Assistant</div>
+
+                        <div className={"flex gap-2"}>
+                            {/* SPEECH 🔊  */}
+                            <Button className={"gap-2 mx-auto bg-blue-400 hover:bg-blue-600 scale-x-100 opacity-90 rounded-lg"}
+                                    onClick={() => onSpeak?.(message.text || message.messageContent)}>
+                                <MicIcon size={24} />
+                            </Button>
+
+                            {/* Pause ⏸  */}
+                            {isPlaying && (
+                                <Button className={"bg-yellow-400 hover: bg-yellow-600 rounded-lg"}
+                                        onClick={() => onPause()}>
+                                    <PauseIcon size={24} />
+                                </Button>
+                            )}
+
+                            {/* Resume ▶️  */}
+                            {isPaused && (
+                                <Button className={"bg-green-400 hover: bg-green-600 rounded-lg"}
+                                        onClick={() => onResume()}>
+                                    <PlayCircle size={24} />
+                                </Button>
+                            )}
+
+                            {/* Stop ⏹ */}
+                            {onStop && (
+                                <Button className={"bg-red-400 hover: bg-red-600 rounded-lg"}
+                                        onClick={() => onStop()}>
+                                    <CircleStop size={24} />
+                                </Button>
+
+                            )}
+
+
+                        </div>
+
+
+
+
                     </div>
+
 
                     <div className="ml-2 rounded-br-sm break-words max-w-[95%] text-gray-700 text-xl ">
                         <Markdown>{message.text || message.messageContent}</Markdown>
@@ -98,8 +149,6 @@ export default function ChatMessageItem({ message, inProgress = false, showSourc
 
                         )}
 
-
-
                 </div>
             </section>
 
@@ -108,3 +157,4 @@ export default function ChatMessageItem({ message, inProgress = false, showSourc
 
     return null;
 }
+

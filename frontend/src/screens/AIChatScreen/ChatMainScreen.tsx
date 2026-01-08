@@ -5,21 +5,23 @@ import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector} from "react-redux";
 import {NavLink, useParams} from "react-router-dom";
-import {PaperclipIcon, NotebookTabs} from "lucide-react"
+import {PaperclipIcon, NotebookTabs, MicIcon, MicOffIcon} from "lucide-react"
+import {useAzureSpeech} from "../../components/useAzureSpeech"
 import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
 
 import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation,
     useGetPdfIngestedQuery, useDeletePdfIngestedMutation, useDeleteEntirePdfMutation} from "../../features/chatapiSlice";
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import {motion} from "framer-motion";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";
-import {chatConnection, startChatConnection} from "../../util/chatHub";
+// import {chatConnection, startChatConnection} from "../../util/chatHub";
 import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 import {toast} from "react-toastify";
+import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -71,7 +73,6 @@ export function ChatMainScreen() {
     const [openPdfList, setOpenPdfList] = useState(false);
     const [previewPdfId, setPreviewPdfId] = useState<string | null>(null);
 
-  //  const [sendMessage, {isLoading}] = useSendAIMessageMutation();
     const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
     const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
@@ -90,13 +91,20 @@ export function ChatMainScreen() {
     const [deleteEmbedPdf] = useDeletePdfIngestedMutation();
     const [deleteEntirePdf] = useDeleteEntirePdfMutation();
 
-
     const [selectedModelId, setSelectedModelId] = useState("contract-ai");
-    // const [selectedPrompt, setSelectedPrompt] = useState<any>(null);
     const [selectedPromptId, setSelectedPromptId] = useState<string>();
     const [inputValue, setInputValue] = useState("");
 
+    // Authentication
     const {userInfo} = useSelector((state: any) => state.auth);
+
+    // Use Azure Speech Service
+    const {speak: speakSpeech, stopSpeech: stopTheSpeech, resumeSpeech, pauseSpeech, isPaused, isPlaying } = useAzureTextToSpeech();
+
+    const handleAssistantAzureMessageHandler = (text: string) => {
+        if (!text?.trim()) return;
+        speakSpeech(text);
+    }
 
     // When a prompt is selected from the dropdown
     const handleSelectedPrompt = (promptId: string) => {
@@ -106,6 +114,10 @@ export function ChatMainScreen() {
             setInputValue(prompt.description);
         }
     }
+
+    useEffect(() => {
+        console.log("📝 inputValue:", inputValue)
+    }, [inputValue])
 
     // ✅ Handles toggle change
     const handleSwitch = (enabled: boolean) => {
@@ -327,6 +339,16 @@ export function ChatMainScreen() {
         }
     }
 
+    // Handle Speech Synthesis
+    const {startSpeech, stopSpeech, isListening} = useAzureSpeech({
+       onResult: (text: string) => {
+           setInputValue(text);
+       },
+        onError: () => {
+           toast.error("Speech support failed")
+        }
+    });
+
     // Delete PDF
     const deletePdfHandler = async (id: any) => {
         if (window.confirm("Are you sure you want to delete this PDF now?")) {
@@ -356,90 +378,90 @@ export function ChatMainScreen() {
             }
         }
     }
+    //
+    // const streamChat = async (text: string, mode: string) => {
+    //     if (!text.trim()) return;
+    //
+    //     await startChatConnection();
+    //
+    //     const userMessage = {
+    //         role: "user",
+    //         messageContent: text,
+    //         createdAt: new Date().toISOString(),
+    //     };
+    //
+    //     setMessages(prev => [...prev, userMessage]);
+    //
+    //     // Create placeholder assistant message
+    //     const assistantMessage = {
+    //         role: "assistant",
+    //         messageContent: "",
+    //         createdAt: new Date().toISOString(),
+    //     };
+    //
+    //     setMessages(prev => [...prev, assistantMessage]);
+    //
+    //     const session = {
+    //         sessionId,
+    //         messages: [userMessage],
+    //     };
+    //
+    //     const stream = chatConnection.stream<string>(
+    //         "StreamSemanticChatAsync", // or StreamChatAsync
+    //         session,
+    //         mode
+    //     );
+    //
+    //     stream.subscribe({
+    //         next: (token) => {
+    //             setMessages(prev => {
+    //                 const updated = [...prev];
+    //                 updated[updated.length - 1] = {
+    //                     ...updated[updated.length - 1],
+    //                     messageContent:
+    //                         updated[updated.length - 1].messageContent + token,
+    //                 };
+    //                 return updated;
+    //             });
+    //         },
+    //         complete: () => {
+    //             console.log("✅ Stream complete");
+    //         },
+    //         error: (err) => {
+    //             console.error("❌ Stream error:", err);
+    //         },
+    //     });
+    // };
 
-    const streamChat = async (text: string, mode: string) => {
-        if (!text.trim()) return;
-
-        await startChatConnection();
-
-        const userMessage = {
-            role: "user",
-            messageContent: text,
-            createdAt: new Date().toISOString(),
-        };
-
-        setMessages(prev => [...prev, userMessage]);
-
-        // Create placeholder assistant message
-        const assistantMessage = {
-            role: "assistant",
-            messageContent: "",
-            createdAt: new Date().toISOString(),
-        };
-
-        setMessages(prev => [...prev, assistantMessage]);
-
-        const session = {
-            sessionId,
-            messages: [userMessage],
-        };
-
-        const stream = chatConnection.stream<string>(
-            "StreamSemanticChatAsync", // or StreamChatAsync
-            session,
-            mode
-        );
-
-        stream.subscribe({
-            next: (token) => {
-                setMessages(prev => {
-                    const updated = [...prev];
-                    updated[updated.length - 1] = {
-                        ...updated[updated.length - 1],
-                        messageContent:
-                            updated[updated.length - 1].messageContent + token,
-                    };
-                    return updated;
-                });
-            },
-            complete: () => {
-                console.log("✅ Stream complete");
-            },
-            error: (err) => {
-                console.error("❌ Stream error:", err);
-            },
-        });
-    };
-
-    const handleStreamAIModel = async (text: string) => {
-        switch (selectedModelId) {
-            case "summary-gpt":
-                await streamChat(text, "summary");
-                break;
-
-            case "contract-ai":
-                await streamChat(text, "contract");
-                break;
-
-            case "safety-ai":
-                await streamChat(text, "safety");
-                break;
-
-            case "project-ai":
-                await streamChat(text, "project");
-                break;
-
-
-            case "equipment-ai":
-                await streamChat(text, "equipment");
-                break;
-
-
-            default:
-                await streamChat(text, "contract");
-                break;
-        }
-    }
+    // const handleStreamAIModel = async (text: string) => {
+    //     switch (selectedModelId) {
+    //         case "summary-gpt":
+    //             await streamChat(text, "summary");
+    //             break;
+    //
+    //         case "contract-ai":
+    //             await streamChat(text, "contract");
+    //             break;
+    //
+    //         case "safety-ai":
+    //             await streamChat(text, "safety");
+    //             break;
+    //
+    //         case "project-ai":
+    //             await streamChat(text, "project");
+    //             break;
+    //
+    //
+    //         case "equipment-ai":
+    //             await streamChat(text, "equipment");
+    //             break;
+    //
+    //
+    //         default:
+    //             await streamChat(text, "contract");
+    //             break;
+    //     }
+    // }
 
 
     // Standard AI Assistant
@@ -615,7 +637,7 @@ export function ChatMainScreen() {
 
                                                                     {/* PDF iframe change to PDF_URL for development, */}
                                                                     <iframe
-                                                                        src={`${PRODUCTION_PDF_URL}/${encodeURIComponent(previewPdfId)}`}
+                                                                        src={`${PDF_URL}/${encodeURIComponent(previewPdfId)}`}
                                                                         className="flex-1 w-full"
                                                                         title="PDF Preview"
                                                                     />
@@ -645,6 +667,12 @@ export function ChatMainScreen() {
                                             inProgressMessage={inProgressMessage}
                                             showSources={isDocumentMode}
                                             noMessagesContent="Start a conversation with AI agents ...."
+                                            onSpeakHandler={handleAssistantAzureMessageHandler}
+                                            onPause={pauseSpeech}
+                                            onStop={stopTheSpeech}
+                                            onResume={resumeSpeech}
+                                            isPlaying={isPlaying}
+                                            isPaused={isPaused}
                                         />
                                         <h2 className={"p-2 text-blue-700 font-medium text-sm text-center"}>Please note
                                             that AI agent may give inaccurate information</h2>
@@ -658,16 +686,33 @@ export function ChatMainScreen() {
 
                                 </div>
 
-                                {/*<ChatWindow/>*/}
-                                <div className="p-4 border-t bg-white items-center">
-                                    <ChatInput onSend={(text) => handleAISendBasedOnModel(text)}
-                                               disabled={isLoading}
-                                               onToggle={(checked) => handleSwitch(checked)}
-                                               value={inputValue}
-                                               onChange={setInputValue}
-                                    />
-                                </div>
+                                <div className={"p-4 border-t bg-white flex items-center gap-3"}>
+                                    { /*Speech Synthesis*/}
+                                    <button
+                                        onPointerDown={startSpeech}
+                                        onPointerUp={stopSpeech}
+                                        onTouchStart={startSpeech}
+                                        onTouchEnd={stopSpeech}
+                                        className={`rounded-full p-3 transition ${
+                                            isListening
+                                                ? "bg-red-600 text-white animate-pulse"
+                                                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                        }`}
+                                        title="Hold to talk">
+                                        {isListening ? <MicOffIcon size={22} /> : <MicIcon size={22} />}
+                                    </button>
 
+                                    {/*<ChatWindow/>*/}
+                                    { /*Speech Recognition*/}
+                                    <div className="flex-1">
+                                        <ChatInput onSend={(text: string) => handleAISendBasedOnModel(text)}
+                                                   disabled={isLoading}
+                                                   onToggle={(checked) => handleSwitch(checked)}
+                                                   value={inputValue}
+                                                   onChange={setInputValue}
+                                        />
+                                    </div>
+                                </div>
                             </div>
 
 
