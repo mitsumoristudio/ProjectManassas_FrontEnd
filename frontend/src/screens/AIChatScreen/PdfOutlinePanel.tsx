@@ -1,4 +1,6 @@
 import React from "react";
+import {NotepadTextIcon} from "lucide-react"
+import {Button} from "@mui/material";
 
 type PdfSource = {
     documentId: string;
@@ -8,16 +10,23 @@ type PdfSource = {
     score?: number;
 };
 
+interface PdfOutlinePanelProps {
+    messages: any[];
+
+}
 
 
-export default function PdfOutlinePanel({ messages }: { messages: any[] }) {
+export default function PdfOutlinePanel({ messages}: PdfOutlinePanelProps) {
+
+
     const sources: PdfSource[] = messages
         .flatMap(m => m.sources || [])
         .filter(Boolean);
 
     if (!sources.length) {
         return (
-            <div className="p-4 text-sm text-gray-500">
+            <div className="p-4 text-sm text-gray-600 flex flex-row items-start gap-2 my-2">
+                    <NotepadTextIcon size={24} />
                 No document references yet
             </div>
         );

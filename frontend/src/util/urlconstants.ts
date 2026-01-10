@@ -25,6 +25,7 @@ export const PRODUCTION_RPC = `${PRODUCTION_URL}/api/rpc`;
 export const PRODUCTION_CHATHUB = `${PRODUCTION_URL}/chatHub`;
 export const PROJECT_CHAT = `http://localhost:5000/api/projects/projectChat`;
 
+/* ✅ WebSocket Speech to Text, Text to Speech */
 export const SPEECH_TO_TEXT_URL = "http://localhost:5000/api/speech/tts"
 export const PRODUCTION_SPEECH_TO_TEXT_URL = `${PRODUCTION_URL}/api/speech/tts`;
 

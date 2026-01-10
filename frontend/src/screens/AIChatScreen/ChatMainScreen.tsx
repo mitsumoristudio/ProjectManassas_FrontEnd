@@ -14,11 +14,11 @@ import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSen
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
-import {motion} from "framer-motion";
+
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";
-// import {chatConnection, startChatConnection} from "../../util/chatHub";
+import {AnimatePresence, motion} from "framer-motion";
 import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 import {toast} from "react-toastify";
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
@@ -73,6 +73,7 @@ export function ChatMainScreen() {
     const [isDocumentMode, setIsDocumentMode] = useState(false);
     const [openPdfList, setOpenPdfList] = useState(false);
     const [previewPdfId, setPreviewPdfId] = useState<string | null>(null);
+    const [isPdfSideBarOpen, setIsPdfSideBarOpen] = useState(false);
 
     const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
     const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
@@ -117,6 +118,10 @@ export function ChatMainScreen() {
         if (prompt) {
             setInputValue(prompt.description);
         }
+    }
+
+    const togglePdfSidebar = () => {
+        setIsPdfSideBarOpen(prev => !prev);
     }
 
     useEffect(() => {
@@ -652,9 +657,7 @@ export function ChatMainScreen() {
                                                 </div>
                                             )}
 
-
                                         </div>
-
 
                                     </div>
 
@@ -683,9 +686,14 @@ export function ChatMainScreen() {
                                     </div>
                                     {/* PDF outline */}
                                     {!isDocumentMode && (
-                                        <div className={"w-80 border-1 bg-white overflow-y-auto"}>
-                                            <PdfOutlinePanel messages={messages} />
-                                        </div>
+                                        <section className={"bg-white overflow-y-auto border-1 flex"}>
+                                            <motion.div
+                                                className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0`}
+                                                animate={{width: isPdfSideBarOpen ? 80 : 340}}>
+
+                                                <PdfOutlinePanel messages={messages} />
+                                            </motion.div>
+                                        </section>
                                     )}
 
                                 </div>
