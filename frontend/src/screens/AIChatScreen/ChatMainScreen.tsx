@@ -5,12 +5,18 @@ import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector} from "react-redux";
 import {NavLink, useParams} from "react-router-dom";
-import {PaperclipIcon, NotebookTabs, MicIcon, MicOffIcon} from "lucide-react"
+import {PaperclipIcon, NotebookTabs, MicIcon, MicOffIcon, ArrowBigRightDash} from "lucide-react"
 import {useAzureSpeech} from "../../components/useAzureSpeech"
 import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
 
-import {useSendSemanticAIMessageMutation, useSendSafetyAIMessageMutation, useSendSummaryAIMessageMutation,
-    useGetPdfIngestedQuery, useDeletePdfIngestedMutation, useDeleteEntirePdfMutation} from "../../features/chatapiSlice";
+import {useSendSemanticAIMessageMutation,
+        useSendSafetyAIMessageMutation,
+        useSendSummaryAIMessageMutation,
+        useGetPdfIngestedQuery,
+        useDeletePdfIngestedMutation,
+        useDeleteEntirePdfMutation,
+        useSendProposalDraftMutation,
+        useSendProjectAdvisorMutation   } from "../../features/chatapiSlice";
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
@@ -18,7 +24,7 @@ import React, { useState, useEffect} from "react";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";
-import {AnimatePresence, motion} from "framer-motion";
+import {motion} from "framer-motion";
 import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 import {toast} from "react-toastify";
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
@@ -32,6 +38,7 @@ const promptList = [
     { id: "5", title: "Safety in project workspace", description: "Please explain OSHA trench requirements ?" },
 ];
 
+/* ---------------- AI Selection ---------------- */
 const models: AIModel[] = [
     {
         id: "summary-gpt",
@@ -63,7 +70,18 @@ const models: AIModel[] = [
         description: "Ask about equipment",
         icon: "tractor",
     },
-
+    {
+        id: "advisor-ai",
+        name: "Advisor AI",
+        description: "Your personal strategic advisor",
+        icon: "userround",
+    },
+    {
+        id: "proposal-ai",
+        name: "Proposal AI",
+        description: "Aid in drafting project proposal",
+        icon: "construction",
+    },
 ];
 
 export function ChatMainScreen() {
@@ -75,11 +93,15 @@ export function ChatMainScreen() {
     const [previewPdfId, setPreviewPdfId] = useState<string | null>(null);
     const [isPdfSideBarOpen, setIsPdfSideBarOpen] = useState(false);
 
+
+    /* ---------------- AI Redux Toolkit call ---------------- */
     const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
     const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
     const [sendProjectAIMessage] = useSendAIProjectMessageMutation();
     const [sendEquipmentAIMessage] = useSendAIEquipmentMessageMutation();
+    const [sendProposalAIMessage] = useSendProposalDraftMutation();
+    const [sendAdvisorAIMessage] = useSendProjectAdvisorMutation();
 
     const keyword = useParams();
     //@ts-ignore
@@ -244,6 +266,81 @@ export function ChatMainScreen() {
         }
     };
 
+    const handleProposalDraftAIMessage = async (snippet: string) => {
+        if (!snippet.trim()) return;
+
+        const userMessage = {
+            role: "user",
+            messageContent: snippet,
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setInProgressMessage({role: "assistant", messageContent: "..."});
+
+        try {
+            const session = {sessionId, messages: [userMessage]};
+
+            const response: any = await sendProposalAIMessage(session).unwrap();
+
+            console.log("📄 Full Semantic AI Response:", response);
+            console.log("🔗 Sources:", response.sources);
+
+            if (response?.messageContent) {
+                const assistantMessage = {
+                    role: "assistant",
+                    messageContent: response.messageContent,
+                    createdAt: response.createdAt,
+                    sources: response.sources,
+                };
+                setMessages((prev) => [...prev, assistantMessage]);
+
+            }
+        } catch (err) {
+            console.error("❌ Error sending semantic AI message:", err);
+        } finally {
+            setInProgressMessage(null);
+        }
+    }
+
+    const handleAdvisorAIMessage = async (snippet: string) => {
+        if (!snippet.trim()) return;
+
+        const userMessage = {
+            role: "user",
+            messageContent: snippet,
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setInProgressMessage({role: "assistant", messageContent: "..."});
+
+        try {
+            const session = {sessionId, messages: [userMessage]};
+
+            const response: any = await sendAdvisorAIMessage(session).unwrap();
+
+            console.log("📄 Full Semantic AI Response:", response);
+            console.log("🔗 Sources:", response.sources);
+
+            if (response?.messageContent) {
+                const assistantMessage = {
+                    role: "assistant",
+                    messageContent: response.messageContent,
+                    createdAt: response.createdAt,
+                    sources: response.sources,
+                };
+                setMessages((prev) => [...prev, assistantMessage]);
+                //   setSources(response.sources);
+            }
+        } catch (err) {
+            console.error("❌ Error sending semantic AI message:", err);
+        } finally {
+            setInProgressMessage(null);
+        }
+
+    }
+
     const handleSummaryAIMessage = async (snippet: string) => {
         if (!snippet.trim()) return;
 
@@ -340,6 +437,14 @@ export function ChatMainScreen() {
 
             case "project-ai":
                 await handleProjectAIMessage(`${text}`);
+                break;
+
+                case "advisor-ai":
+                    await handleAdvisorAIMessage(`${text}`);
+                    break;
+
+            case "proposal-ai":
+                await handleProposalDraftAIMessage(`${text}`);
                 break;
 
             default:
@@ -514,6 +619,7 @@ export function ChatMainScreen() {
 
         // @ts-ignore
     // @ts-ignore
+    // @ts-ignore
     return (
             <>
                 <Helmet>
@@ -521,7 +627,9 @@ export function ChatMainScreen() {
                     <meta name="description" content="Chat App"/>
                 </Helmet>
                 {isLoading ? (
-                    <CustomLoader/>
+                    <div className={"justify-center items-center py-20"}>
+                        <CustomLoader/>
+                    </div>
                 ) : (
                     <motion.div
                         initial={{opacity: 0, y: 60}}
@@ -627,6 +735,7 @@ export function ChatMainScreen() {
                                                             ))}
                                                         </ul>
 
+                                                        {/* Preview PDF */}
                                                         {previewPdfId && (
                                                             <div className={"fixed inset-0 py-20 px-20 z-50 items-center bg-black/60"}>
                                                                 <div className="bg-white rounded-xl shadow-xl w-1/4 h-fit flex flex-col">
@@ -646,7 +755,7 @@ export function ChatMainScreen() {
 
                                                                     {/* PDF iframe change to PDF_URL for development, */}
                                                                     <iframe
-                                                                        src={`${PDF_URL}/${encodeURIComponent(previewPdfId)}`}
+                                                                        src={`${PRODUCTION_PDF_URL}/${encodeURIComponent(previewPdfId)}`}
                                                                         className="flex-1 w-full"
                                                                         title="PDF Preview"
                                                                     />
@@ -658,6 +767,10 @@ export function ChatMainScreen() {
                                             )}
 
                                         </div>
+                                        {/* Toggle PDF list */}
+                                        <button onClick={() => togglePdfSidebar()} className={"mx-auto"}>
+                                            <ArrowBigRightDash size={24} className={"bg-gray-800 rounded-3xl hover:scale-125 duration-200 ease-in-out"} />
+                                        </button>
 
                                     </div>
 
@@ -666,7 +779,7 @@ export function ChatMainScreen() {
                                                     selectedPromptId={selectedPromptId}/>
                                 </div>
 
-
+                                {/* Chat Message List */}
                                 <div className="flex flex-auto overflow-hidden h-screen bg-gray-50">
                                     <div className="flex-1 overflow-y-auto p-4 text-gray-800 text-2xl">
                                         <ChatMessageList
@@ -685,11 +798,11 @@ export function ChatMainScreen() {
                                             that AI agent may give inaccurate information</h2>
                                     </div>
                                     {/* PDF outline */}
-                                    {!isDocumentMode && (
+                                    {!isDocumentMode && isPdfSideBarOpen && (
                                         <section className={"bg-white overflow-y-auto border-1 flex"}>
                                             <motion.div
-                                                className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0`}
-                                                animate={{width: isPdfSideBarOpen ? 80 : 340}}>
+                                                className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0 ${isPdfSideBarOpen? `w-54` : "w-20"}`}
+                                                animate={{width: isPdfSideBarOpen ? 340 : 40 }}>
 
                                                 <PdfOutlinePanel messages={messages} />
                                             </motion.div>
@@ -726,7 +839,6 @@ export function ChatMainScreen() {
                                     </div>
                                 </div>
                             </div>
-
 
                         </div>
 

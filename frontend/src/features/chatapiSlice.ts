@@ -50,6 +50,22 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 }),
                 invalidatesTags: ["Chat"],
             }),
+            sendProjectAdvisor: builder.mutation({
+                query: (session: any) => ({
+                    url: `${CHAT_URL}/project_advisor`,
+                    method: "POST",
+                    body: session,
+                }),
+                invalidatesTags: ["Chat"],
+            }),
+            sendProposalDraft: builder.mutation({
+                query: (session: any) => ({
+                    url: `${CHAT_URL}/proposal_draft`,
+                    method: "POST",
+                    body: session,
+                }),
+                invalidatesTags: ["Chat"],
+            }),
             sendDocumentEmbedding: builder.mutation({
                 query: ({file, documentId} : { file: File; documentId: string }) => {
                     const formData = new FormData();
@@ -101,6 +117,8 @@ export const {
     useSendSemanticAIMessageMutation,
     useDeleteEntirePdfMutation,
     useSearchMessageQuery,
+    useSendProjectAdvisorMutation,
+    useSendProposalDraftMutation,
     useSendDocumentEmbeddingMutation,
     useSendSummaryAIMessageMutation,
     useSendSafetyAIMessageMutation,
