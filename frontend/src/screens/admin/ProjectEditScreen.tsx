@@ -17,7 +17,7 @@ export default function ProjectEditScreen() {
   //  const [openEdit, setOpenEdit] = useState(false);
     const [projectName, setProjectName] = useState<string>("");
     const [projectNumber, setProjectNumber] = useState<string>("");
-    const [estimate, setEstimate] = useState<string>("");
+    const [projectEstimate, setProjectEstimate] = useState<string>("");
     const [location, setLocation] = useState<string>("");
     const [contractor, setContractor] = useState<string>("");
     const [projectManager, setProjectManager] = useState<string>("");
@@ -34,7 +34,7 @@ export default function ProjectEditScreen() {
 
         if (!isNaN(parsedValue as number) || newValue === "") {
             // @ts-ignore
-            setEstimate(newValue as number);
+            setProjectEstimate(newValue as number);
         }
     }
 
@@ -48,13 +48,13 @@ export default function ProjectEditScreen() {
         try {
             await updateProject({
                 id: projectId,
-                projectname: projectName,
+                projectName: projectName,
                 description: description,
-                projectnumber: projectNumber,
+                projectNumber: projectNumber,
                 location: location,
                 contractor: contractor,
-                projectestimate: parseFloat(estimate),
-                projectmanager: projectManager,
+                projectEstimate: parseFloat(projectEstimate),
+                projectManager: projectManager,
                 userId: userId,
             }).unwrap();
             toast.success("Project updated successfully.");
@@ -70,17 +70,17 @@ export default function ProjectEditScreen() {
 
         // @ts-ignore
         if (projectItem) {
-            setProjectName(projectItem?.projectname);
+            setProjectName(projectItem?.projectName);
             setLocation(projectItem?.location);
-            setEstimate(projectItem?.estimate);
+            setProjectEstimate(projectItem?.projectEstimate);
             setContractor(projectItem?.contractor);
-            setProjectNumber(projectItem?.projectnumber);
+            setProjectNumber(projectItem?.projectNumber);
             setDescription(projectItem?.description);
-            setProjectManager(projectItem?.projectmanager);
+            setProjectManager(projectItem?.projectManager);
         }
-    }, [projectItem, projectItem?.projectname,
-        projectItem?.location, projectItem?.contractor, projectItem?.estimate,
-    projectItem?.projectnumber, projectItem?.description, projectItem?.projectmanager]);
+    }, [projectItem, projectItem?.projectName,
+        projectItem?.location, projectItem?.contractor, projectItem?.projectEstimate,
+    projectItem?.projectNumber, projectItem?.description, projectItem?.projectManager]);
 
     return (
         <>
@@ -131,7 +131,7 @@ export default function ProjectEditScreen() {
                                     <input
                                         type="number"
                                         required={true}
-                                        value={estimate}
+                                        value={projectEstimate}
                                         className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
                                         placeholder={"Enter value"}
                                         onChange={handleNumberChange}

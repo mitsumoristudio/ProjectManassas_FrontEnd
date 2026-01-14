@@ -17,7 +17,7 @@ interface BarChartComponentProps {
 
 export const BarChartGraph: React.FC<BarChartComponentProps> = ({ data, title }) => {
     return (
-        <div className="bg-[#101010] border border-gray-800 rounded-lg p-8 my-8">
+        <div className="bg-[#101010] border border-gray-800 rounded-lg p-2 my-6">
             {title && <h2 className="text-xl font-semibold py-2 text-white mb-4">{title}</h2>}
             <div className="w-full h-96">
                 <ResponsiveContainer width="100%" height="150%">
@@ -25,16 +25,16 @@ export const BarChartGraph: React.FC<BarChartComponentProps> = ({ data, title })
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis
                             dataKey="name"
-                            tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                            angle={-45}
+                            tick={{ fill: "#9CA3AF", fontSize: 14 }}
+                            angle={-25}
                             textAnchor="end"
                             interval={0}
-                            height={140}
+                            height={120}
 
                         />
-                        <YAxis tick={{ fill: "#9CB3AF" }} />
+                        <YAxis tick={{ fill: "#9CB3AF" }} angle={-25} textAnchor="end" width={100} />
                         <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`} />
-                        <Bar dataKey="estimate" fill="#6366C1" radius={[8, 10, 0, 0]} />
+                        <Bar dataKey="estimate" fill="#6366C1" radius={[8, 6, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

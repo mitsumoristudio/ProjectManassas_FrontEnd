@@ -14,7 +14,7 @@ export default function ChatProjectCard({ project, }: ProjectCardProps) {
 
                 <h2 className="text-xl font-bold mb-2">{project.projectName}</h2>
 
-                <div className="text-sm text-gray-500 mb-1">Project #: {project.projectNumber}</div>
+                <div className="text-sm text-gray-500 mb-1">Project: {project.projectNumber}</div>
                 <div className="text-sm text-gray-500 mb-1">Location: {project.location}</div>
                 <div className="text-sm text-gray-500 mb-1">Contractor: {project.contractor}</div>
                 <div className="text-sm text-gray-500 mb-1">Project Manager: {project.projectManager}</div>

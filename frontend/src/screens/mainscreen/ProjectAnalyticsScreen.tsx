@@ -33,9 +33,9 @@ export default function ProjectAnalyticsScreen() {
                 <div className={"text-red-600"}>Error Loading Project Data</div>
             ) : (
                 <motion.div
-                    initial={{opacity: 0, y: 20}}
+                    initial={{opacity: 0, y: 30}}
                     animate={{opacity: 1, y: 0}}
-                    transition={{delay: 0.2}}
+                    transition={{delay: 0.4}}
                 >
                     <div className={"bg-[#0A0A0A] text-white font-sans min-h-screen flex"}>
                         {/* Sidebar */}

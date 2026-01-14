@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 import { Menu, X, CircleUserRound,} from "lucide-react";
 import { RiAdminLine, RiUser2Fill } from "react-icons/ri";
 import SearchBar from "./SearchBar";
@@ -6,6 +6,7 @@ import {useSelector, useDispatch } from "react-redux";
 import {logout} from "../../features/authSlice";
 import {NavLink, useNavigate,} from "react-router-dom";
 import {useLogoutMutation} from "../../features/userApiSlice";
+import { useState } from "react";
 
 const navigationItems = [
     { label: "Home", href: "/" },

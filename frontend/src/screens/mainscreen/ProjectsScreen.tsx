@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Plus, MoreVertical, ZapIcon, DollarSignIcon, CalendarIcon, TrashIcon, NotebookTabs, MessageCircle, XCircle} from 'lucide-react';
+import {
+    Plus,
+    SquarePenIcon,
+    ZapIcon,
+    DollarSignIcon,
+    CalendarIcon,
+    TrashIcon,
+    NotebookTabs,
+    MessageCircle,
+    XCircle, XCircleIcon
+} from 'lucide-react';
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetAllProjectsQuery, useCreateProjectMutation, useDeleteProjectMutation} from "../../features/projectApiSlice";
@@ -8,7 +18,7 @@ import {CiSearch} from "react-icons/ci";
 import {useSelector} from "react-redux";
 import {toast} from "react-toastify";
 import {v4 as uuidv4} from "uuid";
-import DashboardHeader from "../../components/Layout/DashBoardHeader";
+// import DashboardHeader from "../../components/Layout/DashBoardHeader";
 import DownloadProjectCSVbutton from "../../components/Layout/Graph & Tables/DownloadProjectCSVbutton";
 import CustomLoader from "../../components/Layout/CustomLoader";
 import {Helmet} from "react-helmet";
@@ -30,7 +40,7 @@ export function ProjectsScreen() {
     const [deleteProject] = useDeleteProjectMutation();
 
     const [openEdit, setOpenEdit] = useState(false);
-    const [openDescription, setOpenDescription] = useState(false);
+    const [activeDescriptionId, setActiveDescriptionId] = useState<string | boolean>(null);
     const [projectName, setProjectName] = useState<string>("");
     const [projectNumber, setProjectNumber] = useState<string>("");
     const [estimate, setEstimate] = useState<string>("");
@@ -39,7 +49,6 @@ export function ProjectsScreen() {
     const [projectManager, setProjectManager] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [openChatMessage, setOpenChatMessage] = useState(false);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const newId = uuidv4();
 
     // Pass a number in textfield
@@ -160,18 +169,10 @@ export function ProjectsScreen() {
         trackMouse: true
     });
 
- //   const [filteredProjects, setFilteredProjects] = useState(currentProjects);
-
     // Handle Project Search
     const handleProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const term = e.target.value.toLowerCase();
         setSearchTerm(term);
-
-        // const filtered = projects?.items.filter((p: any) => {
-        //     return p.projectname.toLowerCase().includes(term);
-        // });
-
-     //   setFilteredProjects(filtered);
     }
 
     useEffect(() => {
@@ -255,150 +256,6 @@ export function ProjectsScreen() {
                                         New Project
                                     </button>
 
-                                    {/* Opening create project. Add requireAuth and wrap around setOpenEdit if there is no user logged in */}
-                                    {openEdit && userInfo && (
-                                        <div
-                                            className={"fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"}>
-                                            <div className={"bg-white rounded-2xl shadow-xl p-4 w-full max-w-md"}>
-                                                {/*<h2 className={"text-2xl font-semibold text-gray-900 mb-4"}>New Project</h2>*/}
-                                                <form className={"space-y-4"}
-                                                      onSubmit={onCreateSubmit}>
-                                                    <div>
-                                                        <label className={"block text-md font-medium text-gray-800"}>
-                                                            Project Name:
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            required={true}
-                                                            value={projectName}
-                                                            className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            placeholder="Project"
-                                                            data-cy={"error-project"}
-                                                            data-cx={"input-project"}
-                                                            onChange={(e) => setProjectName(e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className={"block text-md font-medium text-gray-800"}>
-                                                            Project Number:
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            required={true}
-                                                            value={projectNumber}
-                                                            className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            placeholder="#10000"
-                                                            data-cy={"error-projectnumber"}
-                                                            data-cx={"input-projectnumber"}
-                                                            onChange={(e) => setProjectNumber(e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className={"block text-md font-medium text-gray-800"}>
-                                                            Estimate:
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            required={true}
-                                                            value={estimate}
-                                                            className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            placeholder={"Enter value"}
-                                                            data-cy={"error-estimate"}
-                                                            data-cx={"input-estimate"}
-                                                            onChange={handleNumberChange}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className={"block text-md font-medium text-gray-800"}>
-                                                            Location:
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            required={true}
-                                                            value={location}
-                                                            className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            placeholder="City, State"
-                                                            data-cy={"error-location"}
-                                                            data-cx={"input-location"}
-                                                            onChange={(e) => setLocation(e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className={"block text-md font-medium text-gray-800"}>
-                                                            Contractor:
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            required={true}
-                                                            value={contractor}
-                                                            className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            placeholder="General Contractor"
-                                                            data-cy={"error-contractor"}
-                                                            data-cx={"input-contractor"}
-                                                            onChange={(e) => setContractor(e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label className={"block text-md font-medium text-gray-800"}>
-                                                            Project Manager:
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            required={true}
-                                                            value={projectManager}
-                                                            className="mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            placeholder="Project Manager"
-                                                            data-cy={"error-projectmanager"}
-                                                            data-cx={"input-projectmanager"}
-                                                            onChange={(e) => setProjectManager(e.target.value)}
-                                                        />
-                                                    </div>
-
-                                                    <div>
-                                                        <label data-cy={"description_headline"}
-                                                               htmlFor="message"
-                                                               className="block text-lg font-medium text-gray-700 mb-1"
-                                                                >
-                                                            Description
-                                                        </label>
-                                                        <textarea
-                                                            onChange={(e) => setDescription(e.target.value)}
-                                                            id="description"
-                                                            name="description"
-                                                            value={description}
-                                                            rows={3}
-                                                            data-cy={"description"}
-                                                            data-cx={"input_description"}
-                                                            placeholder="Your message here..."
-                                                            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 ease-in-out text-gray-900 placeholder-gray-500 resize-y"
-                                                        ></textarea>
-                                                    </div>
-
-                                                    <div className="flex justify-end space-x-2">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setOpenEdit(false)}
-                                                            className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                        <button
-                                                            type="submit"
-                                                            className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                                        >
-                                                            Submit
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    )}
-
                                     {/* Download CSV file */}
                                     <DownloadProjectCSVbutton />
                                 </div>
@@ -450,7 +307,7 @@ export function ProjectsScreen() {
                                                         {/* Open Project Edit page */}
                                                         <button onClick={() => requireAuth(() => requirefilteredUser(() => navigate(`/projects/${project.id}`)))}
                                                                 className="text-gray-400 py-1 hover:text-white">
-                                                            <MoreVertical size={20}/>
+                                                            <SquarePenIcon size={20}/>
                                                         </button>
 
                                                         {(userInfo?.isAdmin || filteredUserProjectId) && (
@@ -468,19 +325,40 @@ export function ProjectsScreen() {
                                                     <div className="flex flex-1 mx-auto my-2 px-2">
                                                         <button
                                                             onClick={() =>
-                                                                requireAuthDescription(() => setOpenDescription((prev) => !prev))
+                                                                requireAuthDescription(() => setActiveDescriptionId(
+                                                                    activeDescriptionId === project.id ? null : project.id
+                                                                ))
                                                             }
                                                             className="text-gray-400 hover:text-white my-4 flex items-center"
                                                         >
                                                             <NotebookTabs size={20} className="mr-2" />
-                                                            {openDescription ? "Hide" : "Show"}
+                                                            {activeDescriptionId === project.id ? "Hide" : "Show"}
                                                         </button>
 
-                                                        {openDescription && (
-                                                            <div className="flex flex-col mx-auto gap-2">
-                                                                <h3 className="text-gray-300 font-medium text-center">
-                                                                    {project.description}
-                                                                </h3>
+                                                        {activeDescriptionId === project.id&& (
+                                                            <div className=" fixed bottom-6 right-3
+                                                            w-[465px] h-[580px]
+                                                            bg-[#1A1A1A] text-gray-800
+                                                            rounded-2xl shadow-2xl border border-gray-600
+                                                            z-50 p-4
+                                                            animate-slide-up
+                                                            flex flex-col">
+                                                                <div className={"bg-white p-2 h-full rounded-2xl"}>
+                                                                    <div className={"flex flex-row justify-between"}>
+                                                                        <h2 className={"text-2xl font-semibold text-gray-900 mb-4"}>Project Description</h2>
+
+                                                                        <button onClick={() => setActiveDescriptionId((prev) => !prev)}
+                                                                                className={"hover:scale-110 transition duration-200 ease-in-out"}>
+                                                                            <XCircleIcon size={32}/>
+                                                                        </button>
+                                                                    </div>
+                                                                    {activeDescriptionId === project.id && (
+                                                                        <h3 className="text-gray-800 font-medium text-center">
+                                                                            {project.description}
+                                                                        </h3>
+                                                                    )}
+
+                                                                </div>
                                                             </div>
                                                         )}
                                                     </div>
@@ -510,7 +388,7 @@ export function ProjectsScreen() {
                                                     }
                                                     className="text-gray-400 hover:text-white"
                                                 >
-                                                    <MoreVertical size={20} />
+                                                    <SquarePenIcon size={20} />
                                                 </button>
                                             </div>
 
@@ -602,7 +480,7 @@ export function ProjectsScreen() {
                                                 className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
                                                 onClick={() => setOpenChatMessage(false)}
                                             >
-                                                <XCircle size={36} />
+                                                <XCircle size={32} />
                                             </button>
 
                                             {/* Your SignalR chat system */}

@@ -20,7 +20,7 @@ export default function ChatProjectList({projects, onSelect}: ProjectListProps) 
                         <div className="font-semibold">{p.projectName}</div>
                         <div className="text-sm text-gray-600">{p.location}</div>
                         <div className="text-xs text-gray-400">
-                            #{p.projectNumber}
+                            {p.projectNumber}
                         </div>
                     </button>
                 ))}
