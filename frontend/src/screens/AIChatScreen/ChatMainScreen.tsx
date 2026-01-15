@@ -636,7 +636,8 @@ export function ChatMainScreen() {
                         animate={{opacity: 1, y: 0}}
                         transition={{delay: 0.2}}
                     >
-                        <div className={"bg-[#0A0A0A] h-full text-white font-sans flex"}>
+                        {/*Keep the h-screen to show the chat input. Do not change*/}
+                        <div className={"bg-[#0A0A0A] h-screen text-white font-sans flex"}>
                             <SideBar/>
 
 
