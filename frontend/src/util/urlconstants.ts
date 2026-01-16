@@ -1,7 +1,7 @@
 
 
 export const PRODUCTION_URL =
-    "https://nashai2-b2c3hhgwdwepcafk.eastus2-01.azurewebsites.net";
+    "https://nashai2-b2c3hhgwdwepcafk.centralus-01.azurewebsites.net";
 
 export const LOCAL_URL = "http://localhost:5000";
 
