@@ -1,4 +1,4 @@
-import CustomLoader from "../../components/Layout/CustomLoader";
+import CustomLoader_Small from "../../components/Layout/CustomLoader_Small";
 import {Helmet} from "react-helmet";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
@@ -16,7 +16,7 @@ import {useSendSemanticAIMessageMutation,
         useDeletePdfIngestedMutation,
         useDeleteEntirePdfMutation,
         useSendProposalDraftMutation,
-        useSendProjectAdvisorMutation   } from "../../features/chatapiSlice";
+        useSendProjectAdvisorMutation,  } from "../../features/chatapiSlice";
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
@@ -46,12 +46,12 @@ const models: AIModel[] = [
         description: "Specialized for providing contract summary",
         icon: "tree",
     },
-    {
-        id: "contract-ai",
-        name: "Contract AI",
-        description: "Optimized for contract review and understanding construction technical terms",
-        icon: "zap",
-    },
+    // {
+    //     id: "contract-ai",
+    //     name: "Contract AI",
+    //     description: "Optimized for contract review and understanding construction technical terms",
+    //     icon: "zap",
+    // },
     {
         id: "safety-ai",
         name: "Safety AI",
@@ -244,6 +244,7 @@ export function ChatMainScreen() {
 
         try {
             const session = {sessionId, messages: [userMessage]};
+
             const response: any = await sendSemanticAIMessage(session).unwrap();
 
             console.log("📄 Full Semantic AI Response:", response);
@@ -427,9 +428,9 @@ export function ChatMainScreen() {
                 await handleSummaryAIMessage(`${text}`);
                 break;
 
-            case "contract-ai":
-                await handleSemanticAIMessage(`${text}`);
-                break;
+            // case "contract-ai":
+            //     await handleSemanticAIMessage(`${text}`);
+            //     break;
 
             case "safety-ai":
                 await handleSafetyAIMessage(`${text}`);
@@ -448,7 +449,7 @@ export function ChatMainScreen() {
                 break;
 
             default:
-                await handleSemanticAIMessage(text);
+                await handleSummaryAIMessage(text);
                 break;
         }
     }
@@ -628,7 +629,7 @@ export function ChatMainScreen() {
                 </Helmet>
                 {isLoading ? (
                     <div className={"justify-center items-center py-20"}>
-                        <CustomLoader/>
+                        <CustomLoader_Small />
                     </div>
                 ) : (
                     <motion.div
@@ -639,7 +640,6 @@ export function ChatMainScreen() {
                         {/*Keep the h-screen to show the chat input. Do not change*/}
                         <div className={"bg-[#0A0A0A] h-screen text-white font-sans flex"}>
                             <SideBar/>
-
 
                             <div className={"flex-1 flex flex-col min-w-1 bg-[#f7f7f7]"}>
                                 {/*<ChatMessageExample/>*/}

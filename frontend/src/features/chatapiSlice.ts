@@ -17,6 +17,14 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 }),
                 invalidatesTags:["Chat"]
             }),
+            sendChatMessage: builder.mutation({
+               query: (session: any) => ({
+                   url: `${CHAT_URL}/sendChatMessage`,
+                   method: "POST",
+                   body: session,
+               }),
+                invalidatesTags:["Chat"]
+            }),
             searchMessage: builder.query({
                 query: ({ query, filesystem }: { query: string; filesystem?: string }) => ({
                     url: `${CHAT_URL}/search`,
@@ -113,6 +121,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
 
 export const {
     useSendAIMessageMutation,
+    useSendChatMessageMutation,
     useDeletePdfIngestedMutation,
     useSendSemanticAIMessageMutation,
     useDeleteEntirePdfMutation,
