@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export default function CustomLoader_Small() {
+export default function CustomLoaderSmall() {
     return (
         <div
             /*Loader Component*/

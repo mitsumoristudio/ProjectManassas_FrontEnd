@@ -1,6 +1,6 @@
 import React from "react";
 import {useEffect, useRef} from "react";
-import CustomLoader_Small from "../../components/Layout/CustomLoader_Small";
+import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
 import ChatMessageItem from "./ChatMessageItem";
 
 export function ChatMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false, onSpeakHandler,
@@ -48,7 +48,7 @@ export function ChatMessageList({ messages, inProgressMessage, noMessagesContent
                                      showSources={showSources} inProgress={inProgressMessage}
                     />
 
-                    <CustomLoader_Small/>
+                    <CustomLoaderSmall/>
                 </>
             )}
             {!inProgressMessage && isEmpty && (

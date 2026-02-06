@@ -5,6 +5,7 @@ import {PROJECT_URL} from "@/src/util/urlconstants";
 
 const CHAT_URL = "/api/chats";
 const PDF_URL = "/api/pdfs";
+const EXCEL_URL = "/api/excel";
 
 export const chatApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder: any) => {
@@ -87,6 +88,50 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     }
                 }
             }),
+
+            sendExcelDocument: builder.mutation({
+               query: ({file, datasetName} : { file: File; datasetName: string }) => {
+                   const formData = new FormData();
+                   formData.append("formFile", file);
+                   formData.append("datasetName", datasetName);
+
+                   return {
+                       url: `${EXCEL_URL}/ingest`,
+                       method: "POST",
+                       body: formData,
+                   }
+               }
+            }),
+
+            sendAIExcelMessage: builder.mutation({
+                query: (session: any) => ({
+                    url: `${EXCEL_URL}/tablechat`,
+                    method: "POST",
+                    body: session,
+                }),
+                invalidatesTags: ["Chat"],
+            }),
+
+            getExcelIngestedFiles: builder.query({
+                //@ts-ignore
+                query: ({keyword}) => ({
+                    url: `${EXCEL_URL}/list_excelDocuments`,
+                    method: "GET",
+                    params: {keyword},
+                }),
+                keepUnusedDataFor: 5,
+                //@ts-ignore
+                providesTags: ["Chats"],
+            }),
+
+            deleteExcelIngestedFiles: builder.mutation({
+                query: (documentId: string) => ({
+                    url: `${EXCEL_URL}/${documentId}`,
+                    method: "DELETE",
+                }),
+                invalidatesTags: ["Chats"],
+            }),
+
             getPdfIngested: builder.query({
                 //@ts-ignore
                 query: ({keyword}) => ({
@@ -115,7 +160,6 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 invalidatesTags: ["Chat"],
             })
         });
-
     }
 })
 
@@ -132,4 +176,8 @@ export const {
     useSendSummaryAIMessageMutation,
     useSendSafetyAIMessageMutation,
     useGetPdfIngestedQuery,
+    useDeleteExcelIngestedFilesMutation,
+    useSendExcelDocumentMutation,
+    useGetExcelIngestedFilesQuery,
+    useSendAIExcelMessageMutation,
 } = chatApiSlice;

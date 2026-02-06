@@ -36,7 +36,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
         });
     };
 
-
     return (
         <div className={"flex flex-col gap-2"}>
 

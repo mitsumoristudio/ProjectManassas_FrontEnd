@@ -1,12 +1,13 @@
 
 import React, {useState} from "react";
-import DocumentIngestion, {UploadedDocumentProp} from "../AIChatScreen/DocumentIngestion";
-import {useSendDocumentEmbeddingMutation} from "../../features/chatapiSlice";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
+import ExcelIngestion, {UploadExcelIngestionProps} from "../../screens/AIChatScreen/ExcelIngestion";
+import {useSendExcelDocumentMutation} from "../../features/chatapiSlice";
 
-export default function DocumentIngestionPage() {
-    const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
-    const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
+
+export default function ExcelIngestionPage() {
+    const [excelDocuments, setExcelDocuments] = useState<UploadExcelIngestionProps[]>([]);
+    const [createExcelIngestion] = useSendExcelDocumentMutation();
 
     // When user selects or drags files
     const handleUpload = async (files: FileList) => {
@@ -14,23 +15,23 @@ export default function DocumentIngestionPage() {
 
         for (const file of fileArray) {
             const id = crypto.randomUUID();
-            const newDoc: UploadedDocumentProp = {
+            const newDoc: UploadExcelIngestionProps= {
                 id,
-                filename: file.name,
+                fileName: file.name,
                 size: `${(file.size / 1024).toFixed(1)} KB`,
                 type: file.type,
                 status: "uploading",
             };
 
             // Add to document list as "uploading"
-            setDocuments((prev) => [...prev, newDoc]);
+            setExcelDocuments((prev) => [...prev, newDoc]);
 
             try {
-                const response = await createPdfIngestion({file: file, documentId: file.name}).unwrap();
+                const response = await createExcelIngestion({file: file, datasetName: file.name}).unwrap();
                 console.log("Upload was success:", response);
 
                 // Update to analyzed
-                setDocuments((prev) =>
+                setExcelDocuments((prev) =>
                     prev.map((doc) =>
                         doc.id === id ? { ...doc, status: "analyzed" } : doc
                     )
@@ -39,7 +40,7 @@ export default function DocumentIngestionPage() {
             } catch (error) {
                 console.log(error);
 
-                setDocuments((prev) =>
+                setExcelDocuments((prev) =>
                     prev.map((doc) =>
                         doc.id === id ? { ...doc, status: "error" } : doc
                     )
@@ -48,25 +49,25 @@ export default function DocumentIngestionPage() {
 
         }
     }
-
-        const handleRemove = (id: string) => {
-        setDocuments((prev) => prev.filter((doc) => doc.id !== id));
-        }
+    const handleRemove = (id: string) => {
+        setExcelDocuments((prev) => prev.filter((doc) => doc.id !== id));
+    }
 
     return (
         <>
             <div className={"bg-[#0A0A0A] text-white font-sans min-h-screen flex"}>
-                    <SideBar/>
+                <SideBar/>
 
                 <div className={"max-w-2xl mx-auto p-6"}>
-                    <DocumentIngestion
-                        documents={documents}
+                    <ExcelIngestion
+                        documents={excelDocuments}
                         onUpload={handleUpload}
                         onRemove={handleRemove}
-                        />
+                    />
                 </div>
             </div>
         </>
     )
+
 
 }

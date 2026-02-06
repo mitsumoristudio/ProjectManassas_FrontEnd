@@ -1,22 +1,24 @@
-import CustomLoader_Small from "../../components/Layout/CustomLoader_Small";
+import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
 import {Helmet} from "react-helmet";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector} from "react-redux";
 import {NavLink, useParams} from "react-router-dom";
-import {PaperclipIcon, NotebookTabs, MicIcon, MicOffIcon, ArrowBigRightDash} from "lucide-react"
+import {LucideFilePlus, ClipboardList, SheetIcon, MicIcon, MicOffIcon, ArrowBigRightDash, CalendarDaysIcon} from "lucide-react"
 import {useAzureSpeech} from "../../components/useAzureSpeech"
 import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
 
-import {useSendSemanticAIMessageMutation,
-        useSendSafetyAIMessageMutation,
-        useSendSummaryAIMessageMutation,
-        useGetPdfIngestedQuery,
-        useDeletePdfIngestedMutation,
-        useDeleteEntirePdfMutation,
-        useSendProposalDraftMutation,
-        useSendProjectAdvisorMutation,  } from "../../features/chatapiSlice";
+import {
+    useSendSemanticAIMessageMutation,
+    useSendSafetyAIMessageMutation,
+    useSendSummaryAIMessageMutation,
+    useGetPdfIngestedQuery,
+    useDeletePdfIngestedMutation,
+    useDeleteEntirePdfMutation,
+    useSendProposalDraftMutation,
+    useSendProjectAdvisorMutation,
+} from "../../features/chatapiSlice";
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
@@ -95,8 +97,8 @@ export function ChatMainScreen() {
 
 
     /* ---------------- AI Redux Toolkit call ---------------- */
-    const [sendSemanticAIMessage, {isLoading}] = useSendSemanticAIMessageMutation();
-    const [sendSafetyAIMessage] = useSendSafetyAIMessageMutation();
+
+    const [sendSafetyAIMessage, {isLoading}] = useSendSafetyAIMessageMutation();
     const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
     const [sendProjectAIMessage] = useSendAIProjectMessageMutation();
     const [sendEquipmentAIMessage] = useSendAIEquipmentMessageMutation();
@@ -230,42 +232,42 @@ export function ChatMainScreen() {
         }
     }
 
-    const handleSemanticAIMessage = async (snippet: string) => {
-        if (!snippet.trim()) return;
-
-        const userMessage = {
-            role: "user",
-            messageContent: snippet,
-            createdAt: new Date().toISOString(),
-        };
-
-        setMessages((prev) => [...prev, userMessage]);
-        setInProgressMessage({role: "assistant", messageContent: "..."});
-
-        try {
-            const session = {sessionId, messages: [userMessage]};
-
-            const response: any = await sendSemanticAIMessage(session).unwrap();
-
-            console.log("📄 Full Semantic AI Response:", response);
-            console.log("🔗 Sources:", response.sources);
-
-            if (response?.messageContent) {
-                const assistantMessage = {
-                    role: "assistant",
-                    messageContent: response.messageContent,
-                    createdAt: response.createdAt,
-                    sources: response.sources,
-                };
-                setMessages((prev) => [...prev, assistantMessage]);
-                //   setSources(response.sources);
-            }
-        } catch (err) {
-            console.error("❌ Error sending semantic AI message:", err);
-        } finally {
-            setInProgressMessage(null);
-        }
-    };
+    // const handleSemanticAIMessage = async (snippet: string) => {
+    //     if (!snippet.trim()) return;
+    //
+    //     const userMessage = {
+    //         role: "user",
+    //         messageContent: snippet,
+    //         createdAt: new Date().toISOString(),
+    //     };
+    //
+    //     setMessages((prev) => [...prev, userMessage]);
+    //     setInProgressMessage({role: "assistant", messageContent: "..."});
+    //
+    //     try {
+    //         const session = {sessionId, messages: [userMessage]};
+    //
+    //         const response: any = await sendSemanticAIMessage(session).unwrap();
+    //
+    //         console.log("📄 Full Semantic AI Response:", response);
+    //         console.log("🔗 Sources:", response.sources);
+    //
+    //         if (response?.messageContent) {
+    //             const assistantMessage = {
+    //                 role: "assistant",
+    //                 messageContent: response.messageContent,
+    //                 createdAt: response.createdAt,
+    //                 sources: response.sources,
+    //             };
+    //             setMessages((prev) => [...prev, assistantMessage]);
+    //             //   setSources(response.sources);
+    //         }
+    //     } catch (err) {
+    //         console.error("❌ Error sending semantic AI message:", err);
+    //     } finally {
+    //         setInProgressMessage(null);
+    //     }
+    // };
 
     const handleProposalDraftAIMessage = async (snippet: string) => {
         if (!snippet.trim()) return;
@@ -428,10 +430,6 @@ export function ChatMainScreen() {
                 await handleSummaryAIMessage(`${text}`);
                 break;
 
-            // case "contract-ai":
-            //     await handleSemanticAIMessage(`${text}`);
-            //     break;
-
             case "safety-ai":
                 await handleSafetyAIMessage(`${text}`);
                 break;
@@ -493,6 +491,7 @@ export function ChatMainScreen() {
             }
         }
     }
+
     //
     // const streamChat = async (text: string, mode: string) => {
     //     if (!text.trim()) return;
@@ -629,7 +628,7 @@ export function ChatMainScreen() {
                 </Helmet>
                 {isLoading ? (
                     <div className={"justify-center items-center py-20"}>
-                        <CustomLoader_Small />
+                        <CustomLoaderSmall />
                     </div>
                 ) : (
                     <motion.div
@@ -658,19 +657,36 @@ export function ChatMainScreen() {
                                         {/* Open PDF Ingestion if the user is admin */}
                                         {userInfo && userInfo.isAdmin && (
                                             <NavLink to={"/documentingestion"}>
-                                                <PaperclipIcon size={24} color={"black"} className={"my-4 mx-2"}/>
+                                                <LucideFilePlus size={24} color={"black"} className={"my-4 mx-2"}/>
+                                            </NavLink>
+                                        )}
+
+                                        {/* Open PDF Ingestion if the user is admin */}
+                                        {userInfo && userInfo.isAdmin && (
+                                            <NavLink to={"/excelingestion"}>
+                                                <SheetIcon size={24} color={"purple"} className={"my-4 mx-2"}/>
                                             </NavLink>
                                         )}
 
                                         <div className={"flex flex-1"}>
                                             <button onClick={() => setOpenPdfList(true)}
                                             className={"text-gray-800 hover:text-blue-700 my-4 flex items-center"}>
-                                                <NotebookTabs size={22}   />
+                                                <ClipboardList size={24} color={"blue"}   />
                                             </button>
+
+                                            {/* Open Excel Document lists  if the user is admin */}
+                                            {userInfo && userInfo.isAdmin && (
+                                                <div className={"mx-4"}>
+                                                    <NavLink to={"/excellists"}>
+                                                        <CalendarDaysIcon size={24} color={"black"} className={"my-4 mx-2"}/>
+                                                    </NavLink>
+                                                </div>
+
+                                            )}
 
                                             {openPdfList && userInfo?.isAdmin && (
                                                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-                                                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                                                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 scroll-auto">
                                                         <div className="flex justify-between items-center mb-4">
                                                             <h2 className="text-lg font-semibold text-gray-800">
                                                                 Ingested PDFs
@@ -763,7 +779,11 @@ export function ChatMainScreen() {
                                                                 </div>
                                                             </div>
                                                         )}
+
+
                                                     </div>
+
+
                                                 </div>
                                             )}
 

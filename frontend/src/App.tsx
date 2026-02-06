@@ -22,6 +22,8 @@ import {ChatMainScreen} from "./screens/AIChatScreen/ChatMainScreen";
 import DocumentIngestionPage from "../src/screens/AIChatScreen/DocumentIngestionPage"
 import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
 import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
+import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
+import ExcelCard from "../src/components/ExcelCard";
 
 function App() {
   return (
@@ -48,8 +50,10 @@ function App() {
                 <Route path={"/projectAnalytics"} element={<ProjectAnalyticsScreen />} />
                 <Route path={"/chat"} element={<ChatMainScreen />} />
                 <Route path={"/documentingestion"} element={<DocumentIngestionPage/>}/>
+                <Route path={"/excelingestion"} element={<ExcelngestionPage/>}/>
                 <Route path={"/signalr"} element={<SignalRProvider />} />
                 <Route path={"/resetPassword"} element={<PasswordResetScreen />} />
+                <Route path={"excellists"} element={<ExcelCard />} />
 
             </Routes>
 
