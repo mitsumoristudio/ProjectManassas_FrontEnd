@@ -7,8 +7,23 @@ const CHAT_URL = "/api/chats";
 const PDF_URL = "/api/pdfs";
 const EXCEL_URL = "/api/excel";
 
+export interface SendAIExcelMessagePayload {
+    sheetId: string;
+    question: string;
+    chatSession: {
+        sessionId: string;
+        title: string;
+        messages: {
+            role: "User" | "Assistant";
+            messageContent: string;
+        }[];
+    };
+}
+
 export const chatApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder: any) => {
+        // @ts-ignore
+        // @ts-ignore
         return ({
             sendAIMessage: builder.mutation({
                 query: (session: any) => ({
@@ -104,10 +119,10 @@ export const chatApiSlice = apiSlice.injectEndpoints({
             }),
 
             sendAIExcelMessage: builder.mutation({
-                query: (session: any) => ({
+                query: (payload) => ({
                     url: `${EXCEL_URL}/tablechat`,
                     method: "POST",
-                    body: session,
+                    body: payload,
                 }),
                 invalidatesTags: ["Chat"],
             }),

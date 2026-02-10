@@ -10,7 +10,6 @@ import {useAzureSpeech} from "../../components/useAzureSpeech"
 import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
 
 import {
-    useSendSemanticAIMessageMutation,
     useSendSafetyAIMessageMutation,
     useSendSummaryAIMessageMutation,
     useGetPdfIngestedQuery,
@@ -18,6 +17,9 @@ import {
     useDeleteEntirePdfMutation,
     useSendProposalDraftMutation,
     useSendProjectAdvisorMutation,
+    useSendExcelDocumentMutation,
+    useGetExcelIngestedFilesQuery,
+    useSendAIExcelMessageMutation
 } from "../../features/chatapiSlice";
 import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
@@ -48,12 +50,6 @@ const models: AIModel[] = [
         description: "Specialized for providing contract summary",
         icon: "tree",
     },
-    // {
-    //     id: "contract-ai",
-    //     name: "Contract AI",
-    //     description: "Optimized for contract review and understanding construction technical terms",
-    //     icon: "zap",
-    // },
     {
         id: "safety-ai",
         name: "Safety AI",
@@ -83,6 +79,12 @@ const models: AIModel[] = [
         name: "Proposal AI",
         description: "Aid in drafting project proposal",
         icon: "construction",
+    },
+    {
+        id: "tabular data-ai",
+        name: "Tabular Data AI",
+        description: "Works with Excel files",
+        icon: "filespreadsheet",
     },
 ];
 
@@ -116,10 +118,26 @@ export function ChatMainScreen() {
 
     const [deleteEmbedPdf] = useDeletePdfIngestedMutation();
     const [deleteEntirePdf] = useDeleteEntirePdfMutation();
+    const [sendAIExcelMessage] = useSendAIExcelMessageMutation();
+
+
+    const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
+    const [selectedTableSheetId, setSelectedTableSheetId] = useState<string | null>(null);
+
+
 
     const [selectedModelId, setSelectedModelId] = useState("contract-ai");
     const [selectedPromptId, setSelectedPromptId] = useState<string>();
     const [inputValue, setInputValue] = useState("");
+
+    // ExcelTable List collection
+    const {
+        data: excelTables = [],
+        isLoading: isExcelTableLoading,
+        isError: isExcelTableError,
+    } = useGetExcelIngestedFilesQuery({}, {
+        skip: selectedModelId !== "tabular data-ai",
+    });
 
     // Authentication
     const {userInfo} = useSelector((state: any) => state.auth);
@@ -268,6 +286,58 @@ export function ChatMainScreen() {
     //         setInProgressMessage(null);
     //     }
     // };
+
+
+    const handleExcelDataMessageHandler = async (snippet: string) => {
+        if (!snippet.trim()) return;
+
+        if (!selectedTableSheetId) {
+            toast.warning("Please select an Excel Table first.")
+            return;
+        }
+
+        const userMessage = {
+            role: "user",
+            messageContent: snippet,
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setInProgressMessage({role: "assistant", messageContent: "..."});
+
+        const payload = {
+            SheetId: selectedTableSheetId,
+            question: snippet,
+            chatSession: {
+                sessionId: selectedTableSheetId,
+                title: selectedTableName ?? "Excel Dataset",
+                messages: [userMessage],
+            },
+        };
+
+        try {
+
+            const response: any = await sendAIExcelMessage(payload).unwrap();
+
+            console.log("📄 Full Tabular AI Response:", response);
+            console.log("🔗 Sources:", response.sources);
+
+            if (response?.messageContent) {
+                const assistantMessage = {
+                    role: "assistant",
+                    messageContent: response.messageContent,
+                    createdAt: response.createdAt,
+                    sources: response.sources,
+                };
+                setMessages((prev) => [...prev, assistantMessage]);
+                //   setSources(response.sources);
+            }
+        } catch (err) {
+            console.error("❌ Error sending excel AI message:", err);
+        } finally {
+            setInProgressMessage(null);
+        }
+    }
 
     const handleProposalDraftAIMessage = async (snippet: string) => {
         if (!snippet.trim()) return;
@@ -446,6 +516,10 @@ export function ChatMainScreen() {
                 await handleProposalDraftAIMessage(`${text}`);
                 break;
 
+            case "tabular data-ai":
+                await handleExcelDataMessageHandler(`${text}`);
+                break;
+
             default:
                 await handleSummaryAIMessage(text);
                 break;
@@ -491,6 +565,13 @@ export function ChatMainScreen() {
             }
         }
     }
+
+    useEffect(() => {
+        if (selectedModelId !== "tabular data-ai") {
+            setSelectedTableSheetId(null)
+            setSelectedTableName(null);
+        }
+    }, [selectedModelId]);
 
     //
     // const streamChat = async (text: string, mode: string) => {
@@ -653,6 +734,41 @@ export function ChatMainScreen() {
                                                 setSelectedModelId(id);
                                             }}
                                         />
+
+                                        {selectedModelId === "tabular data-ai" && (
+                                            <div className={"flex items-center gap-2 mt-2"}>
+                                                <label className={"text-sm font-medium text-gray-800"}>
+                                                    Select Table
+                                                </label>
+
+                                                <select className={"border rounded-md px-2 py-2 text-md bg-gray-500 min-w-[220px]"}
+                                                        value={selectedTableSheetId ?? ""}
+                                                        onChange={(e) => {
+                                                            const sheetId = e.target.value;
+                                                            const table = excelTables.find((t: any) => t.sheetId === sheetId);
+
+                                                            setSelectedTableSheetId(sheetId);
+                                                            setSelectedTableName(table?.tableName ?? "Not found");
+                                                        }}>
+                                                    <option value={""} disabled>
+                                                        Select Table
+                                                    </option>
+
+                                                    {isExcelTableLoading && (
+                                                        <option disabled>Loading Tables...</option>
+                                                    )}
+
+                                                    {excelTables.map((table: any) => (
+                                                        <option key={table.sheetId} value={table.sheetId} >
+
+                                                            📄 Table: {table.tableName}
+                                                        </option>
+                                                    ))}
+
+                                                </select>
+
+                                            </div>
+                                        )}
 
                                         {/* Open PDF Ingestion if the user is admin */}
                                         {userInfo && userInfo.isAdmin && (

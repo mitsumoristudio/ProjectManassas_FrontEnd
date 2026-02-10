@@ -64,7 +64,7 @@ export default function DocumentIngestion({documents, onUpload, onRemove, maxFil
                 >
                     <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="text-sm font-semibold text-foreground mb-2">
-                        Upload Legal Documents
+                        Upload PDF Documents
                     </h3>
                     <p className="text-xs text-muted-foreground mb-4">
                         Drag and drop files here, or click to browse

@@ -23,7 +23,7 @@ import DocumentIngestionPage from "../src/screens/AIChatScreen/DocumentIngestion
 import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
 import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
 import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
-import ExcelCard from "../src/components/ExcelCard";
+import {ExcelCard} from "../src/components/ExcelCard";
 
 function App() {
   return (

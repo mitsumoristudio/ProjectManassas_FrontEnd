@@ -5,9 +5,9 @@ import {useGetExcelIngestedFilesQuery, useDeleteExcelIngestedFilesMutation} from
 import {toast} from "react-toastify";
 
 
-export default function ExcelCard() {
+export function ExcelCard() {
 
-    const keyword = useParams();
+    const { keyword } = useParams<{ keyword?: string }>();
     const navigate = useNavigate();
 
     const {
@@ -16,13 +16,13 @@ export default function ExcelCard() {
         isError: isExcelError,
     } = useGetExcelIngestedFilesQuery({keyword});
 
-    const [deleteExcelFile] = useDeleteExcelIngestedFilesMutation();
+    const [deleteExcelFile, {isloading: isDeleting}] = useDeleteExcelIngestedFilesMutation();
 
     // Delete Excel File
-    const deleteExcelHandler = async (id: any) => {
+    const deleteExcelHandler = async (id: string) => {
         if (window.confirm("Are you sure you want to delete this Excel document now?")) {
             try {
-                await deleteExcelFile(id)
+                await deleteExcelFile(id).unwrap();
 
                 toast.success("Excel document deleted successfully.");
 
@@ -80,7 +80,7 @@ export default function ExcelCard() {
                                 <div className={"flex flex-col gap-2"}>
                                     {/* Delete ExcelFile */}
                                     <button
-                                        onClick={ () => deleteExcelHandler(doc.id)
+                                        onClick={() => deleteExcelHandler(doc.id)
                                         }
                                         className="hover:transition scale-110 duration-200"
                                     >
