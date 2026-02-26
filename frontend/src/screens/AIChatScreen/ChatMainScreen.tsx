@@ -735,6 +735,7 @@ export function ChatMainScreen() {
                                             }}
                                         />
 
+                                        {/*Excel Chat Dropdown list*/}
                                         {selectedModelId === "tabular data-ai" && (
                                             <div className={"flex items-center gap-2 mt-2"}>
                                                 <label className={"text-sm font-medium text-gray-800"}>
@@ -761,7 +762,7 @@ export function ChatMainScreen() {
                                                     {excelTables.map((table: any) => (
                                                         <option key={table.sheetId} value={table.sheetId} >
 
-                                                            📄 Table: {table.tableName}
+                                                            📄 {table.tableName}
                                                         </option>
                                                     ))}
 
