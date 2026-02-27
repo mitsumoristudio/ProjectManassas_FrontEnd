@@ -24,6 +24,7 @@ import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
 import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
 import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
 import {ExcelCard} from "../src/components/ExcelCard";
+import PDFViewerPage from "../src/screens/mainscreen/PdfViewerPage";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
                 <Route path={"/signalr"} element={<SignalRProvider />} />
                 <Route path={"/resetPassword"} element={<PasswordResetScreen />} />
                 <Route path={"excellists"} element={<ExcelCard />} />
+                <Route path={"/pdfViewer"} element={<PDFViewerPage/>} />
 
             </Routes>
 

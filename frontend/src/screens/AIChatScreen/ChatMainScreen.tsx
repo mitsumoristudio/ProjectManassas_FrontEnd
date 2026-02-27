@@ -3,8 +3,8 @@ import {Helmet} from "react-helmet";
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
-import {useSelector} from "react-redux";
-import {NavLink, useParams} from "react-router-dom";
+import {useSelector, } from "react-redux";
+import {NavLink, useParams, useNavigate} from "react-router-dom";
 import {LucideFilePlus, ClipboardList, SheetIcon, MicIcon, MicOffIcon, ArrowBigRightDash, CalendarDaysIcon} from "lucide-react"
 import {useAzureSpeech} from "../../components/useAzureSpeech"
 import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
@@ -96,6 +96,7 @@ export function ChatMainScreen() {
     const [openPdfList, setOpenPdfList] = useState(false);
     const [previewPdfId, setPreviewPdfId] = useState<string | null>(null);
     const [isPdfSideBarOpen, setIsPdfSideBarOpen] = useState(false);
+    const navigate = useNavigate();
 
 
     /* ---------------- AI Redux Toolkit call ---------------- */
@@ -839,6 +840,7 @@ export function ChatMainScreen() {
                                                                     <div className={"flex flex-col gap-2"}>
                                                                         {/* 🔍 PREVIEW */}
                                                                         <button
+                                                                         //   onClick={() => navigate(`/pdfViewer/${encodeURIComponent(doc.documentId)}`) }
                                                                             onClick={() => setPreviewPdfId(doc.documentId)}
                                                                             className={"text-blue-600 hover:text-blue-900 text-sm"}>
                                                                             Preview
