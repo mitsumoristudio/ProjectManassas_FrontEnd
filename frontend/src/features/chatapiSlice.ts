@@ -119,7 +119,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
             }),
 
             sendAIExcelMessage: builder.mutation({
-                query: (payload) => ({
+                query: (payload: SendAIExcelMessagePayload) => ({
                     url: `${EXCEL_URL}/tablechat`,
                     method: "POST",
                     body: payload,

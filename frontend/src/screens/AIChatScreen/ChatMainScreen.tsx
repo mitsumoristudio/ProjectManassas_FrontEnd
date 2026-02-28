@@ -17,7 +17,6 @@ import {
     useDeleteEntirePdfMutation,
     useSendProposalDraftMutation,
     useSendProjectAdvisorMutation,
-    useSendExcelDocumentMutation,
     useGetExcelIngestedFilesQuery,
     useSendAIExcelMessageMutation
 } from "../../features/chatapiSlice";
