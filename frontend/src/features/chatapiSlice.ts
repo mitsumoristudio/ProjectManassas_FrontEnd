@@ -1,7 +1,7 @@
 
 import {apiSlice} from "./apiSlice";
-import {PROJECT_URL} from "@/src/util/urlconstants";
-// import {ChatSessionModel, ChatMessageModel} from "../model/ChatModel";
+// import {PROJECT_URL} from "@/src/util/urlconstants";
+
 
 const CHAT_URL = "/api/chats";
 const PDF_URL = "/api/pdfs";

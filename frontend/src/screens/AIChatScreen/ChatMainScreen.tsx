@@ -108,7 +108,7 @@ export function ChatMainScreen() {
     const [sendAdvisorAIMessage] = useSendProjectAdvisorMutation();
 
     const keyword = useParams();
-    //@ts-ignore
+
     const {
         data: pdfs = [],
         isLoading: isPdfLoading,
@@ -573,134 +573,6 @@ export function ChatMainScreen() {
         }
     }, [selectedModelId]);
 
-    //
-    // const streamChat = async (text: string, mode: string) => {
-    //     if (!text.trim()) return;
-    //
-    //     await startChatConnection();
-    //
-    //     const userMessage = {
-    //         role: "user",
-    //         messageContent: text,
-    //         createdAt: new Date().toISOString(),
-    //     };
-    //
-    //     setMessages(prev => [...prev, userMessage]);
-    //
-    //     // Create placeholder assistant message
-    //     const assistantMessage = {
-    //         role: "assistant",
-    //         messageContent: "",
-    //         createdAt: new Date().toISOString(),
-    //     };
-    //
-    //     setMessages(prev => [...prev, assistantMessage]);
-    //
-    //     const session = {
-    //         sessionId,
-    //         messages: [userMessage],
-    //     };
-    //
-    //     const stream = chatConnection.stream<string>(
-    //         "StreamSemanticChatAsync", // or StreamChatAsync
-    //         session,
-    //         mode
-    //     );
-    //
-    //     stream.subscribe({
-    //         next: (token) => {
-    //             setMessages(prev => {
-    //                 const updated = [...prev];
-    //                 updated[updated.length - 1] = {
-    //                     ...updated[updated.length - 1],
-    //                     messageContent:
-    //                         updated[updated.length - 1].messageContent + token,
-    //                 };
-    //                 return updated;
-    //             });
-    //         },
-    //         complete: () => {
-    //             console.log("✅ Stream complete");
-    //         },
-    //         error: (err) => {
-    //             console.error("❌ Stream error:", err);
-    //         },
-    //     });
-    // };
-
-    // const handleStreamAIModel = async (text: string) => {
-    //     switch (selectedModelId) {
-    //         case "summary-gpt":
-    //             await streamChat(text, "summary");
-    //             break;
-    //
-    //         case "contract-ai":
-    //             await streamChat(text, "contract");
-    //             break;
-    //
-    //         case "safety-ai":
-    //             await streamChat(text, "safety");
-    //             break;
-    //
-    //         case "project-ai":
-    //             await streamChat(text, "project");
-    //             break;
-    //
-    //
-    //         case "equipment-ai":
-    //             await streamChat(text, "equipment");
-    //             break;
-    //
-    //
-    //         default:
-    //             await streamChat(text, "contract");
-    //             break;
-    //     }
-    // }
-
-
-    // Standard AI Assistant
-    //     const handleStandardAIMessage = async (text: string) => {
-    //         if (!text.trim()) return;
-    //
-    //         const userMessage = {
-    //             role: "user",
-    //             messageContent: text,
-    //             createdAt: new Date().toISOString()
-    //         };
-    //         setMessages((prev) => [...prev, userMessage]);
-    //         setInProgressMessage({role: "assistant", messageContent: "..."});
-    //
-    //         try {
-    //             const session = {
-    //                 sessionId,
-    //                 messages: [userMessage],
-    //             };
-    //
-    //             const response: any = await sendMessage(session).unwrap();
-    //
-    //             if (response?.messageContent) {
-    //                 setMessages((prev) => [
-    //                     ...prev,
-    //                     {
-    //                         role: response.role,
-    //                         messageContent: response.messageContent,
-    //                         sources: response.sources,
-    //                         createdAt: response.createdAt,
-    //                     },
-    //                 ]);
-    //             }
-    //
-    //         } catch (err) {
-    //             console.error("Error sending message:", err);
-    //         } finally {
-    //             setInProgressMessage(null);
-    //         }
-    //     };
-
-        // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
     return (
             <>
                 <Helmet>
@@ -757,6 +629,10 @@ export function ChatMainScreen() {
 
                                                     {isExcelTableLoading && (
                                                         <option disabled>Loading Tables...</option>
+                                                    )}
+
+                                                    {isExcelTableError && (
+                                                        <option disabled>Error with table...</option>
                                                     )}
 
                                                     {excelTables.map((table: any) => (
