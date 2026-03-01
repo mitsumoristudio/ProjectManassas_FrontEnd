@@ -306,7 +306,7 @@ export function ChatMainScreen() {
         setInProgressMessage({role: "assistant", messageContent: "..."});
 
         const payload = {
-            SheetId: selectedTableSheetId,
+            sheetId: selectedTableSheetId,
             question: snippet,
             chatSession: {
                 sessionId: selectedTableSheetId,
@@ -324,10 +324,11 @@ export function ChatMainScreen() {
 
             if (response?.messageContent) {
                 const assistantMessage = {
+                    sessionId: selectedTableSheetId,
                     role: "assistant",
                     messageContent: response.messageContent,
                     createdAt: response.createdAt,
-                    sources: response.sources,
+                   // sources: response.sources,
                 };
                 setMessages((prev) => [...prev, assistantMessage]);
                 //   setSources(response.sources);

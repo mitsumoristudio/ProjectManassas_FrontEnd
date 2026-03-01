@@ -14,7 +14,7 @@ export interface SendAIExcelMessagePayload {
         sessionId: string;
         title: string;
         messages: {
-            role: "User" | "Assistant";
+            role: "User";
             messageContent: string;
         }[];
     };
@@ -124,7 +124,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     method: "POST",
                     body: payload,
                 }),
-                invalidatesTags: ["Chat"],
+                invalidatesTags: ["Chats"],
             }),
 
             getExcelIngestedFiles: builder.query({
