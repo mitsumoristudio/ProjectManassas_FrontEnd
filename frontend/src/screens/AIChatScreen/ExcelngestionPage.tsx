@@ -17,7 +17,7 @@ export default function ExcelIngestionPage() {
             const id = crypto.randomUUID();
             const newDoc: UploadExcelIngestionProps= {
                 id,
-                fileName: file.name,
+                tableName: file.name,
                 size: `${(file.size / 1024).toFixed(1)} KB`,
                 type: file.type,
                 status: "uploading",
@@ -27,7 +27,7 @@ export default function ExcelIngestionPage() {
             setExcelDocuments((prev) => [...prev, newDoc]);
 
             try {
-                const response = await createExcelIngestion({file: file, datasetName: file.name}).unwrap();
+                const response = await createExcelIngestion({formFile: file, tableName: file.name}).unwrap();
                 console.log("Upload was success:", response);
 
                 // Update to analyzed

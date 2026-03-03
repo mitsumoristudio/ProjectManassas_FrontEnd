@@ -7,7 +7,7 @@ import {Button} from "@mui/material";
 
 export interface UploadExcelIngestionProps {
     id: string;
-    fileName: string;
+    tableName: string;
     size: string;
     type: string;
     status?: "uploading" | "analyzed" | "error";
@@ -15,7 +15,7 @@ export interface UploadExcelIngestionProps {
 
 interface ExcelIngestionProps {
     documents: UploadExcelIngestionProps [];
-    onUpload?: (file: FileList) => void;
+    onUpload?: (formFile: FileList) => void;
     onRemove?: (id: string) => void;
     maxFiles?: number;
 }
@@ -108,7 +108,7 @@ export default function ExcelIngestion({ documents, onUpload, onRemove, maxFiles
                                 <FileSpreadsheet className="h-5 w-5 text-primary flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-foreground truncate">
-                                        {doc.fileName}
+                                        {doc.tableName}
                                     </p>
                                     <p className="text-xs text-muted-foreground">
                                         {doc.type} • {doc.size}

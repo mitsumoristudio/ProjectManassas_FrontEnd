@@ -28,7 +28,7 @@ export default function ChatMessageItem({message, inProgress = false, showSource
             if (matches.length > 0) {
                 setCitations(
                     matches.map((m) => ({
-                        file: m[1],
+                        formFile: m[1],
                         page: m[2] ? parseInt(m[2], 10) : null,
                         quote: m[3],
                     }))
