@@ -1,6 +1,7 @@
 import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
 import {Helmet} from "react-helmet";
-import SideBar from "../../components/Layout/Graph & Tables/SideBar";
+// import SideBar from "../../components/Layout/Graph & Tables/SideBar";
+import ChatSideBar from "../../components/Layout/Graph & Tables/ChatSideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector, } from "react-redux";
@@ -249,44 +250,6 @@ export function ChatMainScreen() {
             setInProgressMessage(null);
         }
     }
-
-    // const handleSemanticAIMessage = async (snippet: string) => {
-    //     if (!snippet.trim()) return;
-    //
-    //     const userMessage = {
-    //         role: "user",
-    //         messageContent: snippet,
-    //         createdAt: new Date().toISOString(),
-    //     };
-    //
-    //     setMessages((prev) => [...prev, userMessage]);
-    //     setInProgressMessage({role: "assistant", messageContent: "..."});
-    //
-    //     try {
-    //         const session = {sessionId, messages: [userMessage]};
-    //
-    //         const response: any = await sendSemanticAIMessage(session).unwrap();
-    //
-    //         console.log("📄 Full Semantic AI Response:", response);
-    //         console.log("🔗 Sources:", response.sources);
-    //
-    //         if (response?.messageContent) {
-    //             const assistantMessage = {
-    //                 role: "assistant",
-    //                 messageContent: response.messageContent,
-    //                 createdAt: response.createdAt,
-    //                 sources: response.sources,
-    //             };
-    //             setMessages((prev) => [...prev, assistantMessage]);
-    //             //   setSources(response.sources);
-    //         }
-    //     } catch (err) {
-    //         console.error("❌ Error sending semantic AI message:", err);
-    //     } finally {
-    //         setInProgressMessage(null);
-    //     }
-    // };
-
 
     const handleExcelDataMessageHandler = async (snippet: string) => {
         if (!snippet.trim()) return;
@@ -592,7 +555,8 @@ export function ChatMainScreen() {
                     >
                         {/*Keep the h-screen to show the chat input. Do not change*/}
                         <div className={"bg-[#0A0A0A] h-screen text-white font-sans flex"}>
-                            <SideBar/>
+                            {/*<SideBar/>*/}
+                            <ChatSideBar/>
 
                             <div className={"flex-1 flex flex-col min-w-1 bg-[#f7f7f7]"}>
                                 {/*<ChatMessageExample/>*/}

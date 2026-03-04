@@ -7,13 +7,25 @@ const initialState = {
     userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo") as string) : null,
 };
 
+interface AuthState {
+    accessToken: string;
+    userInfo: any;
+}
+
+const initialSate: AuthState = {
+    accessToken: null,
+    userInfo: null,
+};
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
         setCredentials: (state: any, action: any) => {
             state.userInfo = action.payload;
+            state.accessToken = action.payload.token;
             localStorage.setItem("userInfo", JSON.stringify(action.payload));
+            // sessionStorage.setItem("userInfo", JSON.stringify(action.payload));
         },
 
         //@ts-ignore

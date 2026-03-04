@@ -1,12 +1,11 @@
 
-import React from "react";
+import React, {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {logout} from "../../../features/authSlice";
 import {useLogoutMutation} from "../../../features/userApiSlice";
 import {useDispatch} from "react-redux";
-
-
+import ProjectSideDropdown from "../Graph & Tables/ProjectSideDropdown";
 
 import {
     BarChart2Icon,
@@ -15,24 +14,24 @@ import {
     Settings2Icon,
     LogOutIcon,
     TrendingUp,
-    UserCircle2Icon,
     BarChart4Icon,
-    User,
     MessageCircleMoreIcon,
     PackageSearchIcon,
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 
-export default function SideBar() {
-    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+export default function ChatSideBar() {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const {userInfo} = useSelector((state: any) => state.auth)
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [logoutApiCall] = useLogoutMutation();
 
+    const [openProjectFolder, setOpenProjectFolder] = useState<string | null>(null);
+
     const SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
-        {name: "AI Construction Agent", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
+        {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
         { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "Equipment Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
@@ -42,13 +41,8 @@ export default function SideBar() {
 
     const AUTH_SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
-        { name: "AI Construction Chat ", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
-        { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
-        {name: "My Projects", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
-        {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
-        {name: "My Equipment", icon: UserCircle2Icon, color: "#6324f1", href: `/equipments/user/${userInfo?.id}`},
-        {name: "Equipment Analytic", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
-        {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
+        {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
+        { name: "Project Table", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "PDF Preview", icon: PackageSearchIcon, color: "#10B451", href: "/pdfViewer"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
@@ -69,7 +63,7 @@ export default function SideBar() {
     return (
         <main className={"bg-[#0A0A0A]"}>
             <motion.div className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0 ${isSidebarOpen ? `w-30` : "w-20"}`}
-            animate={{width: isSidebarOpen ? 240 : 80}}>
+                        animate={{width: isSidebarOpen ? 240 : 80}}>
                 <div className={"bg-[#101010] h-full backdrop-blur-md p-4 flex flex-col border-r border-gray-800"}>
                     <motion.button
                         whileHover={{scale: 1.1}}
@@ -81,6 +75,10 @@ export default function SideBar() {
 
                     { userInfo ? (
                         <section>
+
+                            {/* Project Dropdown*/}
+                            <ProjectSideDropdown isSidebarOpen={isSidebarOpen} />
+
                             {AUTH_SIDEBAR_ITEMS.map((item, index) => {
                                 const content = (
                                     <motion.div
