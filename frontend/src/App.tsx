@@ -25,6 +25,7 @@ import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
 import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
 import {ExcelCard} from "../src/components/ExcelCard";
 import PDFViewerPage from "../src/screens/mainscreen/PdfViewerPage";
+import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMainScreen";
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
                 <Route path={"/resetPassword"} element={<PasswordResetScreen />} />
                 <Route path={"excellists"} element={<ExcelCard />} />
                 <Route path={"/pdfViewer"} element={<PDFViewerPage/>} />
+                <Route path={"/chat/:id"} element={<ConversationMainScreen/>} />
 
             </Routes>
 

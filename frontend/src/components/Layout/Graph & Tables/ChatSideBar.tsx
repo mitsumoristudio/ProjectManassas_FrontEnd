@@ -19,6 +19,7 @@ import {
     PackageSearchIcon,
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
+import {toast} from "react-toastify";
 
 export default function ChatSideBar() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +28,6 @@ export default function ChatSideBar() {
     const dispatch = useDispatch();
     const [logoutApiCall] = useLogoutMutation();
 
-    const [openProjectFolder, setOpenProjectFolder] = useState<string | null>(null);
 
     const SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
@@ -36,7 +36,6 @@ export default function ChatSideBar() {
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "Equipment Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
         {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
-
     ]
 
     const AUTH_SIDEBAR_ITEMS = [
@@ -59,6 +58,16 @@ export default function ChatSideBar() {
             console.log(error)
         }
     }
+
+    // Confirm if the user exists
+    const requireAuth = (callback: () => void) => {
+        if (!userInfo) {
+            toast.error("You must be logged in to create a project");
+            return;
+        }
+        callback();
+    }
+
 
     return (
         <main className={"bg-[#0A0A0A]"}>

@@ -6,8 +6,8 @@ import {BASE_URL, PRODUCTION_URL} from "../util/urlconstants";
 
 // Development && Published URL
 const baseQuery = fetchBaseQuery({
-    baseUrl: BASE_URL,
-   //   baseUrl: PRODUCTION_URL,
+   // baseUrl: BASE_URL,
+      baseUrl: PRODUCTION_URL,
     prepareHeaders: (headers, {getState}) => {
         const token = (getState() as any).auth?.userInfo?.token;
 
@@ -22,7 +22,7 @@ const baseQuery = fetchBaseQuery({
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: baseQuery,
-    tagTypes: ["Project", "User", "ImageFile", "Equipment", "Chat", "Message", "ConversationProject"],
+    tagTypes: ["Project", "User", "ImageFile", "Equipment", "Chat", "Message", "ConversationProject", "ConversationMessage", "ConversationChatSession"],
     endpoints: () =>({
     })
 })
