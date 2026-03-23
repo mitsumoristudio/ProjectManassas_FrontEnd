@@ -5,12 +5,11 @@ import ToggleSwitch from "../../components/Layout/ToggleSwitch.jsx";
 interface ChatInputProps {
     onSend: (message: string) => void;
     disabled?: boolean;
-    onToggle?: (isOn: boolean )=> void;
     value: string;
     onChange : (value: string) => void;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggle, value, onChange }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, value, onChange }) => {
  //   const [inputValue, setInputValue] = useState("");
     const [isDocumentMode, setIsDocumentMode] = useState(false);
 
@@ -31,7 +30,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
     const handleToggle = () => {
         setIsDocumentMode(prev => {
             const newState = !prev;
-            onToggle?.(newState);
             return newState;
         });
     };
@@ -63,9 +61,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, onToggl
                 Send
             </button>
             {/* Example 1: Switch with a label */}
-            <ToggleSwitch labelOn={"Document Mode"}
-                          labelOff={"Normal Mode"}
-                          onToggle={handleToggle} />
+
 
         </div>
         </div>

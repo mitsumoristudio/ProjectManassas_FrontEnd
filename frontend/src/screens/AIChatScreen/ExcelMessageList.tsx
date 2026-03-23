@@ -1,0 +1,60 @@
+import React from "react";
+import {useEffect, useRef} from "react";
+import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
+import ChatMessageItem from "./ChatMessageItem";
+import ExcelMessageItem from "../../screens/AIChatScreen/ExcelMessageItem";
+
+export default function ExcelMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false, onSpeakHandler,
+                                    onPause, onResume, onStop, isPlaying, isPaused }:
+                                {   messages: any,
+                                    inProgressMessage: any,
+                                    noMessagesContent: any,
+                                    showSources?: boolean,
+                                    onSpeakHandler?: (text: string) => void,
+                                    onPause?: () => void,
+                                    onResume?: () => void,
+                                    onStop?: () => void,
+                                    isPlaying?: boolean,
+                                    isPaused?: boolean,
+                                }) {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (container) container.scrollTop = container.scrollHeight;
+    }, [messages, inProgressMessage]);
+
+    const isEmpty = !messages?.some((m: any) => m.role && m.text?.trim());
+
+    return (
+        <div className="flex-1 overflow-y-auto p-1" ref={containerRef}>
+            {messages?.map((m: any, idx: number) => (
+                <ExcelMessageItem
+                    key={idx}
+                    message={m}
+                    showSources={showSources}
+                    onSpeak={onSpeakHandler}
+                    inProgress={inProgressMessage}
+                    onPause={onPause}
+                    onResume={onResume}
+                    onStop={onStop}
+                    isPlaying={isPlaying}
+                    isPaused={isPaused}
+                />
+            ))}
+
+            {inProgressMessage && (
+                <>
+                    <ChatMessageItem message={messages}
+                                     showSources={showSources} inProgress={inProgressMessage}
+                    />
+
+                    <CustomLoaderSmall/>
+                </>
+            )}
+            {!inProgressMessage && isEmpty && (
+                <div className="text-gray-900 text-center"> {noMessagesContent || "No messages yet."}</div>
+            )}
+        </div>
+    );
+}

@@ -26,6 +26,8 @@ import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
 import {ExcelCard} from "../src/components/ExcelCard";
 import PDFViewerPage from "../src/screens/mainscreen/PdfViewerPage";
 import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMainScreen";
+import {ChatSpreadSheet} from "../src/screens/AIChatScreen/ChatSpreadSheet";
+
 
 function App() {
   return (
@@ -58,6 +60,7 @@ function App() {
                 <Route path={"excellists"} element={<ExcelCard />} />
                 <Route path={"/pdfViewer"} element={<PDFViewerPage/>} />
                 <Route path={"/chat/:id"} element={<ConversationMainScreen/>} />
+                <Route path={"/spreadsheet"} element={<ChatSpreadSheet/>} />
 
             </Routes>
 

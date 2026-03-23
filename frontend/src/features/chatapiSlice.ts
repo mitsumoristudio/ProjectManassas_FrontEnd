@@ -20,8 +20,25 @@ export interface SendAIExcelMessagePayload {
     };
 }
 
+export interface TableCell {
+    columnIndex: number;
+    columnName: string;
+    value: string;
+}
+
+export interface TableRow {
+    rowIndex: number;
+    cells: TableCell[];
+}
+
+export interface TableColumn {
+    columnIndex: number;
+    columnName: string;
+    sheetId: string;
+}
+
 export const chatApiSlice = apiSlice.injectEndpoints({
-    endpoints: (builder: any) => {
+    endpoints: (builder) => {
         // @ts-ignore
         // @ts-ignore
         return ({
@@ -124,7 +141,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     method: "POST",
                     body: payload,
                 }),
-                invalidatesTags: ["Chats"],
+                invalidatesTags: ["Chat"],
             }),
 
             getExcelIngestedFiles: builder.query({
@@ -136,7 +153,39 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 }),
                 keepUnusedDataFor: 5,
                 //@ts-ignore
-                providesTags: ["Chats"],
+                providesTags: ["Chat"],
+            }),
+
+            getColumnsBySheetId: builder.query<TableColumn[], string>({
+                query: (sheetId: string) => ({
+                    url: `${EXCEL_URL}/column/${sheetId}`,
+                    method: "GET",
+                }),
+                transformResponse: (res: any) => Array.isArray(res) ? res : [],
+                providesTags: ["TableDatasetColumn"],
+            }),
+
+            getRowsBySheetId: builder.query<TableRow[], string>({
+                query: (sheetId: string) => ({
+                    url: `${EXCEL_URL}/rows/${sheetId}`,
+                    method: "GET",
+                }),
+                transformResponse: (res: any) => Array.isArray(res) ? res : [],
+                providesTags: ["TableDatasetCell"],
+            }),
+
+            updateExcelCell: builder.mutation<void, {
+                sheetId: string,
+                rowIndex: number,
+                columnIndex: number,
+                value: string;
+            }>({
+                query: ({sheetId, rowIndex, columnIndex, value}) => ({
+                    url: `${EXCEL_URL}/edit/${sheetId}`,
+                    method: "PATCH",
+                    body: {sheetId, rowIndex, value, columnIndex},
+                }),
+                invalidatesTags: ["TableDatasetCell"],
             }),
 
             deleteExcelIngestedFiles: builder.mutation({
@@ -144,7 +193,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     url: `${EXCEL_URL}/${documentId}`,
                     method: "DELETE",
                 }),
-                invalidatesTags: ["Chats"],
+                invalidatesTags: ["Chat"],
             }),
 
             getPdfIngested: builder.query({
@@ -156,7 +205,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 }),
                 keepUnusedDataFor: 5,
                 //@ts-ignore
-                providesTags: ["Chats"],
+                providesTags: ["Chat"],
             }),
 
             deletePdfIngested: builder.mutation({
@@ -164,7 +213,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     url: `${PDF_URL}/${documentId}`,
                     method: "DELETE",
                 }),
-                invalidatesTags: ["Chats"],
+                invalidatesTags: ["Chat"],
             }),
 
             deleteEntirePdf: builder.mutation({
@@ -191,8 +240,11 @@ export const {
     useSendSummaryAIMessageMutation,
     useSendSafetyAIMessageMutation,
     useGetPdfIngestedQuery,
+    useUpdateExcelCellMutation,
     useDeleteExcelIngestedFilesMutation,
     useSendExcelDocumentMutation,
     useGetExcelIngestedFilesQuery,
     useSendAIExcelMessageMutation,
+    useGetColumnsBySheetIdQuery,
+    useGetRowsBySheetIdQuery,
 } = chatApiSlice;

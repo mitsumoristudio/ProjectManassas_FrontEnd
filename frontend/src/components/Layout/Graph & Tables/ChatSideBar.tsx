@@ -17,6 +17,7 @@ import {
     BarChart4Icon,
     MessageCircleMoreIcon,
     PackageSearchIcon,
+    LucideSheet,
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 import {toast} from "react-toastify";
@@ -41,6 +42,7 @@ export default function ChatSideBar() {
     const AUTH_SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
         {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
+        { name: "SpreadSheet", icon:LucideSheet , color: "#FFED6C", href: "/spreadsheet"},
         { name: "Project Table", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "PDF Preview", icon: PackageSearchIcon, color: "#10B451", href: "/pdfViewer"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},

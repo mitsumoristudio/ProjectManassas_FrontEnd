@@ -2,10 +2,11 @@ import {apiSlice} from "./apiSlice";
 
 const CONVERSATION_URL = "/api/conversation";
 
-type UpdateProjectRequest = {
+export interface UpdateProjectRequest  {
     id: string;
     chatProjectTitle: string;
 };
+
 
 export const conversationApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({

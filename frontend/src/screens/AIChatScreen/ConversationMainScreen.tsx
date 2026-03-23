@@ -18,14 +18,11 @@ import {
     useSendProposalDraftMutation,
     useGetExcelIngestedFilesQuery,
     useSendAIExcelMessageMutation,
-  //  useSendProjectAdvisorMutation,
 } from "../../features/chatapiSlice";
 
 import {useGetProjectIdQuery,
         useChatProjectAdvisorMutation,
         useListProjectConversationByIdQuery} from "../../features/conversationapiSlice";
-
-import { useSendProjectAdvisorMutation} from "../../features/chatapiSlice";
 
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect, useRef} from "react";
@@ -115,7 +112,6 @@ export function ConversationMainScreen() {
     const [chatProjectAdvisor] = useChatProjectAdvisorMutation();
     const [sendEquipmentAIMessage] = useSendAIEquipmentMessageMutation();
     const [sendProposalAIMessage] = useSendProposalDraftMutation();
-  //  const [sendAdvisorAIMessage] = useSendProjectAdvisorMutation();
 
     const keyword = useParams();
 
@@ -873,7 +869,6 @@ export function ConversationMainScreen() {
                                 <div className="flex-1">
                                     <ChatInput onSend={(text: string) => handleAISendBasedOnModel(text)}
                                                disabled={isLoading}
-                                               onToggle={(checked) => handleSwitch(checked)}
                                                value={inputValue}
                                                onChange={setInputValue}
                                     />
