@@ -27,12 +27,21 @@ export default function NavBarComponent() {
         }
     }
 
-    const navLinks = [
-        { name: 'Home', href: '/' },
-        { name: 'Product', href: '/projects' },
-        { name: 'Contact', href: '/contactUs' },
-        { name: 'About', href: '/about' },
+    const navigationItems = [
+        { label: "Home", href: "/" },
+        { label: "Demo", href: "https://calendly.com/smitsumori-morisolution" },
+        { label: "Contact", href: "/contactUs" },
+        { label: "About", href: "/about" },
     ];
+
+    const user_auth_navigationItems = [
+        { label: "Home", href: "/" },
+        { label: "Projects", href: "/projects" },
+        { label: "Contact", href: "/contactUs" },
+        { label: "Demo", href: "https://calendly.com/smitsumori-morisolution" },
+        { label: "About", href: "/about" },
+    ];
+
 
     return (
         <>
@@ -47,13 +56,28 @@ export default function NavBarComponent() {
                                         <path fillRule="evenodd" clipRule="evenodd" d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z" fill="#30E0A5"/>
                                     </svg>
                                 </div>
-                                <nav className="hidden md:flex space-x-6">
-                                    {navLinks.map((link) => (
-                                        <a key={link.name} href={link.href} className="text-md font-semibold text-gray-300 hover:text-white transition-colors">
-                                            {link.name}
-                                        </a>
-                                    ))}
-                                </nav>
+                                {userInfo ? (
+                                    <section>
+                                        <nav className="hidden md:flex space-x-6">
+                                            {user_auth_navigationItems.map((link) => (
+                                                <a key={link.label} href={link.href} className="text-md font-semibold text-gray-300 hover:text-white transition-colors">
+                                                    {link.label}
+                                                </a>
+                                            ))}
+                                        </nav>
+                                    </section>
+                                ) : (
+                                    <section>
+                                        <nav className="hidden md:flex space-x-6">
+                                            {navigationItems.map((link) => (
+                                                <a key={link.label} href={link.href} className="text-md font-semibold text-gray-300 hover:text-white transition-colors">
+                                                    {link.label}
+                                                </a>
+                                            ))}
+                                        </nav>
+                                    </section>
+                                )}
+
                             </div>
                             <div className="hidden md:flex items-center space-x-4">
                                 <button className="text-gray-300 hover:text-white">
@@ -86,12 +110,12 @@ export default function NavBarComponent() {
                         </div>
                     </div>
                     {/* Mobile Menu */}
-                    {isMenuOpen && (
+                    {isMenuOpen && !userInfo && (
                         <div className="md:hidden bg-[#111111] py-4">
                             <nav className="flex flex-col items-center space-y-4">
-                                {navLinks.map((link) => (
-                                    <a key={link.name} href={link.href} className="text-lg font-medium text-gray-300 hover:text-white transition-colors">
-                                        {link.name}
+                                {navigationItems.map((link) => (
+                                    <a key={link.label} href={link.href} className="text-lg font-medium text-gray-300 hover:text-white transition-colors">
+                                        {link.label}
                                     </a>
                                 ))}
 

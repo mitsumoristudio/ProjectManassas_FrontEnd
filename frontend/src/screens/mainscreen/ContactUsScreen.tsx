@@ -16,7 +16,7 @@ export default function ContactUsScreen() {
 
         try {
             await createEmail({
-                to: "mitsumori@nashmanassas.org",
+                to: "smitsumori@morisolution.com",
                 subject: `New contact message from ${formData.name}`,
                 message: `
                         Name: ${formData.name} <br/>
