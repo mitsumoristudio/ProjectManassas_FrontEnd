@@ -33,6 +33,7 @@ import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 import {toast} from "react-toastify";
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
 import { sanitizeTextForTTS} from "../../screens/AIChatScreen/sanitizeTextForTTS";
+import {assets} from "../../assets/assets";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -603,7 +604,12 @@ export function ChatMainScreen() {
                                                     {excelTables.map((table: any) => (
                                                         <option key={table.sheetId} value={table.sheetId} >
 
-                                                            📄 {table.tableName}
+                                                            <img
+                                                                alt=""
+                                                                src={assets.icons8_excel_48}
+                                                                className="h-8 w-8 text-primary flex-shrink-0"
+                                                            />
+                                                            {table.tableName}
                                                         </option>
                                                     ))}
 
@@ -671,6 +677,11 @@ export function ChatMainScreen() {
                                                                     className="border rounded-lg p-4 flex justify-between items-start"
                                                                 >
                                                                     <div className="text-gray-800 text-sm space-y-1">
+                                                                        <img
+                                                                            alt=""
+                                                                            src={assets.icons8_pdf_48}
+                                                                            className="h-6 w-6 text-primary flex-shrink-0"
+                                                                        />
                                                                         <p><strong>ID:</strong> {doc.documentId}</p>
                                                                         <p>📄 Pages: {doc.pageCount}</p>
                                                                         <p>🧩 Chunks: {doc.chunkCount}</p>

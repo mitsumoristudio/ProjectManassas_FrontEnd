@@ -32,6 +32,7 @@ import {
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
 import {sanitizeTextForTTS} from "../../screens/AIChatScreen/sanitizeTextForTTS";
 import ExcelMessageList from "../../screens/AIChatScreen/ExcelMessageList";
+import {assets} from "../../assets/assets";
 
 export function ChatSpreadSheet() {
 
@@ -439,9 +440,13 @@ export function ChatSpreadSheet() {
                             <div
                                 className={"h-14 border-b border-border px-4 my-2 flex items-center justify-between flex-shrink-0"}>
                                 <div className={"flex flex-1 justify-items-start mx-1 px-2 gap-x-4"}>
-                                    <div className={"flex items-center gap-2 mt-2"}>
-                                        <label className={"text-sm font-medium text-gray-800"}>
-                                            Select Table
+                                    <div className={"flex items-center gap-3 mt-2"}>
+                                        <label className={"flex flex-row text-sm font-medium text-gray-800 gap-x-2"}>
+                                            <img
+                                                alt=""
+                                                src={assets.icons8_excel_48}
+                                                className="h-8 w-8 text-primary flex-shrink-0"
+                                            />
                                         </label>
 
                                         <select
@@ -471,8 +476,10 @@ export function ChatSpreadSheet() {
                                             {excelTables.map((table: any) => (
                                                 <option key={table.sheetId} value={table.sheetId}>
 
-                                                    📄 {table.tableName}
+                                                    {table.tableName}
                                                 </option>
+
+
                                             ))}
                                         </select>
 

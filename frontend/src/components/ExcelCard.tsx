@@ -3,6 +3,7 @@ import React, { useState, useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {useGetExcelIngestedFilesQuery, useDeleteExcelIngestedFilesMutation} from "../../src/features/chatapiSlice";
 import {toast} from "react-toastify";
+import {assets} from "../assets/assets";
 
 
 export function ExcelCard() {
@@ -16,7 +17,7 @@ export function ExcelCard() {
         isError: isExcelError,
     } = useGetExcelIngestedFilesQuery({keyword});
 
-    const [deleteExcelFile, {isloading: isDeleting}] = useDeleteExcelIngestedFilesMutation();
+    const [deleteExcelFile] = useDeleteExcelIngestedFilesMutation();
 
     // Delete Excel File
     const deleteExcelHandler = async (id: string) => {
@@ -62,7 +63,13 @@ export function ExcelCard() {
                                 className="border rounded-lg p-4 flex justify-between items-start"
                             >
                                 <div className="text-gray-800 text-sm space-y-2 font-medium">
-                                    <p className={"gap-2"}>📄 Table Name: {doc.tableName}</p>
+                                    <img
+                                        alt=""
+                                        src={assets.icons8_excel_48}
+                                        className="h-7 w-7 text-primary flex-shrink-0"
+                                    />
+                                    <p className={"gap-2"}>
+                                        Table Name: {doc.tableName}</p>
                                     <div className={"flex flex-row mx-auto justify-start items-start"}>
                                         <p className={"text-sm px-4"}>Created At:</p>
                                         <p className=" text-gray-500">{new Date(doc.created).toLocaleDateString(

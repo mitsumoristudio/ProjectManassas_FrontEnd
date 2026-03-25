@@ -4,6 +4,7 @@ import React from "react";
 import cn from "../../util/util";
 import {Upload, FileSpreadsheet, XOctagon, BadgeCheckIcon} from "lucide-react";
 import {Button} from "@mui/material";
+import {assets} from "../../assets/assets";
 
 export interface UploadExcelIngestionProps {
     id: string;
@@ -105,7 +106,12 @@ export default function ExcelIngestion({ documents, onUpload, onRemove, maxFiles
                                 className="flex items-center gap-3 p-3 border border-border rounded-lg hover-elevate"
                                 data-testid={`document-${doc.id}`}
                             >
-                                <FileSpreadsheet className="h-5 w-5 text-primary flex-shrink-0" />
+                                {/*<FileSpreadsheet className="h-5 w-5 text-primary flex-shrink-0" />*/}
+                                <img
+                                    alt=""
+                                    src={assets.icons8_excel_48}
+                                    className="h-5 w-5 text-primary flex-shrink-0"
+                                />
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-medium text-foreground truncate">
                                         {doc.tableName}
