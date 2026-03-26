@@ -22,11 +22,10 @@ export default function Homepage() {
                 {/* Hero Section */}
                 <section className="text-center container mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-tight">
-                        The AI solution for <br className="hidden sm:block"/> successful project
+                        The AI Solution For <br className="hidden sm:block"/> Successful Project
                     </h1>
                     <p className="max-w-2xl mx-auto mt-6 text-lg sm:text-xl text-gray-400">
-                        Mori Solution is a construction AI tool for Project Manager and Superintendent designed to analyze shear amount of contract documents and simplifying the context.
-                        We are built to scale and ready to solve all your pain points on your next project.
+                        We Unify Construction Contracts, Schedules, Estimates And RFIs Into Project Intelligence Layer So Your Construction Team Can Make Faster, More Defensible Decisions.
 
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -86,17 +85,24 @@ export default function Homepage() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
                         <div className="col-span-2 md:col-span-4 lg:col-span-2">
-                            <svg width="30" height="30" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" clipRule="evenodd" d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z" fill="#30E0A5"/>
-                            </svg>
-                            <p className="mt-4 text-md text-gray-400">© 2025, By Satoshi Mitsumori. All rights reserved.</p>
-                        </div>
-                        {['Product', 'Resources', 'About', 'Contact'].map((heading) => (
-                            <div key={heading}>
-                                <h3 className="text-sm font-semibold text-white tracking-wider uppercase">{heading}</h3>
-
+                            <div className={"flex flex-row"}>
+                                {/*<svg width="30" height="30" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">*/}
+                                {/*    <path fillRule="evenodd" clipRule="evenodd" d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z" fill="#30E0A5"/>*/}
+                                {/*</svg>*/}
+                                <h2 className={"mt-4 text-md font-semibold text-2xl text-gray-200"}>Mori Solution LLC.</h2>
                             </div>
-                        ))}
+
+                            <p className={"mt-4 text-md font-semibold text-lg text-gray-200"}>Contact</p>
+                            <p className={"mt-4 text-md font-semibold text-gray-200"}>smitsumori@morisolution.com</p>
+                            <p className={"mt-4 text-md font-semibold text-gray-200"}>615.484.0567</p>
+                            <p className="mt-4 text-md text-gray-400">© 2025, By Satoshi Mitsumori | All Rights Reserved | Privacy Policy.</p>
+                        </div>
+                        {/*{['Product', 'Resources', 'About', 'Contact'].map((heading) => (*/}
+                        {/*    <div key={heading}>*/}
+                        {/*        <h3 className="text-sm font-semibold text-white tracking-wider uppercase">{heading}</h3>*/}
+
+                        {/*    </div>*/}
+                        {/*))}*/}
                     </div>
                 </div>
             </footer>
