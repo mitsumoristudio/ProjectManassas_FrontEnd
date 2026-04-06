@@ -18,6 +18,7 @@ import {
     MessageCircleMoreIcon,
     PackageSearchIcon,
     LucideSheet,
+    LucideFileText
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 import {toast} from "react-toastify";
@@ -45,6 +46,7 @@ export default function ChatSideBar() {
         { name: "SpreadSheet", icon:LucideSheet , color: "#FFED6C", href: "/spreadsheet"},
         { name: "Project Table", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
         {name: "PDF Preview", icon: PackageSearchIcon, color: "#10B451", href: "/pdfViewer"},
+        {name: "Document View", icon: LucideFileText, color: "6366f1", href: "/documentViewer"},
         {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
     ]
