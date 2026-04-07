@@ -29,11 +29,18 @@ import {
     UNDO_COMMAND,
 } from 'lexical';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
+import {$getSelectionStyleValueForProperty} from '@lexical/selection';
+import {parseFontSizeForToolbar} from "../../lexical/plugins/FontSize";
+import FontDropDown from "../../lexical/plugins/FontDropDown";
+import MoreSimpleFontDropDown, {
+    FONT_FAMILY_OPTIONS,
+    FONT_SIZE_OPTIONS
+} from '../../lexical/plugins/MoreSimpleFontDropDown';
 
 function Divider() {
     return <div className="w-px bg-gray-200 mx-1" />;
 }
+
 
 export default function ToolbarPlugin() {
     const [editor] = useLexicalComposerContext();
@@ -47,6 +54,9 @@ export default function ToolbarPlugin() {
     const [isUnderline, setIsUnderline] = useState(false);
     const [isStrikethrough, setIsStrikethrough] = useState(false);
 
+    const [fontSize, setFontSize] = useState("12px");
+    const [fontFamily, setFontFamily] = useState("Arial");
+
     const $updateToolbar = useCallback(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
@@ -54,6 +64,21 @@ export default function ToolbarPlugin() {
             setIsItalic(selection.hasFormat('italic'));
             setIsUnderline(selection.hasFormat('underline'));
             setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+            const fontSizeValue = $getSelectionStyleValueForProperty(
+                selection,
+                'font-size',
+                '15px'
+            );
+
+            const fontFamilyValue = $getSelectionStyleValueForProperty(
+                selection,
+                'font-family',
+                'Arial'
+            );
+
+            setFontSize(parseFontSizeForToolbar(fontSizeValue) || '15px');
+            setFontFamily(fontFamilyValue || 'Arial');
         }
     }, []);
 
@@ -111,6 +136,30 @@ export default function ToolbarPlugin() {
             >
                 <RedoIcon size={18} />
             </button>
+
+            <Divider />
+
+            <div className="flex mb-[1px] bg-white p-1 rounded-t-lg" ref={toolbarRef}>
+
+                {/* existing buttons */}
+
+
+                <MoreSimpleFontDropDown
+                    editor={editor}
+                    value={fontFamily}
+                    options={FONT_FAMILY_OPTIONS}
+                    style={"font-family"}
+                />
+            </div>
+
+            <Divider />
+
+            <MoreSimpleFontDropDown
+                editor={editor}
+                value={fontSize}
+                options={FONT_SIZE_OPTIONS}
+                style={"font-size"}
+            />
 
             <Divider />
 

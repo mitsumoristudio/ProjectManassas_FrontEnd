@@ -37,8 +37,8 @@ export const blockTypeToBlockName = {
 };
 
 //disable eslint sorting rule for quick reference to toolbar state
-/* eslint-disable sort-keys-fix/sort-keys-fix */
-const INITIAL_TOOLBAR_STATE = {
+
+export const INITIAL_TOOLBAR_STATE = {
     bgColor: '#fff',
     blockType: 'paragraph' as keyof typeof blockTypeToBlockName,
     canRedo: false,
