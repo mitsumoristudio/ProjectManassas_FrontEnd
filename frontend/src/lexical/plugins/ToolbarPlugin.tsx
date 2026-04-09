@@ -14,7 +14,10 @@ import {
     LucideHighlighter,
     ScissorsIcon,
     ClipboardPasteIcon,
+    PrinterIcon,
+    SaveIcon,
     ListIcon,
+    FolderIcon,
     FilesIcon
 } from 'lucide-react';
 
@@ -57,19 +60,127 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {$getSelectionStyleValueForProperty} from '@lexical/selection';
 import {parseFontSizeForToolbar} from "../../lexical/plugins/FontSize";
 import BlockFormatDropdown from "../../lexical/plugins/BlockFormatDropdown";
+import parseHtmlToDocx from "../../lexical/utils/parseHtmlToDocx";
+
 import MoreSimpleFontDropDown, {
     FONT_FAMILY_OPTIONS,
     FONT_SIZE_OPTIONS
 } from '../../lexical/plugins/MoreSimpleFontDropDown';
+import { $generateHtmlFromNodes } from '@lexical/html';
 import {blockTypeToBlockName} from "@/src/lexical/plugins/ToolbarContext";
 import {isKeyboardInput} from "../../lexical/utils/focusUtils";
 import {formatCheckList} from "../../lexical/utils/utils";
 import {ListPlugin} from "@lexical/react/LexicalListPlugin";
 // import {formatHeading} from "../../lexical/utils/utils";
 
+import {
+    Document,
+    Packer,
+    Paragraph,
+    HeadingLevel,
+    TextRun,
+} from "docx";
+import { saveAs } from "file-saver";
+
 function Divider() {
     return <div className="w-px bg-gray-200 mx-1" />;
 }
+
+export function getEditorHtml(editor) {
+    let html = '';
+
+    editor.update(() => {
+        html = $generateHtmlFromNodes(editor, null);
+    });
+
+    return html;
+}
+
+async function exportToDocx(editor) {
+    const html = getEditorHtml(editor);
+    const content = parseHtmlToDocx(html);
+
+    const doc = new Document({
+        numbering: {
+            config: [
+                {
+                    reference: "numbered-list",
+                    levels: [
+                        {
+                            level: 0,
+                            format: "decimal",
+                            text: "%1.",
+                        },
+                    ],
+                },
+            ],
+        },
+        sections: [
+            {
+                children: [
+                    new Paragraph({
+                        text: "Report",
+                        heading: HeadingLevel.TITLE,
+                    }),
+                    ...content,
+                ],
+            },
+        ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, "report.docx");
+}
+
+export function buildPdfHtml(content) {
+    return `
+    <html>
+      <head>
+        <title>Document:</title>
+        <style>
+          body {
+            font-family: "Times New Roman", serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+          }
+
+          .page {
+            padding: 1in;
+          }
+
+          h1, h2, h3 {
+            page-break-after: avoid;
+          }
+
+          p {
+            margin: 10px 0;
+          }
+
+          ul, ol {
+            margin-left: 20px;
+          }
+
+          @media print {
+            @page {
+              margin: 1in;
+            }
+          }
+        </style>
+      </head>
+
+      <body>
+        <div class="page">
+          ${content}
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+
+
+
 
 const initialConfig = {
     nodes: [ListNode, ListItemNode],
@@ -98,7 +209,18 @@ export default function ToolbarPlugin() {
     const [fontSize, setFontSize] = useState("12px");
     const [fontFamily, setFontFamily] = useState("Arial");
 
+    function exportToPdf(editor) {
+        const content = getEditorHtml(editor);
+        const html = buildPdfHtml(content);
 
+        const win = window.open('', '_blank');
+
+        win.document.write(html);
+        win.document.close();
+
+        win.focus();
+        win.print(); // user chooses "Save as PDF"
+    }
 
 
     const $updateToolbar = useCallback(() => {
@@ -202,11 +324,19 @@ export default function ToolbarPlugin() {
     // @ts-ignore
     return (
         <div
-            className="flex mb-[1px] bg-white p-1 rounded-t-lg"
+            className="flex flex-row mb-[1px] bg-white p-1 rounded-t-lg"
             ref={toolbarRef}
         >
+            <button
+                title={"Open Folder"}
+                onClick={ async () => {}}
+                className={"hover:bg-gray-300 rounded-md px-2 transition-colors"}>
+                <FolderIcon size={18} />
+            </button>
+
             {/* Undo */}
             <button
+                title={"Undo"}
                 disabled={!canUndo}
                 onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
                 className={baseBtn}
@@ -216,6 +346,7 @@ export default function ToolbarPlugin() {
 
             {/* Redo */}
             <button
+                title={"Redo"}
                 disabled={!canRedo}
                 onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
                 className={baseBtn}
@@ -246,6 +377,7 @@ export default function ToolbarPlugin() {
 
             {/* Bold */}
             <button
+                title={"Bold"}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
                 className={`${baseBtn} ${isBold ? active : ''}`}
             >
@@ -254,6 +386,7 @@ export default function ToolbarPlugin() {
 
             {/* Italic */}
             <button
+                title={"Italic"}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
                 className={`${baseBtn} ${isItalic ? active : ''}`}
             >
@@ -262,6 +395,7 @@ export default function ToolbarPlugin() {
 
             {/* Underline */}
             <button
+                title={"Underline"}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
                 className={`${baseBtn} ${isUnderline ? active : ''}`}
             >
@@ -270,6 +404,7 @@ export default function ToolbarPlugin() {
 
             {/* Strike */}
             <button
+                title={"Strikethrough"}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
                 className={`${baseBtn} ${isStrikethrough ? active : ''}`}
             >
@@ -280,6 +415,7 @@ export default function ToolbarPlugin() {
 
             {/* Alignments */}
             <button
+                title={"Align Left"}
                 onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
                 className={baseBtn}
             >
@@ -287,6 +423,7 @@ export default function ToolbarPlugin() {
             </button>
 
             <button
+                title={"Align Center"}
                 onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}
                 className={baseBtn}
             >
@@ -294,6 +431,7 @@ export default function ToolbarPlugin() {
             </button>
 
             <button
+                title={"Alight Right"}
                 onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}
                 className={baseBtn}
             >
@@ -301,6 +439,7 @@ export default function ToolbarPlugin() {
             </button>
 
             <button
+                title={"Justify"}
                 onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}
                 className={baseBtn}
             >
@@ -310,6 +449,7 @@ export default function ToolbarPlugin() {
             <Divider />
 
             <button
+                title={"Highlight"}
                 disabled={canHighlight}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'highlight')}
                 className={baseBtn}
@@ -318,6 +458,7 @@ export default function ToolbarPlugin() {
             </button>
 
             <button
+                title={"Copy ClipBoard"}
                 onClick={() => editor.dispatchCommand(COPY_COMMAND, "copy")}
             className={baseBtn}
             >
@@ -325,6 +466,7 @@ export default function ToolbarPlugin() {
             </button>
 
             <button
+                title={"Cut"}
                 onClick={() => editor.dispatchCommand(CUT_COMMAND, "cut")}
                 className={baseBtn}
             >
@@ -332,6 +474,7 @@ export default function ToolbarPlugin() {
             </button>
 
             <button
+                title={"Paste ClipBoard"}
                 onClick={ async () => {
                     const text = await navigator.clipboard.readText();
                     editor.dispatchCommand(INSERT_FROM_CLIPBOARD, text);
@@ -340,6 +483,23 @@ export default function ToolbarPlugin() {
             >
                 <ClipboardPasteIcon size={18} />
             </button>
+
+            <Divider />
+
+            <button
+                title={"Print PDF"}
+                className={"hover:bg-gray-300 rounded-md px-2 transition-colors"}
+            onClick={ async () => {exportToPdf(editor)}}>
+                <PrinterIcon size={18} />
+            </button>
+
+            <button
+                title={"Save as Doc file"}
+                className={"hover:bg-gray-300 rounded-md px-2 transition-colors"}
+                onClick={ async () => {exportToDocx(editor)}}>
+                <SaveIcon size={18} />
+            </button>
+
         </div>
     );
 }
