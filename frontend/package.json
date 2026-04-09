@@ -32,6 +32,8 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "framer-motion": "^12.6.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "lexical": "^0.42.0",
     "lucide-react": "^0.541.0",
     "node-fetch": "^3.3.2",

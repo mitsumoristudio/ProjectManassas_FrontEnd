@@ -143,7 +143,7 @@ export default function DocumentPreviewScreen() {
                 <ChatSideBar/>
 
                 <LexicalComposer initialConfig={editorConfig}>
-                <div className={"w-3/4 flex-1 px-6 py-4 text-black relative leading-5 font-normal text-left rounded-t-lg"}>
+                <div className={"w-3/4 px-6 py-4 text-black relative leading-5 font-normal text-left rounded-t-lg"}>
                     <ToolbarPlugin />
                     <div className={"bg-white relative border min-h-[800px] border-gray-400 rounded-2xl shadow-md"}>
                         <RichTextPlugin contentEditable={
