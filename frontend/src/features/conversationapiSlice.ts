@@ -7,7 +7,6 @@ export interface UpdateProjectRequest  {
     chatProjectTitle: string;
 };
 
-
 export const conversationApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         listAllProjects: builder.query({

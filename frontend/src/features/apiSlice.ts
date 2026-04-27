@@ -1,5 +1,4 @@
 
-
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import {BASE_URL, PRODUCTION_URL} from "../util/urlconstants";
 
@@ -16,14 +15,14 @@ const baseQuery = fetchBaseQuery({
         }
         return headers;
     }
-
 });
 
 export const apiSlice = createApi({
     reducerPath: "api",
     baseQuery: baseQuery,
     tagTypes: ["Project", "User", "ImageFile", "Equipment", "Chat", "Message", "ConversationProject",
-        "ConversationMessage", "ConversationChatSession", "TableDatasetCell", "TableDatasetColumn"],
+        "ConversationMessage", "ConversationChatSession", "TableDatasetCell", "TableDatasetColumn", "ContractAnalyze",
+        "ClauseAnalysis", "PlayWrightProject", "PlayWrightQuery", "AzureBlobs", "ConversationSource", "ChatSource", "ChatMessage"],
     endpoints: () =>({
     })
 })

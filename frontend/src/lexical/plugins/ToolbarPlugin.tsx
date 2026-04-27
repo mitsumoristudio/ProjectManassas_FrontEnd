@@ -16,24 +16,15 @@ import {
     ClipboardPasteIcon,
     PrinterIcon,
     SaveIcon,
-    ListIcon,
+    MessageCircleIcon,
     FolderIcon,
     FilesIcon
 } from 'lucide-react';
 
-import {
-    $createHeadingNode,
-    $createQuoteNode,
-    $isHeadingNode,
-    $isQuoteNode,
-    HeadingTagType,
-} from '@lexical/rich-text';
-import {$patchStyleText, $setBlocksType} from '@lexical/selection';
-
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import {
-    $addUpdateTag,
+
     createCommand,
     $getSelection,
     $isRangeSelection,
@@ -42,24 +33,17 @@ import {
     COMMAND_PRIORITY_LOW,
     FORMAT_ELEMENT_COMMAND,
     FORMAT_TEXT_COMMAND,
-    LexicalEditor,
     REDO_COMMAND,
     SELECTION_CHANGE_COMMAND,
-    SKIP_SELECTION_FOCUS_TAG,
     UNDO_COMMAND,
-    TextFormatType,
-    LexicalCommand,
-    CommandPayloadType,
-    SKIP_DOM_SELECTION_TAG,
     COPY_COMMAND,
     CUT_COMMAND,
-    PASTE_COMMAND, COMMAND_PRIORITY_NORMAL,
+    COMMAND_PRIORITY_NORMAL,
 } from 'lexical';
-import { ListNode, ListItemNode, INSERT_CHECK_LIST_COMMAND, INSERT_ORDERED_LIST_COMMAND } from '@lexical/list';
+import { ListNode, ListItemNode, } from '@lexical/list';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {$getSelectionStyleValueForProperty} from '@lexical/selection';
 import {parseFontSizeForToolbar} from "../../lexical/plugins/FontSize";
-import BlockFormatDropdown from "../../lexical/plugins/BlockFormatDropdown";
 import parseHtmlToDocx from "../../lexical/utils/parseHtmlToDocx";
 
 import MoreSimpleFontDropDown, {
@@ -67,18 +51,13 @@ import MoreSimpleFontDropDown, {
     FONT_SIZE_OPTIONS
 } from '../../lexical/plugins/MoreSimpleFontDropDown';
 import { $generateHtmlFromNodes } from '@lexical/html';
-import {blockTypeToBlockName} from "@/src/lexical/plugins/ToolbarContext";
-import {isKeyboardInput} from "../../lexical/utils/focusUtils";
-import {formatCheckList} from "../../lexical/utils/utils";
-import {ListPlugin} from "@lexical/react/LexicalListPlugin";
-// import {formatHeading} from "../../lexical/utils/utils";
+
 
 import {
     Document,
     Packer,
     Paragraph,
     HeadingLevel,
-    TextRun,
 } from "docx";
 import { saveAs } from "file-saver";
 
@@ -302,7 +281,7 @@ export default function ToolbarPlugin() {
 
     // 🔹 reusable button styles
     const baseBtn =
-        "flex items-center justify-center p-2 rounded-lg hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed";
+        "flex items-center justify-center p-2 rounded-lg shrink-0 hover:bg-gray-200 disabled:opacity-30 disabled:cursor-not-allowed";
 
     const active = "bg-blue-100/30";
 
@@ -324,7 +303,7 @@ export default function ToolbarPlugin() {
     // @ts-ignore
     return (
         <div
-            className="flex flex-row mb-[1px] bg-white p-1 rounded-t-lg"
+            className="flex items-center w-full overflow-x-auto whitespace-nowrap bg-white px-1 gap-1"
             ref={toolbarRef}
         >
             <button
@@ -332,6 +311,13 @@ export default function ToolbarPlugin() {
                 onClick={ async () => {}}
                 className={"hover:bg-gray-300 rounded-md px-2 transition-colors"}>
                 <FolderIcon size={18} />
+            </button>
+
+            <button
+                title={"Print PDF"}
+                className={"hidden md:flex items-center justify-center p-2 rounded-md shrink-0 hover:bg-gray-300"}
+                onClick={ async () => {}}>
+                <MessageCircleIcon size={18} />
             </button>
 
             {/* Undo */}
@@ -363,17 +349,12 @@ export default function ToolbarPlugin() {
                     style={"font-family"}
                 />
 
-
-            <Divider />
-
             <MoreSimpleFontDropDown
                 editor={editor}
                 value={fontSize}
                 options={FONT_SIZE_OPTIONS}
                 style={"font-size"}
             />
-
-            <Divider />
 
             {/* Bold */}
             <button
@@ -410,8 +391,6 @@ export default function ToolbarPlugin() {
             >
                 <Strikethrough size={18} />
             </button>
-
-            <Divider />
 
             {/* Alignments */}
             <button
@@ -488,14 +467,14 @@ export default function ToolbarPlugin() {
 
             <button
                 title={"Print PDF"}
-                className={"hover:bg-gray-300 rounded-md px-2 transition-colors"}
+                className={"hidden md:flex items-center justify-center p-2 rounded-md shrink-0 hover:bg-gray-300"}
             onClick={ async () => {exportToPdf(editor)}}>
                 <PrinterIcon size={18} />
             </button>
 
             <button
                 title={"Save as Doc file"}
-                className={"hover:bg-gray-300 rounded-md px-2 transition-colors"}
+                className={"hidden md:flex items-center justify-center p-2 rounded-md shrink-0 hover:bg-gray-300"}
                 onClick={ async () => {exportToDocx(editor)}}>
                 <SaveIcon size={18} />
             </button>
