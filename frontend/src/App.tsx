@@ -28,9 +28,9 @@ import PDFViewerPage from "../src/screens/mainscreen/PdfViewerPage";
 import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMainScreen";
 import {ChatSpreadSheet} from "../src/screens/AIChatScreen/ChatSpreadSheet";
 import DocumentPreviewScreen from "../src/screens/AIChatScreen/DocumentPreviewScreen";
-// import {ChatDashboard} from "../src/screens/mainscreen/ChatDashTest";
-// import PlaybookProject from "../src/screens/mainscreen/PlaybookProject";
-// import PlaybookTableScreen from "../src/screens/mainscreen/PlaybookTableScreen";
+import {ChatDashboard} from "../src/screens/mainscreen/ChatDashTest";
+import PlaybookProject from "../src/screens/mainscreen/PlaybookProject";
+import PlaybookTableScreen from "../src/screens/mainscreen/PlaybookTableScreen";
 
 function App() {
   return (
@@ -65,9 +65,10 @@ function App() {
                 <Route path={"/chat/:id"} element={<ConversationMainScreen/>} />
                 <Route path={"/spreadsheet"} element={<ChatSpreadSheet/>} />
                 <Route path={"/documentViewer"} element={<DocumentPreviewScreen />} />
-                {/*<Route path={"chatdashboard"} element={<ChatDashboard />} />*/}
-                {/*<Route path={"playbookProject"} element={<PlaybookProject />} />*/}
-                {/*<Route path={"playbooktable"} element={<PlaybookTableScreen />} />*/}
+
+                <Route path={"chatdashboard"} element={<ChatDashboard />} />
+                <Route path={"playbookProject"} element={<PlaybookProject />} />
+                <Route path={"playbooktable"} element={<PlaybookTableScreen />} />
 
             </Routes>
 
