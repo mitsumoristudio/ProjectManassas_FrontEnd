@@ -1,68 +1,56 @@
 import React from "react";
-import { Search, Folder, FileText, Clock, Plus, Share2, MoreHorizontal, Users, Database } from "lucide-react";
+import {
+    Search,
+    Folder,
+    FileText,
+    Clock,
+    Plus,
+    Share2,
+    MoreHorizontal,
+    Users,
+    Database,
+    LucideHome,
+    MessageCircleMoreIcon, BarChart2Icon, DollarSign, TrendingUp, BarChart4Icon, MenuSquare, Sidebar
+} from "lucide-react";
+import {useDispatch, useSelector} from "react-redux";
+import {Link, useNavigate} from "react-router-dom";
+import {useLogoutMutation} from "../../features/userApiSlice";
+import {AnimatePresence, motion} from "framer-motion";
+import SideBar from "../../components/Layout/Graph & Tables/SideBar";
 
-// ================= Sidebar =================
-function Sidebar() {
-    return (
-        <aside className="w-64 bg-white border-r p-4 flex flex-col gap-4">
-            <div className="font-semibold text-lg">Whitford Lane</div>
 
-            <button className="flex items-center gap-2 bg-gray-900 text-white px-3 py-2 rounded-xl">
-                <Plus size={16} /> Create
-            </button>
-
-            <nav className="flex flex-col gap-2 text-sm">
-                <div className="font-medium">Assistant</div>
-                <div className="bg-gray-100 p-2 rounded-lg">Vault</div>
-                <div className="text-gray-500">Statements (A&W)</div>
-                <div className="text-gray-500">Delta Supply</div>
-                <div className="text-gray-500">Supply Agreements</div>
-            </nav>
-
-            <div className="mt-auto flex flex-col gap-2 text-sm text-gray-500">
-                <div>Workflows</div>
-                <div>History</div>
-                <div>Library</div>
-                <div>Guidance</div>
-            </div>
-        </aside>
-    );
-}
-
-// ================= Vault Header =================
-function VaultHeader() {
+function PlayWrightHeader() {
     return (
         <div className="mb-6">
-            <h1 className="text-2xl font-semibold">Vault</h1>
+            <h1 className="text-2xl font-semibold">PlayWright</h1>
             <p className="text-sm text-gray-500">
-                Upload, store, and analyze thousands of documents
+                Upload, store and review hundreds of PDF documents
             </p>
         </div>
     );
 }
 
-// ================= Vault Actions =================
-function VaultActions() {
+function PlayWrightActions() {
     return (
         <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-white p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+            <div className="bg-white p-4 rounded-2xl flex items-center gap-4 shadow-sm cursor-pointer hover:bg-gray-400 transition-colors ease-in-out mb-2">
                 <div className="p-3 bg-gray-100 rounded-xl">
                     <Database size={20} />
                 </div>
                 <div>
-                    <div className="font-medium">Create project</div>
+                    <div className="font-medium">Create Project</div>
                     <div className="text-sm text-gray-500">
-                        Upload a new collection of files or folders.
+                        Upload a new collection of files.
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white p-4 rounded-2xl flex items-center gap-4 shadow-sm">
+            <div className="bg-white p-4 rounded-2xl flex items-center gap-4 shadow-sm cursor-pointer hover:bg-gray-400 transition-colors ease-in-out mb-2">
                 <div className="p-3 bg-gray-100 rounded-xl">
                     <Search size={20} />
                 </div>
                 <div>
-                    <div className="font-medium">Create knowledge base</div>
+                    <div className="font-medium">Create Knowledge Base</div>
                     <div className="text-sm text-gray-500">
                         Distribute a repository of files to your organization.
                     </div>
@@ -93,7 +81,7 @@ function Tabs() {
 // ================= Project Card =================
 function ProjectCard({ project }) {
     return (
-        <div className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition">
+        <div className="bg-white p-4 rounded-2xl hover:bg-gray-200 transition-colors mb-2 cursor-pointer">
             <div className="flex justify-between mb-6">
                 <div className="p-4 bg-gray-100 rounded-xl">
                     {project.shared ? <Users size={20} /> : <Folder size={20} />}
@@ -133,12 +121,12 @@ export default function PlaybookProject() {
 
     return (
         <>
-            <div className="flex h-screen bg-gray-50 text-gray-900">
-                <Sidebar />
+            <div className="flex h-screen bg-gray-50">
+                <SideBar />
 
-                <main className="flex-1 p-6 overflow-y-auto">
-                    <VaultHeader />
-                    <VaultActions />
+                <main className="flex-1 p-6 overflow-y-auto bg-gray-50 text-gray-900">
+                    <PlayWrightHeader />
+                    <PlayWrightActions />
                     <Tabs />
                     <ProjectGrid projects={projects} />
                 </main>

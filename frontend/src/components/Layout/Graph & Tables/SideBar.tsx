@@ -43,7 +43,7 @@ export default function SideBar() {
     const AUTH_SIDEBAR_ITEMS = [
         { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
         { name: "AI Construction Chat ", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
-        { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
+        { name: "PlayWright", icon: BarChart2Icon, color: "#8B5CF6", href: "/playbookProject"},
         {name: "My Projects", icon: User, color: "#EC4899", href: `/projects/user/${userInfo?.id}`},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "My Equipment", icon: UserCircle2Icon, color: "#6324f1", href: `/equipments/user/${userInfo?.id}`},
@@ -67,16 +67,16 @@ export default function SideBar() {
     }
 
     return (
-        <main className={"bg-[#0A0A0A]"}>
+        <main className={"bg-[#0A0A0A] "}>
             <motion.div className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0 ${isSidebarOpen ? `w-30` : "w-20"}`}
-            animate={{width: isSidebarOpen ? 240 : 80}}>
+            animate={{width: isSidebarOpen ? 240 : 86}}>
                 <div className={"bg-[#101010] h-full backdrop-blur-md p-4 flex flex-col border-r border-gray-800"}>
                     <motion.button
                         whileHover={{scale: 1.1}}
                         whileTap={{scale: 0.9}}
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className={'p-2 rounded-full mx-1 hover:bg-gray-700 transition-colors max-w-fit'}>
-                        <MenuSquare size={30}/>
+                        className={'p-2 rounded-full mx-1 hover:bg-gray-300 transition-colors max-w-fit'}>
+                        <MenuSquare size={26} color="gray" />
                     </motion.button>
 
                     { userInfo ? (
@@ -84,7 +84,7 @@ export default function SideBar() {
                             {AUTH_SIDEBAR_ITEMS.map((item, index) => {
                                 const content = (
                                     <motion.div
-                                        className="flex items-center p-4 text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2"
+                                        className="flex items-center p-4 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors mb-2"
                                     >
                                         <item.icon size={20} style={{ color: item.color, minWidth: "20px" }} />
                                         <AnimatePresence>

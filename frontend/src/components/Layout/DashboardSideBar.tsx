@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LayoutDashboard, GanttChartSquare, DollarSign, Settings, LifeBuoy} from 'lucide-react';
 import {NavLink} from "react-router-dom";
+import {assets} from "../../assets/assets";
 
 export default function DashboardSideBar() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -30,12 +31,17 @@ export default function DashboardSideBar() {
                     className={`fixed inset-y-0 left-0 z-20 w-64 bg-[#101010] border-r border-gray-800 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out`}>
                     <div className="flex items-center justify-between h-16 px-4 border-b border-gray-800">
                         <div className="flex items-center space-x-2">
-                            <svg width="24" height="24" viewBox="0 0 96 96" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" clipRule="evenodd"
-                                      d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z"
-                                      fill="#30E0A5"/>
-                            </svg>
+                            {/*<svg width="24" height="24" viewBox="0 0 96 96" fill="none"*/}
+                            {/*     xmlns="http://www.w3.org/2000/svg">*/}
+                            {/*    <path fillRule="evenodd" clipRule="evenodd"*/}
+                            {/*          d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z"*/}
+                            {/*          fill="#30E0A5"/>*/}
+                            {/*</svg>*/}
+                            <img
+                                alt=""
+                                src={assets.mori_solution_logo2}
+                                className="h-9 w-9 text-primary flex-shrink-0 rounded-3xl shadow-md"
+                            />
                             <NavLink to={"/"}>
                                 <span className="font-semibold text-xl">Mori Solution</span>
                             </NavLink>

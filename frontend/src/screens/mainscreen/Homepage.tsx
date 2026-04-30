@@ -3,6 +3,7 @@ import {ArrowRight } from 'lucide-react';
 import NavBarComponent from "../../components/Layout/Graph & Tables/NavBarComponent";
 import {Helmet} from "react-helmet";
 
+
 // Main App Component
 export default function Homepage() {
 
