@@ -31,6 +31,7 @@ import DocumentPreviewScreen from "../src/screens/AIChatScreen/DocumentPreviewSc
 import {ChatDashboard} from "../src/screens/mainscreen/ChatDashTest";
 import PlaybookProject from "../src/screens/mainscreen/PlaybookProject";
 import PlaybookTableScreen from "../src/screens/mainscreen/PlaybookTableScreen";
+import AssistantChatScreen from "../src/screens/AIChatScreen/AssistantChatScreen";
 
 function App() {
   return (
@@ -69,6 +70,7 @@ function App() {
                 <Route path={"chatdashboard"} element={<ChatDashboard />} />
                 <Route path={"playbookProject"} element={<PlaybookProject />} />
                 <Route path={"playbooktable"} element={<PlaybookTableScreen />} />
+                <Route path={"assistantChat"} element={<AssistantChatScreen />} />
 
             </Routes>
 

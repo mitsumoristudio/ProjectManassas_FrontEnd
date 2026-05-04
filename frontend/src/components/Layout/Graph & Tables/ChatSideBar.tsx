@@ -83,7 +83,7 @@ export default function ChatSideBar() {
                         whileTap={{scale: 0.9}}
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className={'p-2 rounded-full mx-1 hover:bg-gray-700 transition-colors max-w-fit'}>
-                        <MenuSquare size={30}/>
+                        <MenuSquare size={24}/>
                     </motion.button>
 
                     { userInfo ? (

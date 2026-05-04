@@ -10,6 +10,7 @@ import {LucideFilePlus, ClipboardList, SheetIcon, MicIcon, MicOffIcon, ArrowBigR
 import {useAzureSpeech} from "../../components/useAzureSpeech"
 import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
 
+
 import {
     useSendSafetyAIMessageMutation,
     useSendSummaryAIMessageMutation,
@@ -25,6 +26,7 @@ import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
 
+import ChatInputRev1 from "../../screens/AIChatScreen/ChatInputRev1";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";

@@ -1,10 +1,10 @@
 import {apiSlice} from "./apiSlice";
 
-const PLAYWRIGHT_API = "api/playWright";
+const PLAYWRIGHT_API = "api/playWrightProject";
 
 export const playWrightApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        createPlaybookProject: builder.mutation({
+        createPlayWrightProject: builder.mutation({
             query: (data:any) => ({
                 url: `${PLAYWRIGHT_API}/createProject`,
                 method: "POST",
@@ -12,7 +12,7 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ["PlayWrightProject"]
         }),
-        addPlaybookQuery: builder.mutation({
+        addPlayWrightQuery: builder.mutation({
             query: (data:any) => ({
                 url: `${PLAYWRIGHT_API}/createQuery`,
                 method: "POST",
@@ -37,8 +37,9 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor: 5,
         }),
         getPlayWrightProjectList: builder.query({
-            query: () => ({
+            query: ({keyword}) => ({
                 url: `${PLAYWRIGHT_API}/playbookProjects`,
+                params: {keyword},
                 method: "GET",
             }),
             providesTags: ["PlayWrightProject"],
@@ -64,14 +65,25 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
                 method: "DELETE",
             })
         }),
+        updatePlayWrightProject: builder.mutation({
+            query: (data: any) => ({
+                url: `${PLAYWRIGHT_API}/project/${data.id}`,
+                method: "PUT",
+                body: data,
+            }),
+            invalidatesTags: ["PlayWrightProject"],
+        })
 
     })
 })
+//TODO Need to add edit feature for PlayWright Project
 
 export const {
     useCreatePlayWrightProjectMutation,
-    useCreatePlayWrightQueryMutation,
+    useUpdatePlayWrightProjectMutation,
+    useAddPlayWrightQueryMutation,
     useGetPlayWrightQueryListQuery,
+    useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightProjectListQuery,
     useDeletePlayWrightProjectMutation,
     useDeletePlayWrightQueryMutation,

@@ -76,7 +76,7 @@ export default function SideBar() {
                         whileTap={{scale: 0.9}}
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         className={'p-2 rounded-full mx-1 hover:bg-gray-300 transition-colors max-w-fit'}>
-                        <MenuSquare size={26} color="gray" />
+                        <MenuSquare size={24} color="white" />
                     </motion.button>
 
                     { userInfo ? (
