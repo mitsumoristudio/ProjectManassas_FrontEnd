@@ -1,7 +1,7 @@
 
 
 import React, { useRef, useState } from "react";
-import { ArrowRight, Square, LucideFilePlus, FolderOpenIcon, XIcon, FileTextIcon} from "lucide-react";
+import { ArrowRight, Square, LucideFilePlus, FolderOpenIcon, XIcon, FileTextIcon, LucideFolderOpenDot, ArrowDownUpIcon, ToolCaseIcon} from "lucide-react";
 import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
 import {useSendDocumentEmbeddingMutation,
     useGetPdfIngestedQuery
@@ -36,6 +36,11 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [addPdfIngestion, setAddPdfIngestion] = useState(false);
     const [usePdfIngestion, setUsePdfIngestion] = useState(false);
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
+    const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
+    const [queryType, setQueryType] = useState<"review" | "ask">("review");
+
+    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification">("advisor");
+    const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
     const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
     const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
@@ -152,8 +157,8 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
 
     return (
-        <div className="w-full text-gray-600 font-serif py-2">
-            <div className="relative border border-gray-300 rounded-[16px] bg-white py-4 ">
+        <div className="w-full text-gray-600 font-serif py-3">
+            <div className="relative border border-gray-300 rounded-[16px] bg-white py-4 shadow-lg">
 
                 {/* Chat Input */}
                 <div className="px-5 pt-5">
@@ -190,6 +195,27 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             <span className={"hidden sm:inline text-gray-600 text-sm font-mono mx-2"}>Use Document</span>
                         </button>
 
+                        <button
+                            className={"text-gray-800 hover:text-blue-700 my-4 flex items-center hover:bg-gray-300 rounded-md p-2 transition duration-700"}
+                            onClick={() => setOpenReviewQuery(true)}
+                        >
+                            <LucideFolderOpenDot size={18} color={"gray"}
+                                          className={"mx-auto sm:mx-0"}/>
+                            <span className={"hidden sm:inline text-gray-600 text-sm font-mono mx-2"}>Review Query</span>
+                            <ArrowDownUpIcon size={18} color={"gray"} />
+                        </button>
+
+                        <button
+                            className={"text-gray-800 hover:text-blue-700 my-4 flex items-center hover:bg-gray-300 rounded-md p-2 transition duration-700"}
+                            onClick={() => setSelectGadget(true)}
+                        >
+                            <ToolCaseIcon size={18} color={"gray"}
+                                          className={"mx-auto sm:mx-0"}/>
+                            <span className={"hidden sm:inline text-gray-600 text-sm font-mono mx-2"}>Gadget</span>
+                            <ArrowDownUpIcon size={18} color={"gray"} />
+                        </button>
+
+
                         {addPdfIngestion && (
                             <div className={"fixed inset-0 z-50 flex items-center justify-center"}>
                                 <div className={"bg-white rounded-xl shadow-xl w-full max-w-md p-6"}>
@@ -206,6 +232,137 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                 </div>
                             </div>
                         )}
+
+                        {openReviewQuery && (
+                            <div className="fixed inset-0 z-50 flex items-start justify-center pt-24">
+                                <div className="bg-white rounded-2xl shadow-xl w-[500px] p-4">
+
+                                    {/* Header */}
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div className="text-sm font-medium">Choose query type</div>
+                                        <button onClick={() => setOpenReviewQuery(false)}>✕</button>
+                                    </div>
+
+                                    {/* Options */}
+                                    <div className="flex flex-col gap-3">
+
+                                        {/* Review Query */}
+                                        <div
+                                            onClick={() => setQueryType("review")}
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${queryType === "review"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Review query (Tabular)</div>
+                                            <div className="text-sm text-gray-500">
+                                                Get individual answers for each file in a table view.
+                                            </div>
+                                        </div>
+
+                                        {/* Ask Query */}
+                                        <div
+                                            onClick={() => setQueryType("ask")}
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${queryType === "ask"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Ask query (Single)</div>
+                                            <div className="text-sm text-gray-500">
+                                                Get a single query answer across all files.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="flex justify-end mt-4">
+                                        <button
+                                            onClick={() => setOpenReviewQuery(false)}
+                                            className="px-4 py-2 bg-black text-white rounded-lg"
+                                        >
+                                            Confirm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {selectGadget && (
+                            <div className="fixed inset-0 z-50 flex items-start justify-center pt-24">
+                                <div className="bg-white rounded-2xl shadow-xl w-[500px] p-4">
+
+                                    {/* Header */}
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div className="text-sm font-medium">Choose Gadet Type</div>
+                                        <button onClick={() => setSelectGadget(false)}>✕</button>
+                                    </div>
+
+                                    {/* Options */}
+                                    <div className="flex flex-col gap-3">
+
+                                        {/* Specification */}
+                                        <div
+                                            onClick={() => setToolType("specification")}
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${toolType === "specification"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Review Contract Specification</div>
+                                            <div className="text-sm text-gray-500">
+                                                Review assistant for construction specification
+                                            </div>
+                                        </div>
+
+                                        {/* Review Project Advisor */}
+                                        <div
+                                            onClick={() => setToolType("advisor")}
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${toolType === "advisor"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Project Advisor</div>
+                                            <div className="text-sm text-gray-500">
+                                                Get project tailored answers from knowledge source
+                                            </div>
+                                        </div>
+
+                                        {/* Project Analysis */}
+                                        <div
+                                            onClick={() => setToolType("analysis")}
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${toolType === "analysis"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Analyze Contract</div>
+                                            <div className="text-sm text-gray-500">
+                                                Analyze contractual agreement
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="flex justify-end mt-4">
+                                        <button
+                                            onClick={() => setSelectGadget(false)}
+                                            className="px-4 py-2 bg-black text-white rounded-lg"
+                                        >
+                                            Confirm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+
 
                         {usePdfIngestion && (
                             <div>

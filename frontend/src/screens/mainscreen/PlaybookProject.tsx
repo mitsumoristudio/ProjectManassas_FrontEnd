@@ -208,9 +208,9 @@ export default function PlaybookProject() {
                                 <NavLink to={`playWrightQuery/${pro.id}`}
                                         className={"block p-6"}>
 
-                                    <div className="flex justify-between mb-6">
-                                        <div className="p-4 bg-gray-100 rounded-xl">
-                                            {pro.projectName ? <Folder size={20} /> : <Users size={20} />}
+                                    <div className="flex justify-center mb-6">
+                                        <div className="p-12 bg-gray-100 rounded-xl">
+                                            {pro.projectName ? <Folder size={28} color={"gray"}/> : <Users size={20} />}
                                         </div>
                                     </div>
 

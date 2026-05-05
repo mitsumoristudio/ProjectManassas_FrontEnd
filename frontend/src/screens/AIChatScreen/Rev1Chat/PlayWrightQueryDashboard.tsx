@@ -1,4 +1,4 @@
-import { Search, Folder, FileText, Clock, Plus, Share2, ArrowLeftFromLine } from "lucide-react";
+import { Search, Folder, FileText, Clock, Plus, Share2, ArrowLeftFromLine, EllipsisIcon } from "lucide-react";
 import React, {useEffect, useState, useRef} from "react";
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
 import {assets} from "../../../assets/assets";
@@ -30,7 +30,7 @@ export function RecentQueries({ data }) {
             <h2 className="text-lg font-medium mb-3">Recent queries</h2>
             <div className="bg-white rounded-2xl divide-y">
                 {data?.map((q, i) => (
-                    <div key={i} className="flex justify-between p-4 text-sm text-gray-700 font-sans">
+                    <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans">
                         <div className={"flex items-center cursor-pointer"}>
                             <div className="font-medium">{q.projectQueryTitle}</div>
 
@@ -58,7 +58,7 @@ export function RecentQueries({ data }) {
 }
 
 // ================= Files Table =================
-export function FilesTable({ files }) {
+export function FilesTable() {
     const {keyword} = useParams();
 
     const {
@@ -71,7 +71,7 @@ export function FilesTable({ files }) {
     return (
         <div>
             <div className="flex justify-between items-center mb-3">
-                <h2 className="text-sm font-medium">Project files</h2>
+                <h2 className="text-lg font-medium mb-3">Project files</h2>
                 <input
                     className="border px-3 py-1 rounded-lg text-sm"
                     placeholder="Search"
@@ -79,29 +79,38 @@ export function FilesTable({ files }) {
             </div>
 
             <div className="bg-white rounded-2xl overflow-hidden">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm scroll-auto">
                     <thead className="bg-gray-50 text-gray-500">
                     <tr>
                         <th className="text-left p-3">Name</th>
                         <th className="text-left p-3">Type</th>
                         <th className="text-left p-3">Last modified</th>
-                        <th className="text-left p-3">Size</th>
+                        <th className="text-left p-3">More</th>
+
                     </tr>
                     </thead>
                     <tbody>
-                    {files?.map((file: any, i: number) => (
-                        <tr key={i} className="border-t hover:bg-gray-50">
+                    {pdfs?.map((file: any, i: number) => (
+                        <tr key={i} className="border-t hover:bg-gray-50 cursor-pointer">
                             <td className="p-3 flex items-center gap-2">
                                 {file.type === "Folder" ? (
                                     <Folder size={16} />
                                 ) : (
                                     <FileText size={16} />
                                 )}
-                                {file.name}
+                                {file.originalFileName}
                             </td>
-                            <td className="p-3">{file.type}</td>
-                            <td className="p-3">{file.date}</td>
-                            <td className="p-3">{file.size}</td>
+                            <td className="p-3">PDF</td>
+                            <td className="p-3">{new Date(file.createdAt).toLocaleDateString(
+                                "en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric"
+                                }
+                            )}</td>
+                            <td className="p-3">
+                                <EllipsisIcon size={12} />
+                            </td>
                         </tr>
                     ))}
                     </tbody>
@@ -156,14 +165,6 @@ export function PlayWrightQueryDashboard() {
         },
     ];
 
-    const files = [
-        { name: "A Contracts", type: "Folder", size: "412 MB", date: "Oct 20, 2025" },
-        { name: "Documents for Review", type: "Folder", size: "690 MB", date: "Oct 16, 2025" },
-        { name: "Non-Compete Impacted", type: "Folder", size: "243 MB", date: "Oct 02, 2025" },
-        { name: "Style Guide", type: "Folder", size: "705 MB", date: "Sep 29, 2025" },
-        { name: "Agilent Supply Agreement.pdf", type: "File", size: "309 MB", date: "Sep 29, 2025" },
-        { name: "AIG License Agreement.pdf", type: "File", size: "247 MB", date: "Sep 27, 2025" },
-    ];
     return (
         <main>
             <div className="flex h-screen font-sans">
@@ -242,7 +243,7 @@ export function PlayWrightQueryDashboard() {
 
 
                     {/*================= Ingested Files ================= */}
-                    <FilesTable files={files} />
+                    <FilesTable  />
                 </div>
             </div>
         </main>
