@@ -1,8 +1,8 @@
 
 import React, {useEffect, useState, useRef} from "react";
-import ChatSideBar from "../../components/Layout/Graph & Tables/ChatSideBar";
-import ChatInputRev1 from "../../screens/AIChatScreen/ChatInputRev1";
-import {assets} from "../../assets/assets";
+import ChatSideBar from "../../../components/Layout/Graph & Tables/ChatSideBar";
+import AssistantChatInput from "./AssistantChatInput";
+import {assets} from "../../../assets/assets";
 import {useSelector, useDispatch, } from "react-redux";
 
 export default function AssistantChatScreen() {
@@ -30,7 +30,7 @@ const onSubmitHandler = (message: string) => {
                         <div className="flex-col items-center w-full max-w-4xl relative px-0 xl:px-8">
 
                             {/*Header & UserName*/}
-                            <div className="flex flex-row gap-x-4 items-center justify-center mb-10 space-y-4">
+                            <div className="flex flex-row gap-x-4 items-center justify-center mb-2 space-y-4">
                                 <img
                                     alt=""
                                     src={assets.mori_solution_logo2}
@@ -46,7 +46,7 @@ const onSubmitHandler = (message: string) => {
                             </div>
 
                             {/* Chat Input */}
-                            <ChatInputRev1
+                            <AssistantChatInput
                                 onSend={onSubmitHandler}
                                 value={inputValue}
                                 onChange={setInputValue}

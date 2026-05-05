@@ -26,7 +26,7 @@ import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
 
-import ChatInputRev1 from "../../screens/AIChatScreen/ChatInputRev1";
+import AssistantChatInput from "./Rev1Chat/AssistantChatInput";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
 import PromptSelector from "../../components/Layout/PromptSelector";

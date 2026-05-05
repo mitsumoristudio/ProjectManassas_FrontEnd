@@ -28,10 +28,10 @@ import PDFViewerPage from "../src/screens/mainscreen/PdfViewerPage";
 import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMainScreen";
 import {ChatSpreadSheet} from "../src/screens/AIChatScreen/ChatSpreadSheet";
 import DocumentPreviewScreen from "../src/screens/AIChatScreen/DocumentPreviewScreen";
-import {ChatDashboard} from "../src/screens/mainscreen/ChatDashTest";
+import {PlayWrightQueryDashboard} from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryDashboard";
 import PlaybookProject from "../src/screens/mainscreen/PlaybookProject";
 import PlaybookTableScreen from "../src/screens/mainscreen/PlaybookTableScreen";
-import AssistantChatScreen from "../src/screens/AIChatScreen/AssistantChatScreen";
+import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
 
 function App() {
   return (
@@ -67,7 +67,7 @@ function App() {
                 <Route path={"/spreadsheet"} element={<ChatSpreadSheet/>} />
                 <Route path={"/documentViewer"} element={<DocumentPreviewScreen />} />
 
-                <Route path={"chatdashboard"} element={<ChatDashboard />} />
+                <Route path={"playbookProject/playWrightQuery/:id"} element={<PlayWrightQueryDashboard />} />
                 <Route path={"playbookProject"} element={<PlaybookProject />} />
                 <Route path={"playbooktable"} element={<PlaybookTableScreen />} />
                 <Route path={"assistantChat"} element={<AssistantChatScreen />} />

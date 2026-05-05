@@ -32,23 +32,23 @@ export default function ChatSideBar() {
 
 
     const SIDEBAR_ITEMS = [
-        { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
+        { name: 'Home', icon: LucideHome, color: "#D4C5C5", href: "/"},
         {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
-        { name: "Projects", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
+        { name: "Projects", icon: BarChart2Icon, color: "#D4C5C5", href: "/projects"},
         {name: "Equipments", icon: DollarSign, color: "#10B981", href: "/equipments"},
         {name: "Equipment Analytics", icon: TrendingUp, color: "#3882F6", href: "/equipmentAnalytics"},
         {name: "Project Analytic", icon: BarChart4Icon, color: "#10B451", href: "/projectAnalytics"},
     ]
 
     const AUTH_SIDEBAR_ITEMS = [
-        { name: 'Home', icon: LucideHome, color: "#6366f1", href: "/"},
-        {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#EC4899", href: "/chat"},
-        { name: "SpreadSheet", icon:LucideSheet , color: "#FFED6C", href: "/spreadsheet"},
-        { name: "Project Table", icon: BarChart2Icon, color: "#8B5CF6", href: "/projects"},
-        {name: "PDF Preview", icon: PackageSearchIcon, color: "#10B451", href: "/pdfViewer"},
-        {name: "Document View", icon: LucideFileText, color: "6366f1", href: "/documentViewer"},
-        {name: "Settings", icon: Settings2Icon, color: "#6EE7B7", href: "/settings"},
-        {name: "Sign Out", icon: LogOutIcon, color: "#EC4899", action: "logout"}
+        { name: 'Home', icon: LucideHome, color: "#D4C5C5", href: "/"},
+        {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#D4C5C5", href: "/chat"},
+        { name: "SpreadSheet", icon:LucideSheet , color: "#D4C5C5", href: "/spreadsheet"},
+        { name: "Project Table", icon: BarChart2Icon, color: "#D4C5C5", href: "/projects"},
+        {name: "PDF Preview", icon: PackageSearchIcon, color: "#D4C5C5", href: "/pdfViewer"},
+        {name: "Document View", icon: LucideFileText, color: "#D4C5C5", href: "/documentViewer"},
+        {name: "Settings", icon: Settings2Icon, color: "#D4C5C5", href: "/settings"},
+        {name: "Sign Out", icon: LogOutIcon, color: "#D4C5C5", action: "logout"}
     ]
 
     const logoutHandler = async () => {

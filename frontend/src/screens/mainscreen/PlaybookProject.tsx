@@ -3,7 +3,7 @@ import {Search, Folder, MoreHorizontal, Users, Database, ChevronDown, Trash2Icon
 
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, NavLink, useNavigate, useParams} from "react-router-dom";
 import {AnimatePresence, motion} from "framer-motion";
 import {useCreatePlayWrightProjectMutation,
         useGetPlayWrightProjectbyIdQuery,
@@ -13,8 +13,6 @@ import {useCreatePlayWrightProjectMutation,
 
 
 import SideBar from "../../components/Layout/Graph & Tables/SideBar";
-
-
 
 export default function PlaybookProject() {
     const [openProject, setOpenProject] = useState(false);
@@ -204,26 +202,33 @@ export default function PlaybookProject() {
                     {/* Project Card Lists */}
                     <div className="grid grid-cols-4 gap-4 min-h-56">
                         {playWrightProject?.map((pro, i) => (
-                            <div className="bg-white p-6 rounded-2xl hover:bg-gray-200 transition-colors mb-2 cursor-pointer">
-                                <div className="flex justify-between mb-6">
-                                    <div className="p-4 bg-gray-100 rounded-xl">
-                                        {pro.projectName ? <Folder size={20} /> : <Users size={20} />}
+                            <div className="bg-white p-6 rounded-2xl hover:bg-gray-200 transition-colors mb-2 cursor-pointer"
+                            key={i.id}>
+
+                                <NavLink to={`playWrightQuery/${pro.id}`}
+                                        className={"block p-6"}>
+
+                                    <div className="flex justify-between mb-6">
+                                        <div className="p-4 bg-gray-100 rounded-xl">
+                                            {pro.projectName ? <Folder size={20} /> : <Users size={20} />}
+                                        </div>
                                     </div>
 
-                                    <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setActiveMenu(prev => prev === pro.id ? null : pro.id);
-                                            }}>
-                                        <MoreHorizontal size={20} className="text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"/>
-                                    </button>
+                                    <div className="font-medium text-sm">{pro.projectName}</div>
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        {pro.files} files · {pro.type}
+                                    </div>
 
-                                </div>
+                                </NavLink>
 
-                                <div className="font-medium text-sm">{pro.projectName}</div>
-                                <div className="text-xs text-gray-500 mt-1">
-                                    {pro.files} files · {pro.type}
-                                </div>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setActiveMenu(prev => prev === pro.id ? null : pro.id);
+                                    }}>
+                                    <MoreHorizontal size={20} className="relative right-2 text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"/>
+                                </button>
+
 
                                 {/* Edit Project Window */}
                                 {activeMenu === pro.id && (
