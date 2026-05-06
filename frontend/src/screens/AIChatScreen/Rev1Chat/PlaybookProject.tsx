@@ -9,10 +9,10 @@ import {useCreatePlayWrightProjectMutation,
         useGetPlayWrightProjectbyIdQuery,
         useGetPlayWrightProjectListQuery,
         useUpdatePlayWrightProjectMutation,
-        useDeletePlayWrightProjectMutation} from "../../features/playwrightApiSlice";
+        useDeletePlayWrightProjectMutation} from "../../../features/playwrightApiSlice";
 
 
-import SideBar from "../../components/Layout/Graph & Tables/SideBar";
+import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
 
 export default function PlaybookProject() {
     const [openProject, setOpenProject] = useState(false);

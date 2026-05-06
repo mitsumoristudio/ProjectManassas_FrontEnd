@@ -67,10 +67,10 @@ export default function SideBar() {
     }
 
     return (
-        <main className={"bg-gray-500"}>
+        <main className={"bg-[#0A0A0A]"}>
             <motion.div className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0 ${isSidebarOpen ? `w-30` : "w-20"}`}
             animate={{width: isSidebarOpen ? 240 : 86}}>
-                <div className={"bg-gray-500 h-full backdrop-blur-md p-4 flex flex-col"}>
+                <div className={"bg-[#0A0A0A] h-full backdrop-blur-md p-4 flex flex-col"}>
                     <motion.button
                         whileHover={{scale: 1.1}}
                         whileTap={{scale: 0.9}}

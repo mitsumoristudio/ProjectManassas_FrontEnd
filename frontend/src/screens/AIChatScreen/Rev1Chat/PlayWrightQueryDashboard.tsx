@@ -144,27 +144,6 @@ export function PlayWrightQueryDashboard() {
         setInputValue("");
     }
 
-    const recentQueries = [
-        {
-            title: "Contracts with Change of Control Provisions",
-            type: "Review table",
-            user: "akumar@whitfordlane.com",
-            time: "10 minutes ago",
-        },
-        {
-            title: "Commercial Contract Review",
-            type: "Review table",
-            user: "jsmith@whitfordlane.com",
-            time: "4 hours ago",
-        },
-        {
-            title: "Clarification on Effective Date Inquiry",
-            type: "Review table",
-            user: "rwilliams@whitfordlane.com",
-            time: "12 hours ago",
-        },
-    ];
-
     return (
         <main>
             <div className="flex h-screen font-sans">

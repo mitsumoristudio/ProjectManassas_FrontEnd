@@ -1,5 +1,4 @@
 
-
 import React, { useRef, useState } from "react";
 import { ArrowRight, Square, LucideFilePlus, FolderOpenIcon, XIcon, FileTextIcon, LucideFolderOpenDot, ArrowDownUpIcon, ToolCaseIcon} from "lucide-react";
 import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
@@ -38,13 +37,51 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
     const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
     const [queryType, setQueryType] = useState<"review" | "ask">("review");
+// Review is set for tabular and Ask is set for single query
 
     const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification">("advisor");
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
+    // State-Driven Model Workflow
+    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "regularChat";
+    const [mode, setMode] = useState<Mode>("regularChat");
+    const [reviewPrompt, setReviewPrompt] = useState<string>("");
+
+
     const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
     const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
     const keyword = useParams();
+
+    const modelPromptHandler = () => {
+        if (!value.trim()) return;
+
+        if (queryType === "ask") {
+            setReviewPrompt(value);
+            setMode("regularChat")
+            return;
+        }
+
+        if (queryType === "review" && toolType === "advisor") {
+            setReviewPrompt(value);
+            setMode("advisor-config");
+            return;
+        }
+
+        if (queryType === "review" && toolType == "analysis") {
+            setReviewPrompt(value);
+            setMode("analysis-config");
+            return;
+        }
+
+        if (queryType === "review" && toolType == "specification") {
+            setReviewPrompt(value);
+            setMode("specification-config");
+            return;
+        }
+
+        onSend(value);
+        onChange("");
+    };
 
     const togglePdfSelection = (doc: any) => {
         setSelectedPdfs((prev) => {
@@ -175,6 +212,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
           />
                 </div>
 
+                {/* DropDown Icons */}
                 <div className={"flex items-center justify-between  md:p-2"}>
                     <div className={"flex items-center gap-x-1 relative top-20 left-2"}>
                         <button
@@ -215,7 +253,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             <ArrowDownUpIcon size={18} color={"gray"} />
                         </button>
 
-
+                        {/* Add PDF Document */}
                         {addPdfIngestion && (
                             <div className={"fixed inset-0 z-50 flex items-center justify-center"}>
                                 <div className={"bg-white rounded-xl shadow-xl w-full max-w-md p-6"}>
@@ -233,6 +271,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </div>
                         )}
 
+                        {/* Review Query - Choose from Tabular vs. Singular */}
                         {openReviewQuery && (
                             <div className="fixed inset-0 z-50 flex items-start justify-center pt-24">
                                 <div className="bg-white rounded-2xl shadow-xl w-[500px] p-4">
@@ -290,6 +329,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </div>
                         )}
 
+                        {/* Select Tool Type */}
                         {selectGadget && (
                             <div className="fixed inset-0 z-50 flex items-start justify-center pt-24">
                                 <div className="bg-white rounded-2xl shadow-xl w-[500px] p-4">
@@ -362,8 +402,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </div>
                         )}
 
-
-
+                        {/* Select PDF document Ingestion */}
                         {usePdfIngestion && (
                             <div>
                                 <div className={"fixed inset-0 z-50 flex items-center justify-center"}>
@@ -415,13 +454,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         </ul>
 
                                         <div className={"flex flex-row p-3 justify-end items-end gap-2 scroll-auto"}>
-                                            <button className={"p-1 text-gray-800 rounded-md hover:bg-gray-500 transition duration-600"}
+                                            <button className={"px-4 py-2  text-gray-800 rounded-md hover:bg-gray-500 transition duration-600"}
                                                     onClick={() => setUsePdfIngestion(false)}
                                             >
                                                 Cancel
                                             </button>
 
-                                            <button className={"p-1 bg-black text-white rounded-md hover:bg-gray-600 transition duration-600"}
+                                            <button className={" px-4 py-2  bg-black text-white rounded-md hover:bg-gray-600 transition duration-600"}
                                                     onClick={() => handleConfirmSelection()}>
                                                 Confirm
                                             </button>
@@ -432,10 +471,252 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </div>
                         )}
 
-
-
-
                     </div>
+
+                    {/* Project Analysis Card */}
+                    {mode === "analysis-config" && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                            <div className="bg-white w-[700px] max-h-[80vh] rounded-2xl shadow-xl flex flex-col">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-center p-4 border-b">
+                                    <h2 className="font-semibold text-lg">
+                                        Create a {toolType} table
+                                    </h2>
+                                    <button  onClick={() => {
+                                        setMode("regularChat")
+                                    }}>x</button>
+                                </div>
+
+                                {/* Table Config */}
+                                <div className="overflow-y-auto p-4 flex-1">
+
+                                    <div className="text-sm text-gray-500 mb-3">
+                                        Review terms across documents.
+                                    </div>
+
+                                    {[// ClauseSummary
+                                        { label: "Parties", question: "Who are the parties involved in this contract? Identify owner, contractor, and roles." },
+                                        { label: "Scope Of Work", question: "What is the scope of work? Describe the work, deliverables, and responsibilities." },
+                                        { label: "Change Of Control Provision", question: "Are there any assignment or change of control provisions? Can the contract be transferred?" },
+                                        { label: "Termination Condition", question: "What are the termination conditions mentioned in this document" },
+                                        { label: "Red Flag", question: "Are there any red flags or potential issues identified in this document" },
+                                        { label: "Payment Term", question: "What are the payments terms for this contract?"},
+                                        { label: "Liability", question: "What is the limitation of liability clause? Identify liability cap and exclusions"},
+                                        { label: "Indemnification", question: "Who is solely liable for payment if something goes wrong legally? Specify indemnifies whom and scope"},
+                                        { label: "Time Line", question: "Extract deadlines, dependencies and delays handling for General Contractor"},
+                                        { label: "Change Order", question: "How are change orders handled in this contract, Process for adding work, pricing adjustments and approval requirements"},
+                                        { label: "Warranties", question: "How long does the construction warranties last? Performance guarantees and compliance requirement"},
+                                    ].map((item, i) => (
+                                        <div
+                                            key={i}
+                                            className="grid grid-cols-2 gap-4 border-b py-3"
+                                        >
+                                            <div className="font-medium text-sm">
+                                                {item.label}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                {item.question}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="flex justify-end gap-2 p-4 border-t">
+                                    <button
+                                        onClick={() => {
+                                            setMode("regularChat")
+                                        }}
+
+                                        className="px-4 py-2 rounded-lg bg-gray-200"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setMode("advisor-config"); // next step
+                                            onSend({
+                                                type: "review",
+                                                prompt: reviewPrompt,
+                                            });
+
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-black text-white"
+                                    >
+                                        Continue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Specification Card */}
+                    {mode === "specification-config" && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                            <div className="bg-white w-[700px] max-h-[80vh] rounded-2xl shadow-xl flex flex-col">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-center p-4 border-b">
+                                    <h2 className="font-semibold text-lg">
+                                        Create a {toolType} table
+                                    </h2>
+                                    <button  onClick={() => {
+                                        setMode("regularChat")
+                                    }}>x</button>
+                                </div>
+
+                                {/* Table Config */}
+                                <div className="overflow-y-auto p-4 flex-1">
+
+                                    <div className="text-sm text-gray-500 mb-3">
+                                        Review terms across documents.
+                                    </div>
+
+                                    {[// SpecificationSummaryClause
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+
+
+
+
+                                    ].map((item, i) => (
+                                        <div
+                                            key={i}
+                                            className="grid grid-cols-2 gap-4 border-b py-3"
+                                        >
+                                            <div className="font-medium text-sm">
+                                                {item.label}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                {item.question}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="flex justify-end gap-2 p-4 border-t">
+                                    <button
+                                        onClick={() => {
+                                            setMode("regularChat")
+                                        }}
+
+                                        className="px-4 py-2 rounded-lg bg-gray-200"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setMode("advisor-config"); // next step
+                                            onSend({
+                                                type: "review",
+                                                prompt: reviewPrompt,
+                                            });
+
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-black text-white"
+                                    >
+                                        Continue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Project Advisor Card */}
+                    {mode === "advisor-config" && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                            <div className="bg-white w-[700px] max-h-[80vh] rounded-2xl shadow-xl flex flex-col">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-center p-4 border-b">
+                                    <h2 className="font-semibold text-lg">
+                                        Create a {toolType} table
+                                    </h2>
+                                    <button  onClick={() => {
+                                        setMode("regularChat")
+                                    }}>x</button>
+                                </div>
+
+                                {/* Table Config */}
+                                <div className="overflow-y-auto p-4 flex-1">
+
+                                    <div className="text-sm text-gray-500 mb-3">
+                                        Review terms across documents.
+                                    </div>
+
+                                    {[// ProjectAdvisorClause
+                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
+                                        { label: "Scope Completeness", question: "What work is explicitly included in the contract, Are there exclusions or by others statement." },
+                                        { label: "Unit Price Reasonableness", question: "What are the key unit prices ($/sq ft, $/yard, etc.)?" },
+                                        { label: "Schedule Feasibility", question: "What is the total project duration?. Is a critical path defined? Are the dependencies and sequencing clear." },
+                                        { label: "Labor Assumptions", question: "What productivity rates are used? Is overtime included." },
+                                        { label: "Material Pricing", question: "Are escalation clauses included? Which materials are most cost sensitive." },
+                                        { label: "Subcontractor Coverage", question: "Which trades are subcontracted? Are any scopes undefined or missing." },
+                                        { label: "Contingency", question: "Who is responsible for *Site conditions, *Weather delays, *Permits." },
+                                        { label: "Contract Terms", question: "What are payment terms(milestones, retainage)? Are there liquidated damages." },
+                                        { label: "Bid Strategy", question: "Are certain areas aggressively priced? How does this bid compare to competitors." },
+
+
+                                    ].map((item, i) => (
+                                        <div
+                                            key={i}
+                                            className="grid grid-cols-2 gap-4 border-b py-3"
+                                        >
+                                            <div className="font-medium text-sm">
+                                                {item.label}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                {item.question}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="flex justify-end gap-2 p-4 border-t">
+                                    <button
+                                        onClick={() => {
+                                            setMode("regularChat")
+                                        }}
+
+                                        className="px-4 py-2 rounded-lg bg-gray-200"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            setMode("advisor-config"); // next step
+                                            onSend({
+                                                type: "review",
+                                                prompt: reviewPrompt,
+                                            });
+
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-black text-white"
+                                    >
+                                        Continue
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Show selected PDF on top right of text field */}
                     {selectedPdfs.length > 0 && (
                         <div className="relative flex flex-wrap gap-2 px-2 py-2 mb-2 bottom-20 right-2">
                             {selectedPdfs.map((doc) => (
@@ -462,7 +743,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                 <div className="flex items-center justify-end p-2">
                     <button
                         type="button"
-                        onClick={handleSend}
+                        onClick={() => modelPromptHandler()}
                         disabled={!isLoading && !value.trim()}
                         className="bg-black text-white rounded-[10px] h-8 w-8 flex items-center justify-center disabled:opacity-40 active:scale-95 transition"
                     >

@@ -29,8 +29,8 @@ import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMa
 import {ChatSpreadSheet} from "../src/screens/AIChatScreen/ChatSpreadSheet";
 import DocumentPreviewScreen from "../src/screens/AIChatScreen/DocumentPreviewScreen";
 import {PlayWrightQueryDashboard} from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryDashboard";
-import PlaybookProject from "../src/screens/mainscreen/PlaybookProject";
-import PlaybookTableScreen from "../src/screens/mainscreen/PlaybookTableScreen";
+import PlaybookProject from "./screens/AIChatScreen/Rev1Chat/PlaybookProject";
+import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlaybookTableScreen";
 import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
 
 function App() {
