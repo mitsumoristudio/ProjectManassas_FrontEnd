@@ -575,20 +575,22 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     </div>
 
                                     {[// SpecificationSummaryClause
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-                                        { label: "Cost Structure Transparency", question: "Breakdown of Labor, Material, Equipment, Subcontractors, overhead & profit. Are allowances or provisional sums included." },
-
-
+                                        { label: "Contractor Obligations", question: "List all contractor obligations including labor, materials, permits, utilities, supervision, and compliance responsibilities." },
+                                        { label: "Submittal Requirements", question: "What submittals are required (shop drawings, product data, samples)? Identify approval process and timing constraints." },
+                                        { label: "Testing And Comissioning", question: "What testing and commissioning requirements are specified? Include pre-testing, functional testing, and final acceptance criteria." },
+                                        { label: "Quality Requirements", question: "What quality standards must materials and equipment meet? Include UL, NEMA, or other regulatory requirements." },
+                                        { label: "Approved Materials And Substitutions", question: "What are the requirements for approved manufacturers and 'or equal' substitutions? Identify approval risks." },
+                                        { label: "Installation Requirements", question: "What are the installation requirements including manufacturer instructions, storage, and handling obligations?" },
+                                        { label: "Integration Responsibilities", question: "What responsibilities does the contractor have for integrating with existing systems or other contractors' work?" },
+                                        { label: "Repair And Correction Obligations", question: "What are the contractor’s obligations to repair or replace defective work? Who bears the cost?" },
+                                        { label: "Site Conditions Risk", question: "Who bears the risk of unknown or differing site conditions? Can the contractor claim additional compensation?" },
+                                        { label: "Quality And Payment Risk", question: "Is payment based on estimated or actual quantities? Identify risk of quantity variation affecting revenue." },
+                                        { label: "Delay Notice Requirements", question: "What are the requirements for notifying delays? Include deadlines and consequences for missing notice." },
+                                        { label: "Safety Requirements", question: "What safety obligations are imposed on the contractor? Include OSHA compliance and accident prevention responsibilities." },
+                                        { label: "Traffic And Access Requirements", question: "What are the contractor’s obligations for maintaining traffic, access, and public safety during construction?" },
+                                        { label: "Claims And Damage Handling", question: "How must the contractor handle property damage claims, insurance coordination, and reporting requirements?" },
+                                        { label: "Temporary Works And Facilities", question: "What temporary utilities, facilities, and site logistics must the contractor provide and maintain?" },
+                                        { label: "Closeout Requirements", question: "What are the requirements for project closeout including testing, documentation, punch list, and final acceptance?" },
 
 
                                     ].map((item, i) => (
