@@ -108,10 +108,10 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 invalidatesTags: ["Chat"],
             }),
             sendDocumentEmbedding: builder.mutation({
-                query: ({file, documentId} : { file: File; documentId: string }) => {
+                query: ({file, playWrightProjectId} : { file: File; playWrightProjectId: string}) => {
                     const formData = new FormData();
                     formData.append("formFile", file);
-                    formData.append("documentId", documentId);
+                    formData.append("playWrightProjectId", playWrightProjectId);
 
                     return {
                         url: `${PDF_URL}/ingest`,

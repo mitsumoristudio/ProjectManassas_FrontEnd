@@ -1,6 +1,6 @@
 
 import React, { useRef, useState } from "react";
-import { ArrowRight, Square, LucideFilePlus, FolderOpenIcon, XIcon, FileTextIcon, LucideFolderOpenDot, ArrowDownUpIcon, ToolCaseIcon} from "lucide-react";
+import { ArrowRight, Square, LucideFilePlus, XIcon, FileTextIcon, LucideFolderOpenDot, ArrowDownUpIcon, ToolCaseIcon} from "lucide-react";
 import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
 import {useSendDocumentEmbeddingMutation,
     useGetPdfIngestedQuery
@@ -10,6 +10,7 @@ import {assets} from "../../../assets/assets";
 import {useParams} from "react-router-dom";
 import {
     useGetPlayWrightProjectListQuery,
+    useGetPlayWrightProjectbyIdQuery,
 } from "../../../features/playwrightApiSlice";
 
 
@@ -50,7 +51,11 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
     const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
     const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
-    const keyword = useParams();
+
+    const {id} = useParams();
+    const {keyword} = useParams();
+    const projectId = String(id);
+    const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
 
     const modelPromptHandler = () => {
         if (!value.trim()) return;
@@ -67,13 +72,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
             return;
         }
 
-        if (queryType === "review" && toolType == "analysis") {
+        if (queryType === "review" && toolType === "analysis") {
             setReviewPrompt(value);
             setMode("analysis-config");
             return;
         }
 
-        if (queryType === "review" && toolType == "specification") {
+        if (queryType === "review" && toolType === "specification") {
             setReviewPrompt(value);
             setMode("specification-config");
             return;
@@ -103,7 +108,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         data: pdfs = [],
         isLoading: isPdfLoading,
         isError: isPdfError,
-        refetch
+        refetch,
     } = useGetPdfIngestedQuery({keyword});
 
     const {
@@ -138,7 +143,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         }
     };
 
-    // When user selects or drags files
+    // When user selects or drags pdf ingestion files
     const handleUpload = async (files: FileList) => {
         const fileArray = Array.from(files);
 
@@ -150,28 +155,54 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                 size: `${(file.size / 1024).toFixed(1)} KB`,
                 type: file.type,
                 status: "uploading",
+                progress: 0,
             };
 
             // Add to document list as "uploading"
             setDocuments((prev) => [...prev, newDoc]);
 
+            // Fake smooth progress animation
+            const interval = setInterval(() => {
+                setDocuments((prev) =>
+                    prev.map((doc) =>
+                        doc.id === id
+                            ? {
+                                ...doc,
+                                progress: Math.min(
+                                    (doc.progress ?? 0) + 5,
+                                    90
+                                ),
+                            }
+                            : doc
+                    )
+                );
+            }, 500);
+
             try {
-                const response = await createPdfIngestion({file: file, documentId: file.name}).unwrap();
+                const response = await createPdfIngestion({
+                    file: file,
+                    playWrightProjectId: projectData?.id.toString(),
+                }).unwrap();
                 console.log("Upload was success:", response);
+
+                clearInterval(interval);
 
                 // Update to analyzed
                 setDocuments((prev) =>
                     prev.map((doc) =>
-                        doc.id === id ? { ...doc, status: "analyzed" } : doc
+                        doc.id === id ? { ...doc, status: "analyzed", progress: 100, } : doc
                     )
                 );
+
+                refetch();
 
             } catch (error) {
                 console.log(error);
 
+                // Mark Failed
                 setDocuments((prev) =>
                     prev.map((doc) =>
-                        doc.id === id ? { ...doc, status: "error" } : doc
+                        doc.id === id ? { ...doc, status: "error", progress: 0 } : doc
                     )
                 );
             }
@@ -187,6 +218,8 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
         // close modal
         setUsePdfIngestion(false);
+
+        refetch();
 
         // (optional) you could trigger something here if needed
         console.log("Selected PDFs:", selectedPdfs);
@@ -328,6 +361,20 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                 </div>
                             </div>
                         )}
+
+                        {isPdfError && (
+                            <>
+                                <span className="text-red-500 text-xs">Error Loading PDF</span>
+                            </>
+                        )}
+
+                        {isProjectError && (
+                            <>
+                                <span className="text-red-500 text-xs">Error Loading Project From Database</span>
+                            </>
+                        )}
+
+
 
                         {/* Select Tool Type */}
                         {selectGadget && (

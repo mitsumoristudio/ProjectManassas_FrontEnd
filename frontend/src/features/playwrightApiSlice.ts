@@ -83,6 +83,7 @@ export const {
     useUpdatePlayWrightProjectMutation,
     useAddPlayWrightQueryMutation,
     useGetPlayWrightQueryListQuery,
+    useGetPlayWrightQuerybyIdQuery,
     useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightProjectListQuery,
     useDeletePlayWrightProjectMutation,

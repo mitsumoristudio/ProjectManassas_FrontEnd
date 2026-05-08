@@ -10,12 +10,10 @@ import {useSendDocumentEmbeddingMutation,
 } from "../../../features/chatapiSlice";
 import {
     useGetPlayWrightProjectbyIdQuery,
-  } from "../../../features/playwrightApiSlice";
-import {
-    useGetPlayWrightQueryListQuery,
     useAddPlayWrightQueryMutation,
-    useDeletePlayWrightQueryMutation,
-} from "../../../features/playwrightApiSlice";
+    useGetPlayWrightQueryListQuery,
+    useDeletePlayWrightQueryMutation
+  } from "../../../features/playwrightApiSlice";
 
 import {useParams, useNavigate, NavLink} from "react-router-dom";
 
@@ -138,6 +136,12 @@ export function PlayWrightQueryDashboard() {
         refetch,
     } = useGetPlayWrightQueryListQuery({keyword});
 
+    const [showSlideIn, setShowSlideIn] = useState(false);
+
+    useEffect(() => {
+        setShowSlideIn(true);
+    }, []);
+
 
     const onSubmitHandler = (message: string) => {
         console.log("message", message);
@@ -167,7 +171,7 @@ export function PlayWrightQueryDashboard() {
                     <div className="flex justify-between items-center mb-6">
 
                         <div>
-                            <h1 className="text-2xl font-semibold">{projectData?.projectName || "Commercial Construction Contract"}</h1>
+                            <h1 className="text-2xl font-semibold">{projectData?.projectName || "Project Not Found"}</h1>
                             <p className="text-sm text-gray-500">
                                 100 queries
                             </p>
@@ -183,7 +187,7 @@ export function PlayWrightQueryDashboard() {
                             <div className="flex-col items-center w-full max-w-4xl relative px-0 xl:px-8">
 
                                 {/*Header & UserName*/}
-                                <div className="flex flex-row gap-x-4 items-center justify-center mb-1 space-y-1">
+                                <div className={`flex flex-row transform transition-all duration-1000 ease-out ${showSlideIn ? "translate-x-0 opacity-100" : "translate-x-full opacity-0" } gap-x-4 items-center justify-center mb-1 space-y-1`}>
                                     <img
                                         alt=""
                                         src={assets.mori_solution_logo2}

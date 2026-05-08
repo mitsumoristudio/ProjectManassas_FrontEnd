@@ -3,10 +3,9 @@ import {Search, Folder, MoreHorizontal, Users, Database, ChevronDown, Trash2Icon
 
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
-import {Link, NavLink, useNavigate, useParams} from "react-router-dom";
+import { NavLink, useParams} from "react-router-dom";
 import {AnimatePresence, motion} from "framer-motion";
 import {useCreatePlayWrightProjectMutation,
-        useGetPlayWrightProjectbyIdQuery,
         useGetPlayWrightProjectListQuery,
         useUpdatePlayWrightProjectMutation,
         useDeletePlayWrightProjectMutation} from "../../../features/playwrightApiSlice";
@@ -28,7 +27,6 @@ export default function PlaybookProject() {
     const {id} = useParams();
     const {keyword} = useParams();
     const projectId = String(id);
-    const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
 
     const {
         data: playWrightProject,
@@ -51,11 +49,11 @@ export default function PlaybookProject() {
         callback();
     }
 
-    useEffect(() => {
-        if (projectData) {
-            setProjectName(projectData?.projectName);
-        }
-    }, [projectData]);
+    // useEffect(() => {
+    //     if (projectData) {
+    //         setProjectName(projectData?.projectName);
+    //     }
+    // }, [projectData]);
 
     // when user click outside the ellipsis, the window closes
     useEffect(() => {
@@ -203,7 +201,7 @@ export default function PlaybookProject() {
                     <div className="grid grid-cols-4 gap-4 min-h-56">
                         {playWrightProject?.map((pro, i) => (
                             <div className="bg-white p-6 rounded-2xl hover:bg-gray-200 transition-colors mb-2 cursor-pointer"
-                            key={i.id}>
+                            key={`${pro}-${i}`}>
 
                                 <NavLink to={`playWrightQuery/${pro.id}`}
                                         className={"block p-6"}>
@@ -214,7 +212,8 @@ export default function PlaybookProject() {
                                         </div>
                                     </div>
 
-                                    <div className="font-medium text-sm">{pro.projectName}</div>
+                                    <div className="font-medium text-md">{pro.projectName}</div>
+
                                     <div className="text-xs text-gray-500 mt-1">
                                         {pro.files} files · {pro.type}
                                     </div>

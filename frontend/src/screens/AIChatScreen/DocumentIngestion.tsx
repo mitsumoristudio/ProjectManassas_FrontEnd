@@ -4,7 +4,7 @@ import {useState} from "react";
 import cn from "../../util/util";
 import {Upload, FileText, XOctagon, BadgeCheckIcon} from "lucide-react";
 import {Button} from "@mui/material";
-
+import UpdateProgressBar from "../../../src/components/Layout/UpdateProgressBar";
 
 export interface UploadedDocumentProp {
     id: string;
@@ -12,6 +12,7 @@ export interface UploadedDocumentProp {
     size: string;
     type: string;
     status?: "uploading" | "analyzed" | "error";
+    progress?: number;
 }
 
 interface LegalDocumentUploadProps {
@@ -111,7 +112,29 @@ export default function DocumentIngestion({documents, onUpload, onRemove, maxFil
                                 {/* Status indicator */}
                                 <div className="flex items-center gap-1">
                                     {doc.status === "uploading" && (
-                                        <span className="text-blue-500 text-xs">Uploading...</span>
+
+                                        <div>
+                                            <div className="flex items-center justify-between mb-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="relative flex size-3">
+                                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75" />
+                                                        <span className="relative inline-flex size-3 rounded-full bg-sky-500" />
+                                                    </span>
+
+                                                    <span className="text-xs font-medium text-body">Uploading...</span>
+                                                </div>
+
+                                                <span className="text-xs font-medium text-body">{doc.progress ?? 0}%</span>
+                                            </div>
+
+                                            <div className="w-full bg-neutral-quaternary rounded-full h-2">
+                                                <div
+                                                    className="bg-brand h-2 rounded-full transition-all duration-300"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        // <span className="text-blue-500 text-xs">Uploading...</span>
                                     )}
                                     {doc.status === "analyzed" && (
                                         <span className="flex items-center text-green-600 text-xs font-medium">
