@@ -21,6 +21,9 @@ interface ChatInputProps {
     isLoading?: boolean;
     value: string;
     onChange: (value: string) => void;
+    onQueryTypeChange?: (
+        type: "tabular-review" | "single-query-review"
+    ) => void;
 }
 
 const PlayWrightChatInput: React.FC<ChatInputProps> = ({
@@ -29,6 +32,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                                           value,
                                                           onChange,
                                                           isLoading = false,
+                                                           onQueryTypeChange,
                                                       }) => {
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -37,7 +41,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [usePdfIngestion, setUsePdfIngestion] = useState(false);
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
     const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
-    const [queryType, setQueryType] = useState<"review" | "ask">("review");
+    const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review">("tabular-review");
 // Review is set for tabular and Ask is set for single query
 
     const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification">("advisor");
@@ -60,25 +64,25 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const modelPromptHandler = () => {
         if (!value.trim()) return;
 
-        if (queryType === "ask") {
+        if (queryType === "single-query-review") {
             setReviewPrompt(value);
             setMode("regularChat")
             return;
         }
 
-        if (queryType === "review" && toolType === "advisor") {
+        if (queryType === "tabular-review" && toolType === "advisor") {
             setReviewPrompt(value);
             setMode("advisor-config");
             return;
         }
 
-        if (queryType === "review" && toolType === "analysis") {
+        if (queryType === "tabular-review" && toolType === "analysis") {
             setReviewPrompt(value);
             setMode("analysis-config");
             return;
         }
 
-        if (queryType === "review" && toolType === "specification") {
+        if (queryType === "tabular-review" && toolType === "specification") {
             setReviewPrompt(value);
             setMode("specification-config");
             return;
@@ -320,9 +324,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                                         {/* Review Query */}
                                         <div
-                                            onClick={() => setQueryType("review")}
+                                            onClick={() => {
+                                                setQueryType("tabular-review");
+                                                onQueryTypeChange?.("tabular-review");
+                                            }}
+
                                             className={`p-4 rounded-xl border cursor-pointer transition
-                    ${queryType === "review"
+                    ${queryType === "tabular-review"
                                                 ? "border-black bg-gray-100"
                                                 : "hover:bg-gray-50"}
                     `}
@@ -335,9 +343,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                                         {/* Ask Query */}
                                         <div
-                                            onClick={() => setQueryType("ask")}
+                                            onClick={() => {
+                                                setQueryType("single-query-review");
+                                                onQueryTypeChange?.("single-query-review");
+                                            }}
+
                                             className={`p-4 rounded-xl border cursor-pointer transition
-                    ${queryType === "ask"
+                    ${queryType === "single-query-review"
                                                 ? "border-black bg-gray-100"
                                                 : "hover:bg-gray-50"}
                     `}
@@ -585,7 +597,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         onClick={() => {
                                             setMode("advisor-config"); // next step
                                             onSend({
-                                                type: "review",
+                                                type: "tabular-review",
                                                 prompt: reviewPrompt,
                                             });
 
@@ -671,7 +683,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         onClick={() => {
                                             setMode("advisor-config"); // next step
                                             onSend({
-                                                type: "review",
+                                                type: "tabular-review",
                                                 prompt: reviewPrompt,
                                             });
 
@@ -751,7 +763,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         onClick={() => {
                                             setMode("advisor-config"); // next step
                                             onSend({
-                                                type: "review",
+                                                type: "tabular-review",
                                                 prompt: reviewPrompt,
                                             });
 

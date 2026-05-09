@@ -19,35 +19,40 @@ import {useParams, useNavigate, NavLink} from "react-router-dom";
 
 
 // ================= Recent Queries =================
-export function RecentQueries({ data }) {
+export function RecentQueries({ data, tabularOrSingleQuery }) {
 
     const {userInfo} = useSelector((state: any) => state.auth);
+    const navigate = useNavigate();
 
     return (
         <div className="mb-6">
             <h2 className="text-lg font-medium mb-3">Recent queries</h2>
             <div className="bg-white rounded-2xl divide-y">
                 {data?.map((q, i) => (
-                    <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans">
-                        <div className={"flex items-center cursor-pointer"}>
-                            <div className="font-medium">{q.projectQueryTitle}</div>
-
-                        </div>
-                                <div className={"font-sans text-gray-700 text-sm"}>Tabular Review</div>
-
-                        <div className="text-right text-gray-500">
-                            <div>{userInfo?.email}</div>
-                            <div className="flex items-center gap-1 justify-end">
-                                <Clock size={14} /> {new Date(q.createdAt).toLocaleDateString(
-                                "en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric"
-                                }
-                            )}
+                    <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
+                            onClick={() => navigate(tabularOrSingleQuery ? `/tabular-review/${q.id}` :
+                                `/single-query-review/${q.id}`)}>
+                            <div className={"flex items-center cursor-pointer"}>
+                                <div className="font-medium">{q.projectQueryTitle}</div>
 
                             </div>
-                        </div>
+                            <div className={"font-sans text-gray-700 text-sm"}>Tabular Review</div>
+
+                            <div className="text-right text-gray-500">
+                                <div>{userInfo?.email}</div>
+                                <div className="flex items-center gap-1 justify-end">
+                                    <Clock size={14} /> {new Date(q.createdAt).toLocaleDateString(
+                                    "en-US", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric"
+                                    }
+                                )}
+
+                                </div>
+                            </div>
+
+
                     </div>
                 ))}
             </div>
@@ -148,6 +153,13 @@ export function PlayWrightQueryDashboard() {
         setInputValue("");
     }
 
+    const [tabularOrSingleQuery, setTabularOrSingleQuery] =
+        useState<"tabular-review" | "single-query-review">(
+            "tabular-review"
+        );
+
+    // @ts-ignore
+    // @ts-ignore
     return (
         <main>
             <div className="flex h-screen font-sans">
@@ -207,6 +219,7 @@ export function PlayWrightQueryDashboard() {
                                     onSend={onSubmitHandler}
                                     value={inputValue}
                                     onChange={setInputValue}
+                                    onQueryTypeChange={setTabularOrSingleQuery}
                                 />
 
                                 <div className="text-center">
@@ -219,7 +232,8 @@ export function PlayWrightQueryDashboard() {
 
                     </div>
                     {/*================= Recent Query ================= */}
-                    <RecentQueries data={playWrightQuery} />
+                    <RecentQueries data={playWrightQuery}
+                                   tabularOrSingleQuery={tabularOrSingleQuery} />
 
 
 
