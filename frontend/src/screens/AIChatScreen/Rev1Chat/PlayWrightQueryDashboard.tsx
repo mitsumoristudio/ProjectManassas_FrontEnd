@@ -27,31 +27,36 @@ export function RecentQueries({ data, tabularOrSingleQuery }) {
     return (
         <div className="mb-6">
             <h2 className="text-lg font-medium mb-3">Recent queries</h2>
-            <div className="bg-white rounded-2xl divide-y">
+
+            <div className="bg-white rounded-2xl divide-y max-h-[300px] overflow-y-auto scroll-smooth cursor-pointer">
                 {data?.map((q, i) => (
+
                     <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
                             onClick={() => navigate(tabularOrSingleQuery ? `/tabular-review/${q.id}` :
                                 `/single-query-review/${q.id}`)}>
-                            <div className={"flex items-center cursor-pointer"}>
-                                <div className="font-medium">{q.projectQueryTitle}</div>
 
-                            </div>
-                            <div className={"font-sans text-gray-700 text-sm"}>Tabular Review</div>
+                        {/* LEFT SIDE */}
+                        <div className="flex flex-col">
+                            <span className="font-medium">{q.projectQueryTitle}</span>
+                            <span className="text-xs text-gray-500">
+                                {new Date(q.createdAt).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric"
+                                })}
+                            </span>
+                        </div>
 
-                            <div className="text-right text-gray-500">
-                                <div>{userInfo?.email}</div>
-                                <div className="flex items-center gap-1 justify-end">
-                                    <Clock size={14} /> {new Date(q.createdAt).toLocaleDateString(
-                                    "en-US", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric"
-                                    }
-                                )}
+                        {/* RIGHT SIDE */}
+                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+                                {q.singleTabular}
+                            </span>
 
-                                </div>
-                            </div>
+                            <span>{userInfo?.email}</span>
 
+                            <EllipsisIcon size={16} />
+                        </div>
 
                     </div>
                 ))}
@@ -111,7 +116,7 @@ export function FilesTable() {
                                     day: "numeric"
                                 }
                             )}</td>
-                            <td className="p-3">
+                            <td className="p-2">
                                 <EllipsisIcon size={12} />
                             </td>
                         </tr>

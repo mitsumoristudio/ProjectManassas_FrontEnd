@@ -98,7 +98,6 @@ export function ConversationMainScreen() {
     const [openPdfList, setOpenPdfList] = useState(false);
     const [previewPdfId, setPreviewPdfId] = useState<string | null>(null);
     const [isPdfSideBarOpen, setIsPdfSideBarOpen] = useState(false);
-    const navigate = useNavigate();
     const { id } = useParams();
     const projectId = String(id);
 
@@ -145,7 +144,6 @@ export function ConversationMainScreen() {
     const appendMessage = (msg:any) => {
         setMessages(prev => [...prev, msg]);
     }
-
 
     const [selectedTableName, setSelectedTableName] = useState<string | null>(null);
     const [selectedTableSheetId, setSelectedTableSheetId] = useState<string | null>(null);

@@ -2,9 +2,13 @@
 import React, { useRef, useState } from "react";
 import { ArrowRight, Square, LucideFilePlus, XIcon, FileTextIcon, LucideFolderOpenDot, ArrowDownUpIcon, ToolCaseIcon} from "lucide-react";
 import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
-import {useSendDocumentEmbeddingMutation,
-    useGetPdfIngestedQuery
+import {
+    useSendDocumentEmbeddingMutation,
+    useGetPdfIngestedQuery,
 } from "../../../features/chatapiSlice";
+import {useContractAnalysisMutation,
+        useAdviseContractMutation,
+        useReviewSpecificationMutation} from "../../../features/contractAnalysisSlice";
 
 import {assets} from "../../../assets/assets";
 import {useParams} from "react-router-dom";
@@ -12,8 +16,8 @@ import {
     useGetPlayWrightProjectListQuery,
     useGetPlayWrightProjectbyIdQuery,
 } from "../../../features/playwrightApiSlice";
-
-
+import {toast} from "react-toastify";
+import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 
 interface ChatInputProps {
     onSend: (message: string, documents?: any []) => void;
@@ -52,7 +56,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [mode, setMode] = useState<Mode>("regularChat");
     const [reviewPrompt, setReviewPrompt] = useState<string>("");
 
-
     const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
     const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
 
@@ -60,6 +63,64 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const {keyword} = useParams();
     const projectId = String(id);
     const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
+
+    /* ---------------- AI Redux Toolkit call ---------------- */
+    const [contractAnalysis, {isLoading: iscontractAnalysisLoading}] = useContractAnalysisMutation();
+    const [reviewSpecification, {isLoading: isreviewSpecificationLoading}] = useReviewSpecificationMutation();
+    const [projectAdvisor, {isLoading: isprojectAdvisorLoading}] = useAdviseContractMutation();
+
+
+    const {
+        data: pdfFile = [],
+        isLoading: isPdfLoading,
+        isError: isPdfError,
+        refetch,
+    } = useGetPdfIngestedQuery({keyword});
+
+
+    const toolMutationMap = {
+        analysis: contractAnalysis,
+        specification: reviewSpecification,
+        advisor: projectAdvisor,
+    };
+
+    const handleToolMutation = async () => {
+        if (selectedPdfs.length === 0) {
+            console.error("No selected pdf found.");
+            return;
+        }
+
+        try {
+            const selectedMutation = toolMutationMap[toolType];
+
+
+            const requests = selectedPdfs.map(async  (pdf) => {
+                const payload = {
+                    projectQueryTitle: reviewPrompt || value,
+                    playWrightProjectId: projectId,
+                    documentId: pdf.id,
+                    azureBlobId: pdf.id,
+                    singleTabular: queryType,
+                };
+                return await selectedMutation(payload).unwrap();
+            });
+            const responses = await Promise.all(requests);
+
+            setMode("regularChat");
+
+            onChange("");
+
+            setReviewPrompt("");
+
+            console.log("Mutation response", responses);
+
+            toast.success("Added new query")
+
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to create a project");
+        }
+    }
+
 
     const modelPromptHandler = () => {
         if (!value.trim()) return;
@@ -93,34 +154,26 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     };
 
     const togglePdfSelection = (doc: any) => {
-        setSelectedPdfs((prev) => {
-            const exists = prev.some(
-                (d) => d.originalFileName === doc.originalFileName
-            );
+        const normalizedDoc = {
+            id: doc.id,
+            azureBlobId: doc.azureBlobId ?? doc.azureDocumentId, // <-- comes from API
+            originalFileName: doc.originalFileName,
+        };
 
-            if (exists) {
-                return prev.filter(
-                    (d) => d.originalFileName !== doc.originalFileName
-                );
-            } else {
-                return [...prev, doc];
-            }
+        setSelectedPdfs((prev) => {
+            const exists = prev.some((d) => d.id === normalizedDoc.id);
+
+            return exists
+                ? prev.filter((d) => d.id !== normalizedDoc.id)
+                : [...prev, normalizedDoc];
         });
     };
-
-    const {
-        data: pdfs = [],
-        isLoading: isPdfLoading,
-        isError: isPdfError,
-        refetch,
-    } = useGetPdfIngestedQuery({keyword});
 
     const {
         data: playWrightProject = [],
         isLoading: isProjectLoading,
         isError: isProjectError,
     } = useGetPlayWrightProjectListQuery({keyword})
-
 
     const handleSend = () => {
         if (!value?.trim()) return;
@@ -374,6 +427,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </div>
                         )}
 
+                        {isPdfLoading && (
+                            <>
+                                <CustomLoaderSmall />
+                            </>
+                        )}
+
+
                         {isPdfError && (
                             <>
                                 <span className="text-red-500 text-xs">Error Loading PDF</span>
@@ -473,7 +533,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         </button>
 
                                         <ul className="space-y-3">
-                                            {pdfs?.map((doc: any, index: number) => {
+                                            {pdfFile?.map((doc: any, index: number) => {
                                                 const isSelected = selectedPdfs.some(
                                                     (d) => d.originalFileName === doc.originalFileName
                                                 );
@@ -594,12 +654,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     </button>
 
                                     <button
-                                        onClick={() => {
+                                        onClick={async () => {
                                             setMode("advisor-config"); // next step
-                                            onSend({
-                                                type: "tabular-review",
-                                                prompt: reviewPrompt,
-                                            });
+                                            // onSend({
+                                            //     type: "tabular-review",
+                                            //     prompt: reviewPrompt,
+                                            // });
+                                            await handleToolMutation();
 
                                         }}
                                         className="px-4 py-2 rounded-lg bg-black text-white"
@@ -680,12 +741,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     </button>
 
                                     <button
-                                        onClick={() => {
+                                        onClick={ async () => {
                                             setMode("advisor-config"); // next step
-                                            onSend({
-                                                type: "tabular-review",
-                                                prompt: reviewPrompt,
-                                            });
+                                           await handleToolMutation();
+                                            // onSend({
+                                            //     type: "tabular-review",
+                                            //     prompt: reviewPrompt,
+                                            // });
 
                                         }}
                                         className="px-4 py-2 rounded-lg bg-black text-white"
@@ -760,18 +822,44 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     </button>
 
                                     <button
-                                        onClick={() => {
+                                        onClick={ async () => {
                                             setMode("advisor-config"); // next step
-                                            onSend({
-                                                type: "tabular-review",
-                                                prompt: reviewPrompt,
-                                            });
+                                            await handleToolMutation();
+                                            // onSend({
+                                            //     type: "tabular-review",
+                                            //     prompt: reviewPrompt,
+                                            // });
 
                                         }}
                                         className="px-4 py-2 rounded-lg bg-black text-white"
                                     >
                                         Continue
                                     </button>
+
+                                    {iscontractAnalysisLoading && (
+                                        <button type="button" className=" px-4 py-2 rounded-lg shadow-md bg-indigo-500 ..." disabled>
+                                            <svg className="mr-3 size-4 text-white animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isreviewSpecificationLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md bg-indigo-500 ..." disabled>
+                                            <svg className="mr-3 size-4 text-white animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isprojectAdvisorLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md bg-indigo-500 ..." disabled>
+                                            <svg className="mr-3 size-4 text-white animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
