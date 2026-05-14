@@ -37,45 +37,6 @@ function DataToolbar() {
     );
 }
 
-// ================= Table - Mock Data =================
-function DataTable({rows}) {
-
-
-    return(
-        <>
-            <div className="overflow-auto">
-                <table className="w-full text-sm">
-                    <thead className="bg-gray-50 text-gray-500 border-b">
-                    <tr>
-                        <th className="p-2 text-left">#</th>
-                        <th className="p-2 text-left">Name</th>
-                        <th className="p-2 text-left">Change of Control Provision</th>
-                        <th className="p-2 text-left">Party(ies) Restricted</th>
-                        <th className="p-2 text-left">Definition</th>
-                        <th className="p-2 text-left">Trigger</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {rows.map((r, i) => (
-                        <tr key={i} className="border-b hover:bg-gray-50">
-                            <td className="p-2">{i + 1}</td>
-                            <td className="p-2 flex items-center gap-2">
-                                <FileText size={14}/> {r.name}
-                            </td>
-                            <td className="p-2">{r.provision}</td>
-                            <td className="p-2">{r.party}</td>
-                            <td className="p-2 truncate max-w-xs">{r.definition}</td>
-                            <td className="p-2 truncate max-w-xs">{r.trigger}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
-        </>
-        )
-
-}
-
 // ================= Table =================
 
 function PlayWrightTable({rows}) {
@@ -90,8 +51,6 @@ function PlayWrightTable({rows}) {
     const [activeType, setActiveType] = useState("Project Analysis");
 
     const filterRows = rows?.filter(r => r.analysisType == activeType);
-
-
 
     // 🔑 central config (no more hardcoding columns everywhere)
     const columnsAnalyst = [
@@ -177,8 +136,8 @@ function PlayWrightTable({rows}) {
 
     // ✅ reusable cell (this is the key part)
     const ClauseCell = ({ clause }) => (
-        <td className="p-2 align-top">
-            <div className="h-28 overflow-hidden line-clamp-4 text-sm leading-snug"
+        <td className="p-2 max-w-[220px] align-top">
+            <div className="h-28 overflow-hidden line-clamp-4 break-words whitespace-normal"
                 onClick={() => setSelectedClause(clause)}>
                 {clause?.summaryShort || "-"}
             </div>
@@ -203,7 +162,7 @@ function PlayWrightTable({rows}) {
                 ))}
             </div>
 
-            <table className="min-w-max table-fixed border-separate border-spacing-y-2 text-sm">
+            <table className="min-w-[1200px] table-fixed border-separate border-spacing-y-2 text-sm">
                 <thead className="bg-gray-50 text-gray-500 border-b text-gray-700 border-r">
                 <tr className={"bg-white border-b border-gray-200 border-r border-gray-200 hover"}>
                     <th className="p-2 text-left whitespace-nowrap w-10">#</th>
@@ -221,14 +180,14 @@ function PlayWrightTable({rows}) {
                 <tbody>
                 {filterRows?.map((r, i) => (
                     <tr key={i} className="border-b hover:bg-gray-300 duration-700 rounded-xl cursor-pointer">
-                        <td className="p-2">{i + 1}</td>
+                        <td className="p-2 max-w-[220px]">{i + 1}</td>
 
                         <td className="p-1 flex items-center gap-2">
                             <FileText size={14} />
                             {r.originalFileName}
                         </td>
 
-                        <td className={"p-1"}>{r.projectQueryTitle}</td>
+                        <td className={"p-1 max-w-[220px]"}>{r.projectQueryTitle}</td>
 
                         {columnsPicker?.map((col) => {
                             const clause = getClause(r.clauses, col.key);
