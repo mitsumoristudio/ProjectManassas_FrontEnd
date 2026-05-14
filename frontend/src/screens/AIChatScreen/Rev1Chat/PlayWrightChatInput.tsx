@@ -429,7 +429,14 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                         {isPdfLoading && (
                             <>
-                                <CustomLoaderSmall />
+                                <div className="flex space-x-2 gap-x-1 justify-center items-center bg-white">
+                                    <span className="sr-only text-black">Loading...</span>
+                                    <div
+                                        className="h-3 w-3 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                    <div
+                                        className="h-2 w-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                    <div className="h-1 w-1 bg-blue-600 rounded-full animate-bounce"></div>
+                                </div>
                             </>
                         )}
 
