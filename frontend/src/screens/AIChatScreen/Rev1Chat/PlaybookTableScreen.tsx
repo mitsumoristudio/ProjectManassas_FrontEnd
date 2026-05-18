@@ -182,12 +182,12 @@ function PlayWrightTable({rows}) {
                     <tr key={i} className="border-b hover:bg-gray-300 duration-700 rounded-xl cursor-pointer">
                         <td className="p-2 max-w-[220px]">{i + 1}</td>
 
-                        <td className="p-1 flex items-center gap-2">
-                            <FileText size={14} />
+                        <td className="p-1 max-w-[220px] flex items-center gap-1">
+                            {/*<FileText size={26} />*/}
                             {r.originalFileName}
                         </td>
 
-                        <td className={"p-1 max-w-[220px]"}>{r.projectQueryTitle}</td>
+                        <td className={"p-2"}>{r.projectQueryTitle}</td>
 
                         {columnsPicker?.map((col) => {
                             const clause = getClause(r.clauses, col.key);
@@ -281,7 +281,7 @@ export default function PlaybookTableScreen() {
                     {/*================= Navigation Header ================= */}
                     <div className="flex flex-1 items-center py-1 cursor-pointer hover:bg-gray-200 rounded-lg w-56">
                         <NavLink
-                            to={`/playbookProject/playWrightQuery/${projectId}}`}
+                            to={`/playbookProject/playWrightQuery/${projectId}`}
                             className="flex items-center gap-4 text-gray-700 font-sans"
                         >
                             <ArrowLeftFromLine size={20} />

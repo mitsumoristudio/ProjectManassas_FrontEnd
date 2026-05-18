@@ -32,6 +32,7 @@ import {PlayWrightQueryDashboard} from "./screens/AIChatScreen/Rev1Chat/PlayWrig
 import PlaybookProject from "./screens/AIChatScreen/Rev1Chat/PlaybookProject";
 import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlaybookTableScreen";
 import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
+import SinglePlayQueryScreen from "./screens/AIChatScreen/Rev1Chat/SinglePlayQueryScreen";
 
 function App() {
   return (
@@ -70,7 +71,8 @@ function App() {
                 <Route path={"playbookProject/playWrightQuery/:id"} element={<PlayWrightQueryDashboard />} />
                 <Route path={"playbookProject"} element={<PlaybookProject />} />
                 <Route path={"tabular-review/:id"} element={<PlaybookTableScreen />} />
-                <Route path={"single-query-review/:id"} element={<AssistantChatScreen />} />
+                <Route path={"/assistantScreen"} element={<AssistantChatScreen />} />
+                <Route path={"single-query-review/:id"} element={<SinglePlayQueryScreen />} />
 
             </Routes>
 

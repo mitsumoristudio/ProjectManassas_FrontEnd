@@ -72,6 +72,13 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
                 body: data,
             }),
             invalidatesTags: ["PlayWrightProject"],
+        }),
+        updatePlayWrightQuery: builder.mutation({
+            query: (data: any) => ({
+                url: `${PLAYWRIGHT_API}/updateQuery/${data.id}`,
+                method: "PUT",
+                body: data,
+            })
         })
 
     })
@@ -81,6 +88,7 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
 export const {
     useCreatePlayWrightProjectMutation,
     useUpdatePlayWrightProjectMutation,
+    useUpdatePlayWrightQueryMutation,
     useAddPlayWrightQueryMutation,
     useGetPlayWrightQueryListQuery,
     useGetPlayWrightQuerybyIdQuery,

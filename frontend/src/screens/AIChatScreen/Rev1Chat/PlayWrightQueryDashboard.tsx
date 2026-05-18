@@ -1,28 +1,141 @@
-import { Search, Folder, FileText, Clock, Plus, Share2, ArrowLeftFromLine, EllipsisIcon } from "lucide-react";
+import {
+    Folder,
+    FileText,
+    Share2,
+    ArrowLeftFromLine,
+    EllipsisIcon,
+    ChevronDown, Trash2Icon, MailsIcon
+} from "lucide-react";
 import React, {useEffect, useState, useRef} from "react";
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
 import {assets} from "../../../assets/assets";
-import {useSelector, useDispatch, } from "react-redux";
-
+import {useSelector, useDispatch,  } from "react-redux";
 import PlayWrightChatInput from "./PlayWrightChatInput";
-import {useSendDocumentEmbeddingMutation,
-    useGetPdfIngestedQuery
+import {
+    useGetPdfIngestedQuery,
+    useDeletePdfIngestedMutation,
+    useDeleteEntirePdfMutation,
 } from "../../../features/chatapiSlice";
 import {
-    useGetPlayWrightProjectbyIdQuery,
     useAddPlayWrightQueryMutation,
+    useGetPlayWrightProjectbyIdQuery,
+    useUpdatePlayWrightQueryMutation,
     useGetPlayWrightQueryListQuery,
     useDeletePlayWrightQueryMutation
   } from "../../../features/playwrightApiSlice";
 
+import {toast} from "react-toastify";
 import {useParams, useNavigate, NavLink} from "react-router-dom";
+import {AnimatePresence, motion} from "framer-motion";
 
 
 // ================= Recent Queries =================
-export function RecentQueries({ data, tabularOrSingleQuery }) {
+export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
 
     const {userInfo} = useSelector((state: any) => state.auth);
     const navigate = useNavigate();
+
+    const [projectQueryTitle, setProjectQueryTitle] = useState<string>("");
+    const [openQuery, setOpenQuery] = useState<boolean>(false);
+    const [editQueryId, setEditQueryId] = useState<string | null>(null);
+    const [updatePlayWrightQuery] = useUpdatePlayWrightQueryMutation();
+    const [deletePlayWrightQuery] = useDeletePlayWrightQueryMutation();
+    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [addQuery] = useAddPlayWrightQueryMutation();
+
+    // Edit PlayWrightQuery
+    const onSelectQueryEditHandler = (query: any) => {
+
+        setEditQueryId(query?.id);
+        setProjectQueryTitle(query.projectQueryTitle);
+        setOpenQuery(true);
+        setActiveMenu(null);
+
+        refetch();
+    }
+
+    // Create new QueryTitle
+    const onCreateQueryTitleHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!userInfo) {
+            toast.error("You must be logged in!");
+            return;
+        }
+        try {
+            if (editQueryId) {
+                await updatePlayWrightQuery({
+                    id: editQueryId,
+                    projectQueryTitle: projectQueryTitle,
+                }).unwrap();
+                toast.success("Query has been updated!");
+            } else {
+                const newQuery = {
+                    projectQueryTitle: projectQueryTitle,
+                };
+                await addQuery(newQuery).unwrap();
+
+                toast.success("Query has been created successfully.!");
+            }
+            refetch();
+            setProjectQueryTitle("");
+            setEditQueryId(null);
+            setActiveMenu(null);
+        } catch (error) {
+            toast.error(error.message);
+        }
+    }
+
+    // Delete PlayWrightQuery
+    const onQueryDeleteHandler = async (id: string) => {
+        if (window.confirm(`Are you sure you want to delete this query`)) {
+            try {
+                await deletePlayWrightQuery(id).unwrap();
+
+                refetch();
+
+                toast.success("Query was successfully deleted.");
+            } catch (error) {
+                toast.error("Problem with deleting this query")
+            }
+        }
+        setActiveMenu(null);
+    }
+
+
+    // Share project
+    const onSelectShare = (id: string) => {
+        console.log("Share project:", id);
+        setActiveMenu(null);
+    }
+
+
+    const EllipsisEdit = [
+        {name: "Edit", icon: ChevronDown, color: "#6366f1", action: (q: any) => onSelectQueryEditHandler(q)
+        },
+        {name: "Delete", icon: Trash2Icon, color: "#6366f1", action: (q: any) => onQueryDeleteHandler(q.id)
+        },
+        {name: "Share", icon: MailsIcon, color: "#6366f1", action: (q: any) => onSelectShare(q.id)
+        }
+    ]
+
+    // when user click outside the ellipsis, the window closes
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setActiveMenu(null);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div className="mb-6">
@@ -32,20 +145,24 @@ export function RecentQueries({ data, tabularOrSingleQuery }) {
                 {data?.map((q, i) => (
 
                     <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
-                            onClick={() => navigate(tabularOrSingleQuery ? `/tabular-review/${q.id}` :
-                                `/single-query-review/${q.id}`)}>
-
-                        {/* LEFT SIDE */}
-                        <div className="flex flex-col">
-                            <span className="font-medium">{q.projectQueryTitle}</span>
-                            <span className="text-xs text-gray-500">
+                            >
+                        <div onClick={() => navigate(tabularOrSingleQuery ? `/tabular-review/${q.id}` :
+                            `/single-query-review/${q.id}`)}>
+                            {/* LEFT SIDE */}
+                            <div className="flex flex-col">
+                                <span className="font-medium">{q.projectQueryTitle}</span>
+                                <span className="text-xs text-gray-500">
                                 {new Date(q.createdAt).toLocaleDateString("en-US", {
                                     year: "numeric",
                                     month: "short",
                                     day: "numeric"
                                 })}
                             </span>
+                            </div>
+
                         </div>
+
+
 
                         {/* RIGHT SIDE */}
                         <div className="flex items-center gap-4 text-sm text-gray-500">
@@ -55,7 +172,90 @@ export function RecentQueries({ data, tabularOrSingleQuery }) {
 
                             <span>{userInfo?.email}</span>
 
-                            <EllipsisIcon size={16} />
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveMenu(prev => prev === q.id ? null : q.id)
+                                }}
+                            >
+                                <EllipsisIcon size={20} className={"relative right-2 text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
+                            </button>
+
+                            {/* Edit Query Window */}
+                            {activeMenu === q.id && (
+                                <div className={"fixed z-60"}>
+                                    <div
+                                        ref={dropdownRef}
+                                        className={"bg-gray-400 w-96 rounded-2xl shadow-xl p-1 w-48 cursor-pointer hover:bg-gray-300 transition-colors max-w-fit"}>
+
+                                        {EllipsisEdit.map((item, index) => (
+                                            <motion.div
+                                                key={index}
+                                                onClick={() => item.action(q)}
+                                                className="flex items-center p-4 text-md text-white font-medium rounded-lg hover:bg-gray-200 transition-colors mb-2"
+                                            >
+                                                <item.icon size={20} style={{ color: item.color, minWidth: "20px" }} />
+                                                <AnimatePresence>
+                                                    {activeMenu === q.id && (
+                                                        <motion.span
+                                                            key={index}
+                                                            className="ml-4 whitespace-nowrap"
+                                                            initial={{ opacity: 0, width: 0 }}
+                                                            animate={{ opacity: 1, width: "auto" }}
+                                                            exit={{ opacity: 0, width: 0 }}
+                                                            transition={{ duration: 0.5, delay: 0.3 }}
+                                                        >
+                                                            {item.name}
+                                                        </motion.span>
+                                                    )}
+                                                </AnimatePresence>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+
+                                </div>)}
+
+                            {openQuery && (
+                                <div className="fixed top-10 left-60 z-40">
+                                    <div className={"bg-white rounded-2xl shadow-xl p-4 w-[350px]"}>
+                                        <form className={"space-y-4"}
+                                              onSubmit={onCreateQueryTitleHandler}>
+
+                                            <div>
+                                                <label className={"block text-md font-medium text-gray-800"}>
+                                                    Query Name:
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    required={true}
+                                                    value={projectQueryTitle}
+                                                    placeholder={""}
+                                                    className={"mt-1 block w-full border border-gray-500 text-gray-900 rounded-lg shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500"}
+                                                    onChange={(e) => setProjectQueryTitle(e.target.value)}
+                                                />
+                                            </div>
+
+                                            <div className="flex justify-end space-x-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setOpenQuery(false)}
+                                                    className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    type="submit"
+                                                    className="px-4 py-2 rounded-lg bg-purple-400 text-white hover:bg-purple-800"
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
+
+
                         </div>
 
                     </div>
@@ -73,8 +273,48 @@ export function FilesTable() {
         data: pdfs = [],
         isLoading: isPdfLoading,
         isError: isPdfError,
-        refetch
+        refetch,
     } = useGetPdfIngestedQuery({keyword});
+
+    const [deleteEntirePdf] = useDeleteEntirePdfMutation();
+    const [deletePdfEmbedding] = useDeletePdfIngestedMutation();
+    const [activePdfMenu, setPdfActiveMenu] = useState<string | null>(null);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // DeletePdfEmbedding && File
+    const onPdfDeleteHandler = async (id: string) => {
+        if (window.confirm(`Are you sure you want to delete this pdf`)) {
+            try {
+                await Promise.all([
+                     deleteEntirePdf(id).unwrap(),
+                     deletePdfEmbedding(id).unwrap()
+            ]);
+
+                refetch();
+                toast.success("Pdf has been deleted!");
+            } catch (error) {
+                toast.error("Problem with deleting this pdf")
+            }
+        }
+        setPdfActiveMenu(null);
+    }
+
+    // when user click outside the ellipsis, the window closes
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setPdfActiveMenu(null);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div>
@@ -116,11 +356,39 @@ export function FilesTable() {
                                     day: "numeric"
                                 }
                             )}</td>
-                            <td className="p-2">
-                                <EllipsisIcon size={12} />
+                            <td  className="p-2"
+                                    >
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setPdfActiveMenu(prev => prev === file.id ? null : file.id)
+                                    }}
+                                >
+                                    <EllipsisIcon size={20} className={"relative right-2 text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
+                                </button>
                             </td>
+                            {/* Edit Query Window */}
+                            {activePdfMenu === file.id && (
+                                <div className="mt-4 z-40 bg-gray-500 rounded-lg shadow p-2">
+                                    <button
+                                        onClick={() => onPdfDeleteHandler(file.id)}
+                                        className="flex items-center gap-2 p-2 hover:bg-gray-300 rounded-md w-full"
+                                    >
+                                        <Trash2Icon size={20} color="blue" />
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
                         </tr>
+
                     ))}
+
+                    {isPdfError && (
+                        <>
+                            <span className="text-red-500 text-xs">Error Loading PDF</span>
+                        </>
+                    )}
+
                     </tbody>
                 </table>
             </div>
@@ -190,7 +458,7 @@ export function PlayWrightQueryDashboard() {
                         <div>
                             <h1 className="text-2xl font-semibold">{projectData?.projectName || "Project Not Found"}</h1>
                             <p className="text-sm text-gray-500">
-                                100 queries
+                                {playWrightQuery?.length ?? "None:"} Total Queries
                             </p>
                         </div>
 
@@ -237,11 +505,21 @@ export function PlayWrightQueryDashboard() {
 
                     </div>
                     {/*================= Recent Query ================= */}
-                    <RecentQueries data={playWrightQuery}
+                    <RecentQueries data={playWrightQuery} refetch={refetch}
                                    tabularOrSingleQuery={tabularOrSingleQuery} />
 
-
-
+                    {isPlayWrightLoading && (
+                        <>
+                            <div className="flex space-x-2 gap-x-1 justify-center items-center bg-white">
+                                <span className="sr-only text-black">Loading...</span>
+                                <div
+                                    className="h-3 w-3 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                <div
+                                    className="h-2 w-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                <div className="h-1 w-1 bg-blue-600 rounded-full animate-bounce"></div>
+                            </div>
+                        </>
+                    )}
 
 
                     {/*================= Ingested Files ================= */}

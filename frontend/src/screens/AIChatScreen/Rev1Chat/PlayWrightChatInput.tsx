@@ -16,6 +16,8 @@ import {
     useGetPlayWrightProjectListQuery,
     useGetPlayWrightProjectbyIdQuery,
 } from "../../../features/playwrightApiSlice";
+
+import {useSendSummaryAIMessageMutation} from "../../../features/chatapiSlice";
 import {toast} from "react-toastify";
 import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 
@@ -48,7 +50,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review">("tabular-review");
 // Review is set for tabular and Ask is set for single query
 
-    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification">("advisor");
+    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summarizationAI'>("advisor");
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
     // State-Driven Model Workflow
@@ -68,7 +70,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [contractAnalysis, {isLoading: iscontractAnalysisLoading}] = useContractAnalysisMutation();
     const [reviewSpecification, {isLoading: isreviewSpecificationLoading}] = useReviewSpecificationMutation();
     const [projectAdvisor, {isLoading: isprojectAdvisorLoading}] = useAdviseContractMutation();
-
+    const [summarizationAI, {isLoading: isSummaryAILoading}] = useSendSummaryAIMessageMutation();
 
     const {
         data: pdfFile = [],
@@ -82,6 +84,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         analysis: contractAnalysis,
         specification: reviewSpecification,
         advisor: projectAdvisor,
+        summarizationAI: summarizationAI,
     };
 
     const handleToolMutation = async () => {
@@ -453,8 +456,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </>
                         )}
 
-
-
                         {/* Select Tool Type */}
                         {selectGadget && (
                             <div className="fixed inset-0 z-50 flex items-start justify-center pt-24">
@@ -510,9 +511,25 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         >
                                             <div className="font-medium">Analyze Contract</div>
                                             <div className="text-sm text-gray-500">
-                                                Analyze contractual agreement
+                                                Analyze Contractual Agreement
                                             </div>
                                         </div>
+
+                                        {/* Summarization */}
+                                        <div
+                                            onClick={() => setToolType("summarizationAI")}
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${toolType === "summarizationAI"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Document Intelligence</div>
+                                            <div className="text-sm text-gray-500">
+                                                Document minning search
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     {/* Footer */}
@@ -607,7 +624,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                 {/* Header */}
                                 <div className="flex justify-between items-center p-4 border-b">
                                     <h2 className="font-semibold text-lg">
-                                        Create a {toolType} table
+                                        Create a {toolType} {queryType}
                                     </h2>
                                     <button  onClick={() => {
                                         setMode("regularChat")
@@ -687,7 +704,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                 {/* Header */}
                                 <div className="flex justify-between items-center p-4 border-b">
                                     <h2 className="font-semibold text-lg">
-                                        Create a {toolType} table
+                                        Create a {toolType} {queryType}
                                     </h2>
                                     <button  onClick={() => {
                                         setMode("regularChat")
@@ -774,7 +791,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                 {/* Header */}
                                 <div className="flex justify-between items-center p-4 border-b">
                                     <h2 className="font-semibold text-lg">
-                                        Create a {toolType} table
+                                        Create a {toolType} {queryType}
                                     </h2>
                                     <button  onClick={() => {
                                         setMode("regularChat")

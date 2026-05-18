@@ -49,12 +49,6 @@ export default function PlaybookProject() {
         callback();
     }
 
-    // useEffect(() => {
-    //     if (projectData) {
-    //         setProjectName(projectData?.projectName);
-    //     }
-    // }, [projectData]);
-
     // when user click outside the ellipsis, the window closes
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
