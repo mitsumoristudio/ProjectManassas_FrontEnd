@@ -128,9 +128,27 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const modelPromptHandler = () => {
         if (!value.trim()) return;
 
+        if (queryType === "single-query-review" && toolType === "advisor") {
+            setReviewPrompt(value);
+            setMode("advisor-config")
+            return;
+        }
+
+        if (queryType === "single-query-review" && toolType === "analysis") {
+            setReviewPrompt(value);
+            setMode("analysis-config")
+            return;
+        }
+
+        if (queryType === "single-query-review" && toolType === "specification") {
+            setReviewPrompt(value);
+            setMode("specification-config")
+            return;
+        }
+
         if (queryType === "single-query-review") {
             setReviewPrompt(value);
-            setMode("regularChat")
+            setMode("regularChat");
             return;
         }
 
@@ -526,7 +544,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         >
                                             <div className="font-medium">Document Intelligence</div>
                                             <div className="text-sm text-gray-500">
-                                                Document minning search
+                                                Document mining search
                                             </div>
                                         </div>
 

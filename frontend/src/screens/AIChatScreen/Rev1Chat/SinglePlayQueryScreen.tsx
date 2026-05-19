@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
-import {assets} from "../../../assets/assets";
 import {useSelector, useDispatch, } from "react-redux";
 import {useParams, useNavigate, NavLink} from "react-router-dom";
 import {
     useGetPlayWrightProjectbyIdQuery,
-    useGetPlayWrightQuerybyIdQuery, useGetPlayWrightQueryListQuery,
+    useGetPlayWrightQuerybyIdQuery,
 } from "../../../features/playwrightApiSlice";
 import {ArrowLeftFromLine} from "lucide-react";
 
@@ -17,6 +16,7 @@ export default function SinglePlayQueryScreen() {
                 isLoading,
                 isError,
                 refetch} = useGetPlayWrightQuerybyIdQuery<any>(id);
+
 
     const projectId = queryData?.playWrightProjectId;
 
@@ -61,51 +61,54 @@ export default function SinglePlayQueryScreen() {
                         </NavLink>
                     </div>
 
-                    <h2 className={"text-2xl mx-auto font-semibold"}>Response: </h2>
 
-                    <div className={`fixed top-0 right-0 h-full w-[400px] bg-white shadow-xl opacity-95 border-l z-50 transform transition-transform duration-300 ${
-                        selectedClause ? "translate-x-0" : "translate-x-full"
-                    }`}>
+                        <section>
+                            {queryData && (
+                                <div>
+                                    <h2 className={"text-3xl mx-auto py-1 font-medium"}>Response: {queryData.analysisType} </h2>
 
-                        {/* Header */}
-                        <div className="p-4 border-b flex justify-between items-center">
-                            <h2 className="font-semibold text-lg">
-                                {selectedClause.clauseName}
-                            </h2>
-                            <button
-                                onClick={() => setSelectedClause(null)}
-                                className="text-gray-600 hover:text-black"
-                            >
-                                ✕
-                            </button>
-                        </div>
+                                    <div className={`flex flex-1 items-center py-1`}>
 
-                        {/* Content */}
-                        <div className="p-4 overflow-y-auto">
-                            <h2 className={"font-semibold font-serif text-2xl py-2 text-black"}>Short:</h2>
-                            <p className="text-sm leading-relaxed">
-                                {selectedClause.summaryShort}
-                            </p>
+                                        {/* Content */}
+                                        <div className="p-4 overflow-y-auto">
+                                            {queryData?.clauses.map((item, i) => (
+                                                <div key={i}>
+                                                    <h2 className={"font-semibold underline font-serif text-2xl py-2 text-black"}>{item.clauseName}</h2>
 
-                            <h2 className={"font-semibold font-serif text-2xl py-2 text-black"}>Long:</h2>
-                            <p className="text-sm leading-relaxed">
-                                {selectedClause.summaryLong}
-                            </p>
+                                                    <h2 className={"font-sans text-2xl py-2 text-gray-800"}>Short:</h2>
 
-                            <p className="font-semibold font-serif text-2xl py-2 text-black capitalize">
-                                <strong className={"px-1"}>Risk:</strong>
+                                                    <p className="text-sm leading-relaxed">
+                                                        * {item.summaryShort}
+                                                    </p>
 
-                                <RiskBadge level={selectedClause.riskLevel} />
+                                                    <h2 className={"font-sans text-2xl py-2 text-gray-800"}>Long:</h2>
 
-                            </p>
+                                                    <p className="text-sm leading-relaxed">
+                                                        * {item.summaryLong}
+                                                    </p>
 
-                            <p className="font-medium font-serif text-2xl py-2 text-black ">
-                                <strong className={"gap-x-1"}>Source Page:</strong> {selectedClause.sourcePage}
-                            </p>
+                                                    <p className="font-semibold font-serif text-2xl py-2 text-black capitalize">
+                                                        <strong className={"px-1"}>Risk:</strong>
 
-                        </div>
-                    </div>
+                                                        <RiskBadge level={item.riskLevel} />
+                                                    </p>
 
+                                                    <p className="font-sans text-1xl py-2 text-gray-800">
+                                                        <strong className={"gap-x-1"}>Source Page:</strong> {item.sourcePage}
+                                                    </p>
+
+                                                </div>
+                                            ))}
+
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                        </section>
                 </div>
 
             </div>

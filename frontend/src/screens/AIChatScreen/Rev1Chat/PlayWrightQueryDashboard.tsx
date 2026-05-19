@@ -146,8 +146,11 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
 
                     <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
                             >
-                        <div onClick={() => navigate(tabularOrSingleQuery ? `/tabular-review/${q.id}` :
-                            `/single-query-review/${q.id}`)}>
+                        <div onClick={() => {
+                            const route = q.singleTabular === "single-query-review"
+                            ? `/single-query-review/${q.id}` : `/tabular-review/${q.id}`;
+                            navigate(route);
+                        }}>
                             {/* LEFT SIDE */}
                             <div className="flex flex-col">
                                 <span className="font-medium">{q.projectQueryTitle}</span>
@@ -165,7 +168,7 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
 
 
                         {/* RIGHT SIDE */}
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-4 text-sm text-gray-500 relative">
                             <span className="text-xs bg-gray-100 px-2 py-1 rounded">
                                 {q.singleTabular}
                             </span>
@@ -178,12 +181,12 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
                                     setActiveMenu(prev => prev === q.id ? null : q.id)
                                 }}
                             >
-                                <EllipsisIcon size={20} className={"relative right-2 text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
+                                <EllipsisIcon size={20} className={"relative text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
                             </button>
 
                             {/* Edit Query Window */}
                             {activeMenu === q.id && (
-                                <div className={"fixed z-60"}>
+                                <div className={"absolute right-0 top-full mt-2 z-30"}>
                                     <div
                                         ref={dropdownRef}
                                         className={"bg-gray-400 w-96 rounded-2xl shadow-xl p-1 w-48 cursor-pointer hover:bg-gray-300 transition-colors max-w-fit"}>
