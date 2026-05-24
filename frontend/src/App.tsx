@@ -24,7 +24,6 @@ import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
 import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
 import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
 import {ExcelCard} from "../src/components/ExcelCard";
-import PDFViewerPage from "../src/screens/mainscreen/PdfViewerPage";
 import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMainScreen";
 import {ChatSpreadSheet} from "../src/screens/AIChatScreen/ChatSpreadSheet";
 import DocumentPreviewScreen from "../src/screens/AIChatScreen/DocumentPreviewScreen";
@@ -33,6 +32,12 @@ import PlaybookProject from "./screens/AIChatScreen/Rev1Chat/PlaybookProject";
 import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlaybookTableScreen";
 import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
 import SinglePlayQueryScreen from "./screens/AIChatScreen/Rev1Chat/SinglePlayQueryScreen";
+
+
+import { pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc =
+    window.location.origin + "/pdf.worker.min.js";
 
 function App() {
   return (
@@ -63,11 +68,9 @@ function App() {
                 <Route path={"/signalr"} element={<SignalRProvider />} />
                 <Route path={"/resetPassword"} element={<PasswordResetScreen />} />
                 <Route path={"excellists"} element={<ExcelCard />} />
-                <Route path={"/pdfViewer"} element={<PDFViewerPage/>} />
                 <Route path={"/chat/:id"} element={<ConversationMainScreen/>} />
                 <Route path={"/spreadsheet"} element={<ChatSpreadSheet/>} />
                 <Route path={"/documentViewer"} element={<DocumentPreviewScreen />} />
-
                 <Route path={"playbookProject/playWrightQuery/:id"} element={<PlayWrightQueryDashboard />} />
                 <Route path={"playbookProject"} element={<PlaybookProject />} />
                 <Route path={"tabular-review/:id"} element={<PlaybookTableScreen />} />

@@ -39,7 +39,7 @@ function DataToolbar() {
 
 // ================= Table =================
 
-function PlayWrightTable({rows}) {
+function PlayWrightTable({rows, }) {
     const [selectedClause, setSelectedClause] = useState(null);
 
     const { id } = useParams();
@@ -51,6 +51,17 @@ function PlayWrightTable({rows}) {
     const [activeType, setActiveType] = useState("Project Analysis");
 
     const filterRows = rows?.filter(r => r.analysisType == activeType);
+
+    const navigate = useNavigate();
+
+    const handleOpenPdf = (clause) => {
+        // navigate(`/pdf-viewer`, {
+        //     state: {
+        //         fileUrl: clause.azureBlobUrl,
+        //         page: clause.sourcePage,
+        //     }
+        // })
+    };
 
     // 🔑 central config (no more hardcoding columns everywhere)
     const columnsAnalyst = [
@@ -135,10 +146,13 @@ function PlayWrightTable({rows}) {
 
 
     // ✅ reusable cell (this is the key part)
-    const ClauseCell = ({ clause }) => (
+    const ClauseCell = ({ clause, azureBlobId }) => (
         <td className="p-2 max-w-[220px] align-top">
             <div className="h-28 overflow-hidden line-clamp-4 break-words whitespace-normal"
-                onClick={() => setSelectedClause(clause)}>
+                onClick={() => setSelectedClause({
+                    ...clause,
+                    azureBlobId,
+                })}>
                 {clause?.summaryShort || "-"}
             </div>
         </td>
@@ -164,13 +178,13 @@ function PlayWrightTable({rows}) {
 
             <table className="min-w-[1200px] table-fixed border-separate border-spacing-y-2 text-sm">
                 <thead className="bg-gray-50 text-gray-500 border-b text-gray-700 border-r">
-                <tr className={"bg-white border-b border-gray-200 border-r border-gray-200 hover"}>
-                    <th className="p-2 text-left whitespace-nowrap w-10">#</th>
-                    <th className="p-2 text-left whitespace-nowrap w-48">File Name</th>
-                    <th className="p-2 text-left whitespace-nowrap w-48">Prompt</th>
+                <tr className={"bg-white border-b border-gray-200 border-r border-gray-400 hover"}>
+                    <th className="p-2 text-left whitespace-nowrap border-b border-l border-r border-t border-gray-300 w-10">#</th>
+                    <th className="p-2 text-left whitespace-nowrap border-b border-r border-t border-gray-300 w-48">File Name</th>
+                    <th className="p-2 text-left whitespace-nowrap border-b border-r border-t border-gray-300 w-48">Prompt</th>
 
                     {columnsPicker?.map((col) => (
-                        <th key={col.key} className="p-2 text-left w-56 whitespace-nowrap">
+                        <th key={col.key} className="p-2 text-left w-56 whitespace-nowrap border-b border-r border-t border-gray-300">
                             {col.label}
                         </th>
                     ))}
@@ -187,7 +201,7 @@ function PlayWrightTable({rows}) {
                             {r.originalFileName}
                         </td>
 
-                        <td className={"p-2"}>{r.projectQueryTitle}</td>
+                        <td className={"p-1"}>{r.projectQueryTitle}</td>
 
                         {columnsPicker?.map((col) => {
                             const clause = getClause(r.clauses, col.key);
@@ -196,6 +210,7 @@ function PlayWrightTable({rows}) {
                                 <ClauseCell
                                     key={col.key}
                                     clause={clause}
+                                    azureBlobId={r.azureBlobId}
                                 />
                             );
                         })}
@@ -223,7 +238,8 @@ function PlayWrightTable({rows}) {
                     </div>
 
                     {/* Content */}
-                    <div className="p-4 overflow-y-auto">
+                    <div className="p-2 h-full overflow-y-auto">
+
                         <h2 className={"font-semibold font-serif text-2xl py-2 text-black"}>Short:</h2>
                         <p className="text-sm leading-relaxed">
                             {selectedClause.summaryShort}
@@ -241,7 +257,9 @@ function PlayWrightTable({rows}) {
 
                         </p>
 
-                        <p className="font-medium font-serif text-2xl py-2 text-black ">
+                        <p className="cursor-pointer text-blue-600 hover:underline"
+                        onClick={() => handleOpenPdf(selectedClause)}>
+
                             <strong className={"gap-x-1"}>Source Page:</strong> {selectedClause.sourcePage}
                         </p>
 
@@ -255,6 +273,8 @@ function PlayWrightTable({rows}) {
 
 // ================= Page =================
 export default function PlaybookTableScreen() {
+
+    const [selectedClause, setSelectedClause] = useState(null);
 
     const {id} = useParams();
 
@@ -307,7 +327,7 @@ export default function PlaybookTableScreen() {
                         </div>
                     </div>
 
-                    <PlayWrightTable rows={playWrightQueryData} />
+                    <PlayWrightTable rows={playWrightQueryData}  />
 
                     {/*<DataTable rows={rows} />*/}
                 </div>

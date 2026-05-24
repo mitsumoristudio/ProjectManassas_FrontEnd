@@ -75,13 +75,13 @@ export default function SinglePlayQueryScreen() {
                                                 <div key={i}>
                                                     <h2 className={"font-semibold underline font-serif text-2xl py-2 text-black"}>{item.clauseName}</h2>
 
-                                                    <h2 className={"font-sans text-2xl py-2 text-gray-800"}>Short:</h2>
+                                                    <h2 className={"font-sans text-xl py-2 text-gray-800"}>Short:</h2>
 
                                                     <p className="text-sm leading-relaxed">
                                                         * {item.summaryShort}
                                                     </p>
 
-                                                    <h2 className={"font-sans text-2xl py-2 text-gray-800"}>Long:</h2>
+                                                    <h2 className={"font-sans text-xl py-2 text-gray-800"}>Long:</h2>
 
                                                     <p className="text-sm leading-relaxed">
                                                         * {item.summaryLong}

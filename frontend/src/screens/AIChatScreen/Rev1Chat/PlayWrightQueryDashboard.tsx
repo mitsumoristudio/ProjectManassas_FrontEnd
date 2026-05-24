@@ -15,6 +15,7 @@ import {
     useGetPdfIngestedQuery,
     useDeletePdfIngestedMutation,
     useDeleteEntirePdfMutation,
+    useGetAzureBlobUrlQuery
 } from "../../../features/chatapiSlice";
 import {
     useAddPlayWrightQueryMutation,
@@ -30,7 +31,7 @@ import {AnimatePresence, motion} from "framer-motion";
 
 
 // ================= Recent Queries =================
-export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
+export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
 
     const {userInfo} = useSelector((state: any) => state.auth);
     const navigate = useNavigate();
@@ -112,11 +113,14 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
 
 
     const EllipsisEdit = [
-        {name: "Edit", icon: ChevronDown, color: "#6366f1", action: (q: any) => onSelectQueryEditHandler(q)
+        {
+            name: "Edit", icon: ChevronDown, color: "#6366f1", action: (q: any) => onSelectQueryEditHandler(q)
         },
-        {name: "Delete", icon: Trash2Icon, color: "#6366f1", action: (q: any) => onQueryDeleteHandler(q.id)
+        {
+            name: "Delete", icon: Trash2Icon, color: "#6366f1", action: (q: any) => onQueryDeleteHandler(q.id)
         },
-        {name: "Share", icon: MailsIcon, color: "#6366f1", action: (q: any) => onSelectShare(q.id)
+        {
+            name: "Share", icon: MailsIcon, color: "#6366f1", action: (q: any) => onSelectShare(q.id)
         }
     ]
 
@@ -144,11 +148,12 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
             <div className="bg-white rounded-2xl divide-y max-h-[300px] overflow-y-auto scroll-smooth cursor-pointer">
                 {data?.map((q, i) => (
 
-                    <div key={i} className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
-                            >
+                    <div key={i}
+                         className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
+                    >
                         <div onClick={() => {
                             const route = q.singleTabular === "single-query-review"
-                            ? `/single-query-review/${q.id}` : `/tabular-review/${q.id}`;
+                                ? `/single-query-review/${q.id}` : `/tabular-review/${q.id}`;
                             navigate(route);
                         }}>
                             {/* LEFT SIDE */}
@@ -166,7 +171,6 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
                         </div>
 
 
-
                         {/* RIGHT SIDE */}
                         <div className="flex items-center gap-4 text-sm text-gray-500 relative">
                             <span className="text-xs bg-gray-100 px-2 py-1 rounded">
@@ -181,7 +185,8 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
                                     setActiveMenu(prev => prev === q.id ? null : q.id)
                                 }}
                             >
-                                <EllipsisIcon size={20} className={"relative text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
+                                <EllipsisIcon size={20}
+                                              className={"relative text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
                             </button>
 
                             {/* Edit Query Window */}
@@ -197,16 +202,16 @@ export function RecentQueries({ data, tabularOrSingleQuery, refetch}) {
                                                 onClick={() => item.action(q)}
                                                 className="flex items-center p-4 text-md text-white font-medium rounded-lg hover:bg-gray-200 transition-colors mb-2"
                                             >
-                                                <item.icon size={20} style={{ color: item.color, minWidth: "20px" }} />
+                                                <item.icon size={20} style={{color: item.color, minWidth: "20px"}}/>
                                                 <AnimatePresence>
                                                     {activeMenu === q.id && (
                                                         <motion.span
                                                             key={index}
                                                             className="ml-4 whitespace-nowrap"
-                                                            initial={{ opacity: 0, width: 0 }}
-                                                            animate={{ opacity: 1, width: "auto" }}
-                                                            exit={{ opacity: 0, width: 0 }}
-                                                            transition={{ duration: 0.5, delay: 0.3 }}
+                                                            initial={{opacity: 0, width: 0}}
+                                                            animate={{opacity: 1, width: "auto"}}
+                                                            exit={{opacity: 0, width: 0}}
+                                                            transition={{duration: 0.5, delay: 0.3}}
                                                         >
                                                             {item.name}
                                                         </motion.span>
@@ -274,7 +279,6 @@ export function FilesTable() {
 
     const {
         data: pdfs = [],
-        isLoading: isPdfLoading,
         isError: isPdfError,
         refetch,
     } = useGetPdfIngestedQuery({keyword});
@@ -283,15 +287,23 @@ export function FilesTable() {
     const [deletePdfEmbedding] = useDeletePdfIngestedMutation();
     const [activePdfMenu, setPdfActiveMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [highlights, setHighlights] = useState([]);
+    const navigate = useNavigate();
+
+    const [selectedFile, setSelectedFile] = useState<any | null>(null);
+    const onPreviewPdf = (file: any) => {
+        console.log("selectedFile", file);
+        setSelectedFile(file)
+    }
 
     // DeletePdfEmbedding && File
     const onPdfDeleteHandler = async (id: string) => {
         if (window.confirm(`Are you sure you want to delete this pdf`)) {
             try {
                 await Promise.all([
-                     deleteEntirePdf(id).unwrap(),
-                     deletePdfEmbedding(id).unwrap()
-            ]);
+                    deleteEntirePdf(id).unwrap(),
+                    deletePdfEmbedding(id).unwrap()
+                ]);
 
                 refetch();
                 toast.success("Pdf has been deleted!");
@@ -319,6 +331,12 @@ export function FilesTable() {
         };
     }, []);
 
+    const [numPages, setNumPages] = useState(null);
+
+    function onDocumentLoadSuccess({ numPages }) {
+        setNumPages(numPages);
+    }
+
     return (
         <div>
             <div className="flex justify-between items-center mb-3">
@@ -342,12 +360,14 @@ export function FilesTable() {
                     </thead>
                     <tbody>
                     {pdfs?.map((file: any, i: number) => (
-                        <tr key={i} className="border-t hover:bg-gray-50 cursor-pointer">
+                        <tr key={i} className="border-t hover:bg-gray-50 cursor-pointer"
+                            onClick={() => onPreviewPdf(file)}>
+
                             <td className="p-3 flex items-center gap-2">
                                 {file.type === "Folder" ? (
-                                    <Folder size={16} />
+                                    <Folder size={16}/>
                                 ) : (
-                                    <FileText size={16} />
+                                    <FileText size={16}/>
                                 )}
                                 {file.originalFileName}
                             </td>
@@ -359,15 +379,16 @@ export function FilesTable() {
                                     day: "numeric"
                                 }
                             )}</td>
-                            <td  className="p-2"
-                                    >
+                            <td className="p-2"
+                            >
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setPdfActiveMenu(prev => prev === file.id ? null : file.id)
                                     }}
                                 >
-                                    <EllipsisIcon size={20} className={"relative right-2 text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
+                                    <EllipsisIcon size={20}
+                                                  className={"relative right-2 text-gray-800 hover:bg-gray-400 rounded-md mx-2 transition-colors mb-2"}/>
                                 </button>
                             </td>
                             {/* Edit Query Window */}
@@ -377,7 +398,7 @@ export function FilesTable() {
                                         onClick={() => onPdfDeleteHandler(file.id)}
                                         className="flex items-center gap-2 p-2 hover:bg-gray-300 rounded-md w-full"
                                     >
-                                        <Trash2Icon size={20} color="blue" />
+                                        <Trash2Icon size={20} color="blue"/>
                                         Delete
                                     </button>
                                 </div>
@@ -394,6 +415,38 @@ export function FilesTable() {
 
                     </tbody>
                 </table>
+
+                {selectedFile && (
+                    <div className="fixed inset-0 bg-black/30 z-50 flex justify-end">
+
+                        {/* PANEL */}
+                        <div className="w-[60%] h-full bg-white shadow-xl relative">
+
+                            {/* CLOSE BUTTON */}
+                            <button
+                                onClick={() => setSelectedFile(null)}
+                                className="absolute top-4 right-4 z-10 bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-600"
+                            >
+                                ✕ Close
+                            </button>
+
+                            {/* PDF */}
+                            <iframe
+                                src={
+                                    selectedFile.azureBlobUrl.includes("%")
+                                        ? selectedFile.azureBlobUrl
+                                        : encodeURI(selectedFile.azureBlobUrl)
+                                }
+                                width="100%"
+                                height="100%"
+                                className="border-0"
+                            />
+                        </div>
+                    </div>
+                )}
+
+
+
             </div>
         </div>
     );

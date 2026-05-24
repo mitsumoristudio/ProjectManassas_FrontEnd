@@ -222,7 +222,17 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     method: "DELETE",
                 }),
                 invalidatesTags: ["Chat"],
-            })
+            }),
+
+            getAzureBlobUrl: builder.query({
+                query: (azureBlobId: string) => ({
+                    url: `${PDF_URL}/blob/${azureBlobId}`,
+                    method: "GET",
+                }),
+                providesTags: ["AzureBlobs"],
+                keepUnusedDataFor: 5,
+            }),
+
         });
     }
 })
@@ -247,4 +257,5 @@ export const {
     useSendAIExcelMessageMutation,
     useGetColumnsBySheetIdQuery,
     useGetRowsBySheetIdQuery,
+    useGetAzureBlobUrlQuery,
 } = chatApiSlice;

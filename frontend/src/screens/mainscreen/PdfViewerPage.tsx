@@ -1,21 +1,24 @@
-import React, {useState} from "react"
+import React from "react";
+import { useParams } from "react-router-dom";
 import PDFViewer from "@embedpdf/react-pdf-viewer";
-import {PRODUCTION_PDF_URL} from "../../util/urlconstants"
-import { useParams} from "react-router-dom";
+import { useGetAzureBlobUrlQuery } from "../../features/chatapiSlice";
 
-export default function PDFViewerPage() {
-    const {documentId} = useParams();
-    var pdfUrl = `${PRODUCTION_PDF_URL.replace(/\/$/, "")}/${documentId}`;
+export default function PDFViewerPage({ blobUrl }) {
 
+    if (!blobUrl) return <div>No PDF found</div>;
+
+    const url = blobUrl.includes("%")
+        ? encodeURI(blobUrl)
+        : encodeURI(blobUrl);
 
     return (
-        <div className={"h-screen"}>
+        <div className="h-screen">
             <PDFViewer
-                config = {{
-                    src: 'https://snippet.embedpdf.com/ebook.pdf',
-                    theme: { preference: 'light' }
+                config={{
+                    src: url,
+                    theme: { preference: "light" }
                 }}
-                />
+            />
         </div>
-    )
+    );
 }
