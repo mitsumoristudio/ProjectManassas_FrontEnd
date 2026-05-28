@@ -103,7 +103,6 @@ export function ConversationMainScreen() {
 
     const {data: projectData} = useGetProjectIdQuery<any>(projectId);
 
-
     /* ---------------- AI Redux Toolkit call ---------------- */
 
     const [sendSafetyAIMessage, {isLoading}] = useSendSafetyAIMessageMutation();
@@ -178,7 +177,7 @@ export function ConversationMainScreen() {
     const messageEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
-        messageEndRef.current.scrollIntoView({behavior: "smooth"});
+        messageEndRef.current?.scrollIntoView({behavior: "smooth"});
     }
 
     useEffect(() => {
@@ -541,6 +540,9 @@ export function ConversationMainScreen() {
         }
     }
 
+    // Hide Header
+    const hasStartedChat = messages.length > 0 || inProgressMessage;
+
     // Handle Speech Synthesis
     const {startSpeech, stopSpeech, isListening} = useAzureSpeech({
         onResult: (text: string) => {
@@ -589,7 +591,7 @@ export function ConversationMainScreen() {
     }, [selectedModelId]);
 
     return (
-        <>
+        <main>
             <Helmet>
                 <title>Chat App</title>
                 <meta name="description" content="Chat App"/>
@@ -739,10 +741,6 @@ export function ConversationMainScreen() {
 
                                                                     {/* 🗑 DELETE */}
                                                                     <button
-                                                                        // onClick={async () => {
-                                                                        //     await deleteEmbedPdf(doc.documentId).unwrap();
-                                                                        //
-                                                                        // }}
                                                                         onClick={() => deleteEmbedPDF(doc.documentId)}
                                                                         className="text-red-600 hover:text-red-800 text-sm"
                                                                     >
@@ -812,35 +810,61 @@ export function ConversationMainScreen() {
 
                             {/* Chat Message List */}
                             <div className="flex flex-auto overflow-hidden h-screen bg-gray-50">
+
                                 <div className="flex-1 overflow-y-auto p-4 text-gray-800 text-2xl">
-                                    <ChatMessageList
-                                        messages={messages}
-                                        inProgressMessage={inProgressMessage}
-                                        showSources={isDocumentMode}
-                                        noMessagesContent="Start a conversation with AI agents ...."
-                                        onSpeakHandler={handleAssistantAzureMessageHandler}
-                                        onPause={pauseSpeech}
-                                        onStop={stopTheSpeech}
-                                        onResume={resumeSpeech}
-                                        isPlaying={isPlaying}
-                                        isPaused={isPaused}
-                                    />
 
-                                    {/* Chat Message List */}
-                                    <div ref={messageEndRef}></div>
+                                    {/* SHOW ONLY BEFORE CHAT STARTS */}
+                                    {!hasStartedChat && (
+                                        <div className="flex flex-col items-center justify-center h-full text-center">
 
-                                    <h2 className={"p-2 text-blue-700 font-medium text-sm text-center"}>Please note
-                                        that AI agent may give inaccurate information</h2>
+                                            <h1 className="text-5xl font-bold text-gray-800 mb-4">
+                                                AI Project Assistant
+                                            </h1>
+
+                                            <p className="text-xl text-gray-500 max-w-2xl">
+                                                Ask questions about contracts, safety, project planning,
+                                                equipment, proposals, and tabular data.
+                                            </p>
+
+                                        </div>
+                                    )}
+
+                                    {/* SHOW CHAT AFTER MESSAGE STARTS */}
+                                    {hasStartedChat && (
+                                        <>
+                                            <ChatMessageList
+                                                messages={messages}
+                                                inProgressMessage={inProgressMessage}
+                                                showSources={isDocumentMode}
+                                                noMessagesContent="Please ask a question on contract"
+                                                onSpeakHandler={handleAssistantAzureMessageHandler}
+                                                onPause={pauseSpeech}
+                                                onStop={stopTheSpeech}
+                                                onResume={resumeSpeech}
+                                                isPlaying={isPlaying}
+                                                isPaused={isPaused}
+                                            />
+
+                                            <div ref={messageEndRef}></div>
+
+                                        </>
+                                    )}
+
                                 </div>
+
                                 {/* PDF outline */}
                                 {!isDocumentMode && isPdfSideBarOpen && (
-                                    <section className={"bg-white overflow-y-auto border-1 flex"}>
-                                        <motion.div
-                                            className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0 ${isPdfSideBarOpen? `w-54` : "w-20"}`}
-                                            animate={{width: isPdfSideBarOpen ? 340 : 40 }}>
+                                    <section className="bg-white overflow-y-auto border-1 flex">
 
+                                        <motion.div
+                                            className={`relative z-10 transition-all duration-200 ease-in-out flex-shrink-0 ${
+                                                isPdfSideBarOpen ? `w-54` : "w-20"
+                                            }`}
+                                            animate={{ width: isPdfSideBarOpen ? 340 : 40 }}
+                                        >
                                             <PdfOutlinePanel messages={messages} />
                                         </motion.div>
+
                                     </section>
                                 )}
 
@@ -865,11 +889,15 @@ export function ConversationMainScreen() {
                                 {/*<ChatWindow/>*/}
                                 { /*Speech Recognition*/}
                                 <div className="flex-1">
+
                                     <ChatInput onSend={(text: string) => handleAISendBasedOnModel(text)}
                                                disabled={isLoading}
                                                value={inputValue}
                                                onChange={setInputValue}
                                     />
+                                    <h2 className="p-2 text-blue-700 font-medium text-sm text-center">
+                                        Please note that AI agent may give inaccurate information
+                                    </h2>
                                 </div>
                             </div>
                         </div>
@@ -879,6 +907,6 @@ export function ConversationMainScreen() {
                 </motion.div>
             )}
 
-        </>
+        </main>
     )
 }

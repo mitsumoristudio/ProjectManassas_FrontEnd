@@ -119,7 +119,11 @@ export default function SettingsScreen() {
                                 <div
                                     className='h-12 w-12 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-semibold'>
 
-                                    {userInfo?.email?.charAt(0)}
+                                    {userInfo?.userName?.split(" ")
+                                        ?.map(name => name[0])
+                                        ?.slice(0, 10)
+                                        ?.join("")
+                                        ?.toUpperCase()}
                                 </div>
                             </div>
 

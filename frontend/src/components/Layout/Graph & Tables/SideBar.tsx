@@ -19,7 +19,7 @@ import {
     BarChart4Icon,
     User,
     MessageCircleMoreIcon,
-    PackageSearchIcon,
+    PackageSearchIcon, LucideFileText,
 } from "lucide-react";
 import {AnimatePresence, motion} from "framer-motion";
 
@@ -49,7 +49,7 @@ export default function SideBar() {
         { name: "My Equipment", icon: UserCircle2Icon, color: "#D4C5C5", href: `/equipments/user/${userInfo?.id}`},
         { name: "Equipment Analytic", icon: TrendingUp, color: "#D4C5C5", href: "/equipmentAnalytics"},
         { name: "Project Analytic", icon: BarChart4Icon, color: "#D4C5C5", href: "/projectAnalytics"},
-        { name: "PDF Preview", icon: PackageSearchIcon, color: "#D4C5C5", href: "/pdfViewer"},
+        {name: "Document View", icon: LucideFileText, color: "#D4C5C5", href: "/documentViewer"},
         { name: "Settings", icon: Settings2Icon, color: "#D4C5C5", href: "/settings"},
         { name: "Sign Out", icon: LogOutIcon, color: "#D4C5C5", action: "logout"}
     ]

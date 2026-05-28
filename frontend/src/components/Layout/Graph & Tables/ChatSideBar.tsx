@@ -45,7 +45,6 @@ export default function ChatSideBar() {
         {name: "AI Construction Chat", icon: MessageCircleMoreIcon, color: "#D4C5C5", href: "/chat"},
         { name: "SpreadSheet", icon:LucideSheet , color: "#D4C5C5", href: "/spreadsheet"},
         { name: "Project Table", icon: BarChart2Icon, color: "#D4C5C5", href: "/projects"},
-        {name: "PDF Preview", icon: PackageSearchIcon, color: "#D4C5C5", href: "/pdfViewer"},
         {name: "Document View", icon: LucideFileText, color: "#D4C5C5", href: "/documentViewer"},
         {name: "Settings", icon: Settings2Icon, color: "#D4C5C5", href: "/settings"},
         {name: "Sign Out", icon: LogOutIcon, color: "#D4C5C5", action: "logout"}

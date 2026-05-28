@@ -4,6 +4,9 @@ import Markdown from "react-markdown";
 // import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
 import {BotIcon, User, MicIcon, PauseIcon, CircleStop, PlayCircle} from "lucide-react";
 import {Button} from "@mui/material";
+import {useSelector} from "react-redux";
+import {assets} from "../../assets/assets";
+
 
 interface ChatMessageItemProps {
     message: any,
@@ -20,6 +23,8 @@ interface ChatMessageItemProps {
 export default function ChatMessageItem({message, inProgress = false, showSources = false, onSpeak, onPause, onResume, onStop, isPaused, isPlaying}: ChatMessageItemProps) {
 
     const [citations, setCitations] = useState<{ file: string; page: number | null; quote: string }[]>([]);
+
+    const {userInfo} = useSelector((state: any) => state.auth)
 
     useEffect(() => {
         if (!inProgress && message?.role === "assistant" && message?.text?.length > 0) {
@@ -50,11 +55,21 @@ export default function ChatMessageItem({message, inProgress = false, showSource
 
     if (message.role === "user") {
         return (
-            <div className={"flex flex-1 my-4 gap-4 mx-2 items-start justify-end px-4"}>
-                <div className="p-2 rounded-full bg-gray-100 border border-gray-200">
-                    <User className="h-6 w-6 text-gray-600" />
+            <div className={"flex flex-1 my-2 gap-4 mx-2 items-start justify-center px-4"}>
+                <div className="p-2 rounded-full">
+                    <div className='flex-shrink-0'>
+                        <div
+                            className='h-10 w-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-sm text-white font-medium'>
+
+                            {userInfo?.userName?.split(" ")
+                                ?.map(name => name[0])
+                                ?.slice(0, 10)
+                                ?.join("")
+                                ?.toUpperCase()}
+                        </div>
+                    </div>
                 </div>
-                <div className="my-2 bg-blue-400 text-gray-100 rounded-br-sm break-words max-w-[95%] rounded-2xl px-6 py-6 text-lg shadow-lg whitespace-normal ">
+                <div className="my-2 bg-gray-100 text-gray-600 rounded-br-sm break-words max-w-[95%] rounded-2xl px-4 py-5 font-serif text-base shadow-md whitespace-normal ">
                     {message.text || message.messageContent}
 
                 </div>
@@ -66,17 +81,23 @@ export default function ChatMessageItem({message, inProgress = false, showSource
 
     if (message.role === "assistant") {
         return (
-            <section className={"flex flex-1 my-1 gap-4 items-start justify-items-start px-6 py-6"}>
-                <div className="p-2 rounded-full bg-blue-50 border border-blue-100">
-                    <BotIcon className="h-6 w-6 text-blue-700" />
+            <section className={"flex w-full my-1 gap-4 items-start justify-center px-8 py-6"}>
+                <div className="p-2 rounded-full ">
+                    <img
+                        alt=""
+                        src={assets.mori_solution_logo2}
+                        className="h-10 w-10 rounded-3xl shadow-md"
+                    />
                 </div>
-                <div className="bg-gray-100 px-6 py-3 text-md rounded-lg shadow-lg max-w-xl mb-2 flex flex-col gap-2">
-                    <div className="flex mx-2 gap-y-4 my-2 justify-between">
-                        <div className="font-semibold">AI Assistant</div>
+                <div className="bg-white px-8 py-6 text-md rounded-2xl shadow-lg w-full max-w-6xl flex flex-col gap-4">
 
-                        <div className={"flex gap-2"}>
+
+                    <div className="flex mx-3 gap-y-2 my-2 items-center">
+                        <div className="font-light"> Document Response</div>
+
+                        <div className={"flex"}>
                             {/* SPEECH 🔊  */}
-                            <Button className={"gap-2 mx-auto bg-blue-400 hover:bg-blue-600 scale-x-100 opacity-90 rounded-lg"}
+                            <Button className={"gap-2 mx-auto bg-gray-400 hover:bg-blue-200 scale-x-100 opacity-90 rounded-lg"}
                                     onClick={() => onSpeak?.(message.text || message.messageContent)}>
                                 <MicIcon size={24} />
                             </Button>
@@ -115,7 +136,7 @@ export default function ChatMessageItem({message, inProgress = false, showSource
                     </div>
 
 
-                    <div className="ml-2 rounded-br-sm break-words max-w-[95%] text-gray-700 text-xl ">
+                    <div className="ml-2 rounded-br-sm break-words max-w-[95%] text-gray-600 text-base font-serif ">
                         <Markdown>{message.text || message.messageContent}</Markdown>
                         {citations?.map((c, i) => (
                             <ChatCitation file={c.file}

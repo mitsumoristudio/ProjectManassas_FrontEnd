@@ -779,7 +779,7 @@ export function ChatMainScreen() {
                                             messages={messages}
                                             inProgressMessage={inProgressMessage}
                                             showSources={isDocumentMode}
-                                            noMessagesContent="Start a conversation with AI agents ...."
+                                            noMessagesContent="Ask me about the contract.."
                                             onSpeakHandler={handleAssistantAzureMessageHandler}
                                             onPause={pauseSpeech}
                                             onStop={stopTheSpeech}

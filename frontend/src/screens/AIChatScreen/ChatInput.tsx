@@ -35,14 +35,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, value, 
     };
 
     return (
-        <div className={"flex flex-col gap-2"}>
+        <div className={"flex flex-col gap-1"}>
 
             {/* Input + send + toggle */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
             <input
                 type="text"
                 placeholder="Type your message..."
-                className="flex-1 border border-gray-300 text-gray-900 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:bg-gray-100"
+                className="flex-1 border border-gray-300 text-gray-900 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onKeyDown={handleKeyDown}

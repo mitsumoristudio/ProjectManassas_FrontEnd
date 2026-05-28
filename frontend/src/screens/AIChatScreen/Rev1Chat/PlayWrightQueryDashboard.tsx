@@ -15,7 +15,7 @@ import {
     useGetPdfIngestedQuery,
     useDeletePdfIngestedMutation,
     useDeleteEntirePdfMutation,
-    useGetAzureBlobUrlQuery
+    useSendSummaryAIMessageMutation
 } from "../../../features/chatapiSlice";
 import {
     useAddPlayWrightQueryMutation,
@@ -44,6 +44,11 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [addQuery] = useAddPlayWrightQueryMutation();
+
+    const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
+    const [messages, setMessages] = useState<any[]>([]);
+    const [inProgressMessage, setInProgressMessage] = useState<any>(null);
+    const [sessionId] = useState("session-1234");
 
     // Edit PlayWrightQuery
     const onSelectQueryEditHandler = (query: any) => {
@@ -104,13 +109,98 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
         setActiveMenu(null);
     }
 
-
     // Share project
     const onSelectShare = (id: string) => {
         console.log("Share project:", id);
         setActiveMenu(null);
     }
 
+    const summaryOnSubmitHandler = async (
+        messages: string,
+        toolType?: string,
+        mode?: string
+    )=> {
+        if (!messages.trim()) return;
+
+        if (
+            toolType === "summarizationAI" &&
+            mode === "regularChat"
+        ) {
+            try {
+                const userMessage = {
+                    role: "user",
+                    messageContent: messages,
+                    createdAt: new Date().toISOString(),
+                };
+
+                const session = {
+                    sessionId: crypto.randomUUID(),
+                    messages: [userMessage],
+                };
+
+                const response: any = await sendSummaryAIMessage(session).unwrap();
+
+                navigate("/playWrightQuery/chat/:id", {
+                    state: {
+                        initialMessages: [
+                            userMessage,
+                            {
+                                role: "assistant",
+                                messageContent: response.messageContent,
+                                createdAt: response.createdAt,
+                                sources: response.sources,
+                            },
+                        ],
+                    },
+                });
+
+
+
+            } catch (err) {
+                console.error(err);
+            }
+            return;
+        }
+        console.log("Sending message:", messages);
+    };
+
+    // Handler for document summarize
+    const handleSummarizeHandler = async (snippet: string) => {
+        if (!snippet.trim()) return;
+
+        const userMessage = {
+            role: "user",
+            messageContent: snippet,
+            createdAt: new Date().toISOString(),
+        };
+
+        setMessages((prev) => [...prev, userMessage]);
+        setInProgressMessage({role: "assistant", messageContent: "..."});
+
+        try {
+            const session = {sessionId, messages: [userMessage]};
+
+            const response: any = await sendSummaryAIMessage(session).unwrap();
+
+            console.log("📄 Full Semantic AI Response:", response);
+            console.log("🔗 Sources:", response.sources);
+
+            if (response?.messageContent) {
+                const assistantMessage = {
+                    role: "assistant",
+                    messageContent: response.messageContent,
+                    createdAt: response.createdAt,
+                    sources: response.sources,
+                };
+                setMessages((prev) => [...prev, assistantMessage]);
+                //   setSources(response.sources);
+            }
+        } catch (err) {
+            console.error("❌ Error sending semantic AI message:", err);
+        } finally {
+            setInProgressMessage(null);
+        }
+    };
 
     const EllipsisEdit = [
         {
@@ -425,7 +515,7 @@ export function FilesTable() {
                             {/* CLOSE BUTTON */}
                             <button
                                 onClick={() => setSelectedFile(null)}
-                                className="absolute top-4 right-4 z-10 bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-600"
+                                className="absolute top-4 right-4 z-10 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
                             >
                                 ✕ Close
                             </button>
@@ -444,8 +534,6 @@ export function FilesTable() {
                         </div>
                     </div>
                 )}
-
-
 
             </div>
         </div>

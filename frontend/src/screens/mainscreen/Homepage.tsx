@@ -23,10 +23,10 @@ export default function Homepage() {
                 {/* Hero Section */}
                 <section className="text-center container mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-tight">
-                        The AI Solution For <br className="hidden sm:block"/> Successful Project
+                        Simplifying <br className="hidden sm:block"/> Construction Contracts
                     </h1>
-                    <p className="max-w-2xl mx-auto mt-6 text-lg sm:text-xl text-gray-400">
-                        We Unify Construction Contracts, Schedules, Estimates And RFIs Into Project Intelligence Layer So Your Construction Team Can Make Faster, More Defensible Decisions.
+                    <p className="max-w-2xl mx-auto mt-6 text-lg sm:text-xl text-gray-200">
+                        Empowering project teams by reducing risks and disputes in construction lifecycle. Contract compliance built by builders.
 
                     </p>
                     <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">

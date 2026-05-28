@@ -32,6 +32,7 @@ import PlaybookProject from "./screens/AIChatScreen/Rev1Chat/PlaybookProject";
 import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlaybookTableScreen";
 import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
 import SinglePlayQueryScreen from "./screens/AIChatScreen/Rev1Chat/SinglePlayQueryScreen";
+import PlayWrightQueryChat from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryChat";
 
 
 import { pdfjs } from "react-pdf";
@@ -76,6 +77,7 @@ function App() {
                 <Route path={"tabular-review/:id"} element={<PlaybookTableScreen />} />
                 <Route path={"/assistantScreen"} element={<AssistantChatScreen />} />
                 <Route path={"single-query-review/:id"} element={<SinglePlayQueryScreen />} />
+                <Route path={"playbookQuery/chat/:id"} element={<PlayWrightQueryChat />} />
 
             </Routes>
 

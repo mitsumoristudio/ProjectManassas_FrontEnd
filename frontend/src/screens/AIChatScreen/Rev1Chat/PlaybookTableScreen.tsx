@@ -16,6 +16,7 @@ import {
     useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightQuerybyIdQuery, useGetPlayWrightQueryListQuery,
 } from "../../../features/playwrightApiSlice";
+import PdfViewerPage from "../../mainscreen/PdfViewerPage";
 
 // ================= Sidebar =================
 
@@ -53,14 +54,24 @@ function PlayWrightTable({rows, }) {
     const filterRows = rows?.filter(r => r.analysisType == activeType);
 
     const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState<any | null>(null);
+    const [pdfViewer, setPdfViewer] = useState(null);
 
     const handleOpenPdf = (clause) => {
-        // navigate(`/pdf-viewer`, {
-        //     state: {
-        //         fileUrl: clause.azureBlobUrl,
-        //         page: clause.sourcePage,
-        //     }
-        // })
+        console.log("Clause", clause);
+        console.log("AzureBlobUrl", clause.azureBlobUrl);
+        console.log("AzureBlobId", clause.azureBlobId);
+        console.log("Source Page", clause.sourcePage);
+        setSelectedFile(clause);
+
+        const encodedUrl = encodeURI(clause.azureBlobUrl);
+        console.log("EncodedUrl", encodedUrl);
+
+        setPdfViewer(({
+            url: encodedUrl,
+            page: clause.sourcePage,
+
+        }))
     };
 
     // 🔑 central config (no more hardcoding columns everywhere)
@@ -146,12 +157,13 @@ function PlayWrightTable({rows, }) {
 
 
     // ✅ reusable cell (this is the key part)
-    const ClauseCell = ({ clause, azureBlobId }) => (
+    const ClauseCell = ({ clause, azureBlobId, azureBlobUrl }) => (
         <td className="p-2 max-w-[220px] align-top">
             <div className="h-28 overflow-hidden line-clamp-4 break-words whitespace-normal"
                 onClick={() => setSelectedClause({
                     ...clause,
                     azureBlobId,
+                    azureBlobUrl,
                 })}>
                 {clause?.summaryShort || "-"}
             </div>
@@ -201,7 +213,7 @@ function PlayWrightTable({rows, }) {
                             {r.originalFileName}
                         </td>
 
-                        <td className={"p-1"}>{r.projectQueryTitle}</td>
+                        <td className={"px-2"}>{r.projectQueryTitle}</td>
 
                         {columnsPicker?.map((col) => {
                             const clause = getClause(r.clauses, col.key);
@@ -211,6 +223,7 @@ function PlayWrightTable({rows, }) {
                                     key={col.key}
                                     clause={clause}
                                     azureBlobId={r.azureBlobId}
+                                    azureBlobUrl={r.azureBlobUrl}
                                 />
                             );
                         })}
@@ -258,7 +271,10 @@ function PlayWrightTable({rows, }) {
                         </p>
 
                         <p className="cursor-pointer text-blue-600 hover:underline"
-                        onClick={() => handleOpenPdf(selectedClause)}>
+                        onClick={() => {
+
+                            handleOpenPdf(selectedClause)}
+                        }>
 
                             <strong className={"gap-x-1"}>Source Page:</strong> {selectedClause.sourcePage}
                         </p>
@@ -266,6 +282,56 @@ function PlayWrightTable({rows, }) {
                     </div>
                 </div>
             )}
+
+                {pdfViewer && (
+                    <div className="fixed left-0 top-0 h-full w-[820px] bg-white shadow-xl z-50">
+
+                        <div className="flex  bg-white shadow-xl rounded-lg overflow-hidden">
+
+                            {/* 🔴 CLOSE BUTTON */}
+                            <button
+                                onClick={() => setPdfViewer(null)}
+                                className="absolute top-2 right-2 z-10 bg-white border rounded-full px-3 py-1 shadow hover:bg-gray-100"
+                            >
+                                ✕
+                            </button>
+
+                            {/* 📄 PDF VIEW */}
+                            <div className="w-[800px] h-[800px] top-2 ">
+                                <iframe
+                                    src={`${pdfViewer.url}#page=${pdfViewer.page}&zoom=page-width`}
+                                    className="w-full h-full border-none left-2"
+                                />
+                            </div>
+
+                            <div className="absolute inset-0 pointer-events-none">
+                                {pdfViewer.highlights?.map((h, i) => (
+                                    <div
+                                        key={i}
+                                        style={{
+                                            position: "absolute",
+                                            top: `${h.top * 100}%`,
+                                            left: `${h.left * 100}%`,
+                                            width: `${h.width * 100}%`,
+                                            height: `${h.height * 100}%`,
+                                            backgroundColor: "rgba(255,255,0,0.4)",
+                                            border: "2px solid orange"
+                                        }}
+                                    />
+                                ))}
+                            </div>
+
+                        </div>
+                    </div>
+                )}
+
+                    {/*<PdfViewerPage*/}
+                    {/*    url={pdfViewer.url}*/}
+                    {/*    page={pdfViewer.page}*/}
+                    {/*    highlights={pdfViewer.highlights}*/}
+                    {/*/>*/}
+
+
 
         </div>
     );

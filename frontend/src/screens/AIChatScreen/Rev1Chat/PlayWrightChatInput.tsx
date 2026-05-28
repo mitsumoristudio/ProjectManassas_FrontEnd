@@ -22,7 +22,7 @@ import {toast} from "react-toastify";
 import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 
 interface ChatInputProps {
-    onSend: (message: string, documents?: any []) => void;
+    onSend: (value: string, toolType?: string, mode?: string) => void;
     disabled?: boolean;
     isLoading?: boolean;
     value: string;
@@ -50,11 +50,11 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review">("tabular-review");
 // Review is set for tabular and Ask is set for single query
 
-    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summarizationAI'>("advisor");
+    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summary'>("advisor");
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
     // State-Driven Model Workflow
-    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "regularChat";
+    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "document-config"| "regularChat";
     const [mode, setMode] = useState<Mode>("regularChat");
     const [reviewPrompt, setReviewPrompt] = useState<string>("");
 
@@ -84,7 +84,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         analysis: contractAnalysis,
         specification: reviewSpecification,
         advisor: projectAdvisor,
-        summarizationAI: summarizationAI,
+        summary: summarizationAI,
     };
 
     const handleToolMutation = async () => {
@@ -146,9 +146,9 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
             return;
         }
 
-        if (queryType === "single-query-review") {
+        if (queryType === "single-query-review" && toolType === "summary") {
             setReviewPrompt(value);
-            setMode("regularChat");
+            setMode("document-config");
             return;
         }
 
@@ -535,16 +535,16 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                                         {/* Summarization */}
                                         <div
-                                            onClick={() => setToolType("summarizationAI")}
+                                            onClick={() => setToolType("summary")}
                                             className={`p-4 rounded-xl border cursor-pointer transition
-                    ${toolType === "summarizationAI"
+                    ${toolType === "summary"
                                                 ? "border-black bg-gray-100"
                                                 : "hover:bg-gray-50"}
                     `}
                                         >
                                             <div className="font-medium">Document Intelligence</div>
                                             <div className="text-sm text-gray-500">
-                                                Document mining search
+                                                Find resources within documentation
                                             </div>
                                         </div>
 
@@ -709,6 +709,31 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     >
                                         Continue
                                     </button>
+
+                                    {iscontractAnalysisLoading && (
+                                        <button type="button" className=" px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isSummaryAILoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isreviewSpecificationLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
@@ -796,6 +821,31 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     >
                                         Continue
                                     </button>
+
+                                    {isreviewSpecificationLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {iscontractAnalysisLoading && (
+                                        <button type="button" className=" px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isSummaryAILoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
@@ -878,25 +928,120 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         Continue
                                     </button>
 
+                                    {isprojectAdvisorLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
                                     {iscontractAnalysisLoading && (
-                                        <button type="button" className=" px-4 py-2 rounded-lg shadow-md bg-indigo-500 ..." disabled>
-                                            <svg className="mr-3 size-4 text-white animate-spin ..." viewBox="0 0 24 24">
+                                        <button type="button" className=" px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…
                                         </button>
                                     )}
 
                                     {isreviewSpecificationLoading && (
-                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md bg-indigo-500 ..." disabled>
-                                            <svg className="mr-3 size-4 text-white animate-spin ..." viewBox="0 0 24 24">
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Summarization */}
+                    {mode === "document-config" && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                            <div className="bg-white w-[700px] max-h-[80vh] rounded-2xl shadow-xl flex flex-col">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-center p-4 border-b">
+                                    <h2 className="font-semibold text-lg">
+                                        Create a {toolType} {queryType}
+                                    </h2>
+                                    <button  onClick={() => {
+                                        setMode("regularChat")
+                                    }}>x</button>
+                                </div>
+
+                                {/* Table Config */}
+                                <div className="overflow-y-auto p-4 flex-1">
+
+                                    {/*<div className="text-sm text-gray-500 mb-3">*/}
+                                    {/*    Review single term across documents.*/}
+                                    {/*</div>*/}
+
+                                    {[// ProjectAdvisorClause
+                                        { label: "Review Single Term", question: "Review, analyze and understand terms in the contract" },
+                                    ].map((item, i) => (
+                                        <div
+                                            key={i}
+                                            className="grid grid-cols-2 gap-4 border-b py-3"
+                                        >
+                                            <div className="font-medium text-sm">
+                                                {item.label}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                {item.question}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="flex justify-end gap-2 p-4 border-t">
+                                    <button
+                                        onClick={() => {
+                                            setMode("regularChat")
+                                        }}
+
+                                        className="px-4 py-2 rounded-lg bg-gray-200"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        onClick={ async () => {
+                                            setMode("document-config"); // next step
+                                            await handleToolMutation();
+                                            // onSend({
+                                            //     type: "tabular-review",
+                                            //     prompt: reviewPrompt,
+                                            // });
+
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-black text-white"
+                                    >
+                                        Continue
+                                    </button>
+
+                                    {isSummaryAILoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isreviewSpecificationLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…
                                         </button>
                                     )}
 
                                     {isprojectAdvisorLoading && (
-                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md bg-indigo-500 ..." disabled>
-                                            <svg className="mr-3 size-4 text-white animate-spin ..." viewBox="0 0 24 24">
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…
                                         </button>

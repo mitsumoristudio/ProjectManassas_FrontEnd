@@ -131,6 +131,7 @@ export default function DocumentIngestion({documents, onUpload, onRemove, maxFil
                                                 <div
                                                     className="bg-brand h-2 rounded-full transition-all duration-300"
                                                 />
+                                                <span className="text-xs font-medium text-body">Please note it may take several minutes </span>
                                             </div>
                                         </div>
 
