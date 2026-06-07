@@ -11,13 +11,16 @@ import {useContractAnalysisMutation,
         useReviewSpecificationMutation} from "../../../features/contractAnalysisSlice";
 
 import {assets} from "../../../assets/assets";
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import {
     useGetPlayWrightProjectListQuery,
-    useGetPlayWrightProjectbyIdQuery,
+    useGetPlayWrightProjectbyIdQuery, useFetchPlayWrightQueryListByIdQuery,
 } from "../../../features/playwrightApiSlice";
 
-import {useSendSummaryAIMessageMutation} from "../../../features/chatapiSlice";
+import {
+    useSummaryContractMutation
+} from "../../../features/contractAnalysisSlice";
+
 import {toast} from "react-toastify";
 import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 
@@ -28,7 +31,7 @@ interface ChatInputProps {
     value: string;
     onChange: (value: string) => void;
     onQueryTypeChange?: (
-        type: "tabular-review" | "single-query-review"
+        type: "tabular-review" | "single-query-review" | "single-search"
     ) => void;
 }
 
@@ -47,10 +50,10 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [usePdfIngestion, setUsePdfIngestion] = useState(false);
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
     const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
-    const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review">("tabular-review");
+    const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review" | "single-search">("tabular-review");
 // Review is set for tabular and Ask is set for single query
 
-    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summary'>("advisor");
+    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summarization'>("advisor");
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
     // State-Driven Model Workflow
@@ -70,7 +73,15 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [contractAnalysis, {isLoading: iscontractAnalysisLoading}] = useContractAnalysisMutation();
     const [reviewSpecification, {isLoading: isreviewSpecificationLoading}] = useReviewSpecificationMutation();
     const [projectAdvisor, {isLoading: isprojectAdvisorLoading}] = useAdviseContractMutation();
-    const [summarizationAI, {isLoading: isSummaryAILoading}] = useSendSummaryAIMessageMutation();
+    const [summarizationAI, {isLoading: isSummaryAILoading}] = useSummaryContractMutation();
+
+    const {
+        data: playWrightQuery,
+        isLoading: isPlayWrightLoading,
+        isError: isPlayWrightError,
+    } = useFetchPlayWrightQueryListByIdQuery(id);
+
+    const navigate = useNavigate();
 
     const {
         data: pdfFile = [],
@@ -84,7 +95,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         analysis: contractAnalysis,
         specification: reviewSpecification,
         advisor: projectAdvisor,
-        summary: summarizationAI,
+        summarization: summarizationAI,
     };
 
     const handleToolMutation = async () => {
@@ -94,8 +105,28 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         }
 
         try {
-            const selectedMutation = toolMutationMap[toolType];
 
+            // Summarization workflow
+            if (toolType == "summarization") {
+
+                const pdf = selectedPdfs[0];
+
+                console.log("azureBlobId", pdf.id);
+
+                await summaryOnSubmitHandler(
+                    reviewPrompt || value,
+                    "summarization",
+                    "regularChat",
+                    reviewPrompt || value,
+                    projectId,
+                    pdf.id,
+                    pdf.id
+                );
+                return
+            }
+
+            // Existing workflow for Advisor / Analysis / Specification
+            const selectedMutation = toolMutationMap[toolType];
 
             const requests = selectedPdfs.map(async  (pdf) => {
                 const payload = {
@@ -105,7 +136,13 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                     azureBlobId: pdf.id,
                     singleTabular: queryType,
                 };
+
+                console.log("Summary Payload", payload);
+
                 return await selectedMutation(payload).unwrap();
+
+
+
             });
             const responses = await Promise.all(requests);
 
@@ -123,6 +160,79 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
             toast.error(err?.data?.message || "Failed to create a project");
         }
     }
+
+    const summaryOnSubmitHandler = async (
+        messages: string,
+        toolType?: string,
+        mode?: string,
+        projectQueryTitle?: string,
+        playWrightProjectId?: string,
+        documentId?: string,
+        azureBlobId?: string,
+    )=> {
+        if (!messages?.trim()) {
+            toast.error("Message cannot be empty");
+            return;
+        }
+
+        if (
+            toolType === "summarization" &&
+            mode === "regularChat"
+        ) {
+            try {
+                const userMessage = {
+                    role: "user",
+                    messageContent: messages,
+                    createdAt: new Date().toISOString(),
+                };
+
+                const session = {
+                    sessionId: crypto.randomUUID(),
+                    messages: [ {
+                        role: "user",
+                        messageContent: messages,
+                        createdAt: new Date().toISOString(),
+                    }]
+                };
+
+                const response = await summarizationAI({
+                    projectQueryTitle: projectQueryTitle,
+                    playWrightProjectId: playWrightProjectId,
+                    azureBlobId: azureBlobId,
+                    session: session,
+                    documentId: documentId,
+                    singleTabular: "single-search",
+                }).unwrap();
+
+                console.log("messages", messages);
+                console.log("ProjectQueryTitle", projectQueryTitle);
+                console.log("PlayWrightProjectId", playWrightProjectId);
+
+                console.log("PlayWrightQueryId", response.playWrightQueryId);
+                console.log("Response", response);
+
+
+                navigate(`/playWrightQuery/chatItem/${response.playWrightQueryId}`, {
+                    state: {
+                        initialMessages: [
+                            userMessage,
+                            {
+                                role: "assistant",
+                                messageContent: response.messageContent,
+                                createdAt: response.createdAt,
+                                sources: response.sources,
+                            },
+                        ],
+                    },
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+            return;
+        }
+        console.log("Sending message:", messages);
+    };
 
 
     const modelPromptHandler = () => {
@@ -146,7 +256,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
             return;
         }
 
-        if (queryType === "single-query-review" && toolType === "summary") {
+        if (queryType === "single-search" && toolType === "summarization") {
             setReviewPrompt(value);
             setMode("document-config");
             return;
@@ -303,7 +413,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         console.log("Selected PDFs:", selectedPdfs);
     };
 
-
     return (
         <div className="w-full text-gray-600 font-serif py-3">
             <div className="relative border border-gray-300 rounded-[16px] bg-white py-4 shadow-lg">
@@ -393,7 +502,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         <button onClick={() => setOpenReviewQuery(false)}>✕</button>
                                     </div>
 
-                                    {/* Options */}
+                                    {/* Options For Tabular,Single-Query and Single Search */}
                                     <div className="flex flex-col gap-3">
 
                                         {/* Review Query */}
@@ -415,7 +524,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                             </div>
                                         </div>
 
-                                        {/* Ask Query */}
+                                        {/* Review Single Query */}
                                         <div
                                             onClick={() => {
                                                 setQueryType("single-query-review");
@@ -428,9 +537,28 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                                 : "hover:bg-gray-50"}
                     `}
                                         >
-                                            <div className="font-medium">Ask query (Single)</div>
+                                            <div className="font-medium">Review query (Single)</div>
                                             <div className="text-sm text-gray-500">
                                                 Get a single query answer across all files.
+                                            </div>
+                                        </div>
+
+                                        {/* Single Search */}
+                                        <div
+                                            onClick={() => {
+                                                setQueryType("single-search");
+                                                onQueryTypeChange?.("single-search");
+                                            }}
+
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${queryType === "single-search"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Single Search Query</div>
+                                            <div className="text-sm text-gray-500">
+                                                Search engine for documents
                                             </div>
                                         </div>
                                     </div>
@@ -535,9 +663,10 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                                         {/* Summarization */}
                                         <div
-                                            onClick={() => setToolType("summary")}
+                                            onClick={() => setToolType("summarization")}
+
                                             className={`p-4 rounded-xl border cursor-pointer transition
-                    ${toolType === "summary"
+                    ${toolType === "summarization"
                                                 ? "border-black bg-gray-100"
                                                 : "hover:bg-gray-50"}
                     `}
@@ -621,7 +750,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                                 Cancel
                                             </button>
 
-                                            <button className={" px-4 py-2  bg-black text-white rounded-md hover:bg-gray-600 transition duration-600"}
+                                            <button className={"px-4 py-2 bg-black text-white rounded-md hover:bg-gray-600 transition duration-600"}
                                                     onClick={() => handleConfirmSelection()}>
                                                 Confirm
                                             </button>
@@ -711,7 +840,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     </button>
 
                                     {iscontractAnalysisLoading && (
-                                        <button type="button" className=" px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md"disabled>
                                             <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…
@@ -719,7 +848,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     )}
 
                                     {isSummaryAILoading && (
-                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
                                             <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…
@@ -727,7 +856,15 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     )}
 
                                     {isreviewSpecificationLoading && (
-                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isprojectAdvisorLoading && (
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
                                             <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…

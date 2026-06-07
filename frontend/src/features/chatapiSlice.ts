@@ -81,8 +81,9 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     method: "POST",
                     body: session,
                 }),
-                invalidatesTags: ["Chat"],
+                invalidatesTags: ["ConversationMessage", "Chat"],
             }),
+
             sendSafetyAIMessage: builder.mutation({
                 query: (session: any) => ({
                     url: `${CHAT_URL}/safety_search`,
@@ -205,7 +206,16 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                 }),
                 keepUnusedDataFor: 5,
                 //@ts-ignore
-                providesTags: ["Chat"],
+                providesTags: ["Chat", "AzureBlobs"],
+            }),
+
+            getPdfFromPlayWrightProjectId: builder.query({
+                query: (playWrightProjectId: any) => ({
+                    url: `${PDF_URL}/list_pdf/${playWrightProjectId}`,
+                    method: "GET",
+                }),
+                keepUnusedDataFor: 5,
+                providesTags: ["Chat", "AzureBlobs"],
             }),
 
             deletePdfIngested: builder.mutation({
@@ -258,4 +268,5 @@ export const {
     useGetColumnsBySheetIdQuery,
     useGetRowsBySheetIdQuery,
     useGetAzureBlobUrlQuery,
+    useGetPdfFromPlayWrightProjectIdQuery,
 } = chatApiSlice;

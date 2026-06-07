@@ -28,6 +28,32 @@ export const contractAnalysisSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ["PlayWrightQuery", "ClauseAnalysis", "ContractAnalyze"]
         }),
+        summaryContract: builder.mutation({
+            query:({   projectQueryTitle,
+                       playWrightProjectId,
+                       azureBlobId,
+                       documentId,
+                       singleTabular,
+                       session,
+                       }: {
+                projectQueryTitle: string,
+                playWrightProjectId: any,
+                azureBlobId: any,
+                documentId: string,
+                singleTabular: string,
+                session: any}) => ({
+                url: `${CONTRACT_ANALYSIS_URL}/summaryContract`,
+                method: "POST",
+                body: {projectQueryTitle,
+                       playWrightProjectId,
+                       azureBlobId,
+                       documentId,
+                       singleTabular,
+                       session},
+            }),
+            invalidatesTags: ["PlayWrightQuery", "ContractAnalyze",]
+        }),
+
     })
 })
 
@@ -35,4 +61,5 @@ export const {
     useContractAnalysisMutation,
     useAdviseContractMutation,
     useReviewSpecificationMutation,
+    useSummaryContractMutation,
 } = contractAnalysisSlice;

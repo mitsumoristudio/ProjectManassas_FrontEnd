@@ -9,10 +9,10 @@ import {
 import React, {useEffect, useState, useRef} from "react";
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
 import {assets} from "../../../assets/assets";
-import {useSelector, useDispatch,  } from "react-redux";
+import {useSelector } from "react-redux";
 import PlayWrightChatInput from "./PlayWrightChatInput";
 import {
-    useGetPdfIngestedQuery,
+    useGetPdfFromPlayWrightProjectIdQuery,
     useDeletePdfIngestedMutation,
     useDeleteEntirePdfMutation,
     useSendSummaryAIMessageMutation
@@ -22,7 +22,8 @@ import {
     useGetPlayWrightProjectbyIdQuery,
     useUpdatePlayWrightQueryMutation,
     useGetPlayWrightQueryListQuery,
-    useDeletePlayWrightQueryMutation
+    useDeletePlayWrightQueryMutation,
+    useFetchPlayWrightQueryListByIdQuery,
   } from "../../../features/playwrightApiSlice";
 
 import {toast} from "react-toastify";
@@ -115,93 +116,6 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
         setActiveMenu(null);
     }
 
-    const summaryOnSubmitHandler = async (
-        messages: string,
-        toolType?: string,
-        mode?: string
-    )=> {
-        if (!messages.trim()) return;
-
-        if (
-            toolType === "summarizationAI" &&
-            mode === "regularChat"
-        ) {
-            try {
-                const userMessage = {
-                    role: "user",
-                    messageContent: messages,
-                    createdAt: new Date().toISOString(),
-                };
-
-                const session = {
-                    sessionId: crypto.randomUUID(),
-                    messages: [userMessage],
-                };
-
-                const response: any = await sendSummaryAIMessage(session).unwrap();
-
-                navigate("/playWrightQuery/chat/:id", {
-                    state: {
-                        initialMessages: [
-                            userMessage,
-                            {
-                                role: "assistant",
-                                messageContent: response.messageContent,
-                                createdAt: response.createdAt,
-                                sources: response.sources,
-                            },
-                        ],
-                    },
-                });
-
-
-
-            } catch (err) {
-                console.error(err);
-            }
-            return;
-        }
-        console.log("Sending message:", messages);
-    };
-
-    // Handler for document summarize
-    const handleSummarizeHandler = async (snippet: string) => {
-        if (!snippet.trim()) return;
-
-        const userMessage = {
-            role: "user",
-            messageContent: snippet,
-            createdAt: new Date().toISOString(),
-        };
-
-        setMessages((prev) => [...prev, userMessage]);
-        setInProgressMessage({role: "assistant", messageContent: "..."});
-
-        try {
-            const session = {sessionId, messages: [userMessage]};
-
-            const response: any = await sendSummaryAIMessage(session).unwrap();
-
-            console.log("📄 Full Semantic AI Response:", response);
-            console.log("🔗 Sources:", response.sources);
-
-            if (response?.messageContent) {
-                const assistantMessage = {
-                    role: "assistant",
-                    messageContent: response.messageContent,
-                    createdAt: response.createdAt,
-                    sources: response.sources,
-                };
-                setMessages((prev) => [...prev, assistantMessage]);
-                //   setSources(response.sources);
-            }
-        } catch (err) {
-            console.error("❌ Error sending semantic AI message:", err);
-        } finally {
-            setInProgressMessage(null);
-        }
-    };
-
     const EllipsisEdit = [
         {
             name: "Edit", icon: ChevronDown, color: "#6366f1", action: (q: any) => onSelectQueryEditHandler(q)
@@ -242,8 +156,13 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
                          className="flex justify-between p-4 text-sm text-gray-700 hover:bg-gray-200 rounded ease-in-out transition duration-700 font-sans"
                     >
                         <div onClick={() => {
-                            const route = q.singleTabular === "single-query-review"
-                                ? `/single-query-review/${q.id}` : `/tabular-review/${q.id}`;
+                            const route =
+                                q.singleTabular === "single-query-review"
+                                    ? `/single-query-review/${q.id}`
+                                    : q.singleTabular === "single-search"
+                                        ? `/playWrightQuery/chatItem/${q.id}`
+                                        : `/tabular-review/${q.id}`;
+
                             navigate(route);
                         }}>
                             {/* LEFT SIDE */}
@@ -365,20 +284,22 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
 
 // ================= Files Table =================
 export function FilesTable() {
-    const {keyword} = useParams();
+    // const {keyword} = useParams();
+   const {id} = useParams();
 
     const {
         data: pdfs = [],
         isError: isPdfError,
         refetch,
-    } = useGetPdfIngestedQuery({keyword});
+    } = useGetPdfFromPlayWrightProjectIdQuery(id);
+
 
     const [deleteEntirePdf] = useDeleteEntirePdfMutation();
     const [deletePdfEmbedding] = useDeletePdfIngestedMutation();
     const [activePdfMenu, setPdfActiveMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [highlights, setHighlights] = useState([]);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [selectedFile, setSelectedFile] = useState<any | null>(null);
     const onPreviewPdf = (file: any) => {
@@ -437,8 +358,9 @@ export function FilesTable() {
                 />
             </div>
 
-            <div className="bg-white rounded-2xl overflow-hidden">
-                <table className="w-full text-sm scroll-auto">
+            <div className="bg-white rounded-2xl overflow-hidden border">
+                <div className={"max-h-[500px] overflow-y-auto"}>
+                <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500">
                     <tr>
                         <th className="text-left p-3">Name</th>
@@ -499,12 +421,16 @@ export function FilesTable() {
 
                     {isPdfError && (
                         <>
-                            <span className="text-red-500 text-xs">Error Loading PDF</span>
+                            <span className="px-2 text-red-500 text-xs">Error Loading PDF</span>
                         </>
                     )}
 
                     </tbody>
                 </table>
+
+                </div>
+
+
 
                 {selectedFile && (
                     <div className="fixed inset-0 bg-black/30 z-50 flex justify-end">
@@ -520,8 +446,9 @@ export function FilesTable() {
                                 ✕ Close
                             </button>
 
-                            {/* PDF */}
+                            {/* PDF PREVIEW */}
                             <iframe
+                                title={"AzureBlobURL"}
                                 src={
                                     selectedFile.azureBlobUrl.includes("%")
                                         ? selectedFile.azureBlobUrl
@@ -547,7 +474,7 @@ export function PlayWrightQueryDashboard() {
     const [inputValue, setInputValue] = useState("");
 
     const {id} = useParams();
-    const {keyword} = useParams();
+    // const {keyword} = useParams();
     const projectId = String(id);
     const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
 
@@ -556,7 +483,7 @@ export function PlayWrightQueryDashboard() {
         isLoading: isPlayWrightLoading,
         isError: isPlayWrightError,
         refetch,
-    } = useGetPlayWrightQueryListQuery({keyword});
+    } = useFetchPlayWrightQueryListByIdQuery(id);
 
     const [showSlideIn, setShowSlideIn] = useState(false);
 
@@ -571,7 +498,7 @@ export function PlayWrightQueryDashboard() {
     }
 
     const [tabularOrSingleQuery, setTabularOrSingleQuery] =
-        useState<"tabular-review" | "single-query-review">(
+        useState<"tabular-review" | "single-query-review" | "single-search">(
             "tabular-review"
         );
 
@@ -605,6 +532,12 @@ export function PlayWrightQueryDashboard() {
                                 {playWrightQuery?.length ?? "None:"} Total Queries
                             </p>
                         </div>
+
+                        {isPlayWrightError && (
+                            <>
+                                <span className="px-2 text-red-500 text-xs">Error Loading queries</span>
+                            </>
+                        )}
 
                         <button className="flex items-center gap-2 border px-3 py-2 rounded-xl">
                             <Share2 size={16} /> Share

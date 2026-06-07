@@ -36,6 +36,12 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
             providesTags: ["PlayWrightQuery"],
             keepUnusedDataFor: 5,
         }),
+        fetchPlayWrightQueryListById: builder.query({
+            query: (id: any) =>({
+                url: `${PLAYWRIGHT_API}/listQuery/${id}`,
+                method: "GET",
+            })
+        }),
         getPlayWrightProjectList: builder.query({
             query: ({keyword}) => ({
                 url: `${PLAYWRIGHT_API}/playbookProjects`,
@@ -96,4 +102,5 @@ export const {
     useGetPlayWrightProjectListQuery,
     useDeletePlayWrightProjectMutation,
     useDeletePlayWrightQueryMutation,
+    useFetchPlayWrightQueryListByIdQuery,
 } = playWrightApiSlice;

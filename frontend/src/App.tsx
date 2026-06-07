@@ -33,7 +33,7 @@ import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlaybookTableSc
 import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
 import SinglePlayQueryScreen from "./screens/AIChatScreen/Rev1Chat/SinglePlayQueryScreen";
 import PlayWrightQueryChat from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryChat";
-
+import QueryChatScreen from "../src/screens/AIChatScreen/Rev1Chat/QueryChatScreen"
 
 import { pdfjs } from "react-pdf";
 
@@ -78,6 +78,7 @@ function App() {
                 <Route path={"/assistantScreen"} element={<AssistantChatScreen />} />
                 <Route path={"single-query-review/:id"} element={<SinglePlayQueryScreen />} />
                 <Route path={"playbookQuery/chat/:id"} element={<PlayWrightQueryChat />} />
+                <Route path={`playWrightQuery/chatItem/:id`} element={<QueryChatScreen />} />
 
             </Routes>
 

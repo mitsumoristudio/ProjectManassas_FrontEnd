@@ -52,7 +52,7 @@ export function ChatMessageList({ messages, inProgressMessage, noMessagesContent
                 </>
             )}
             {!inProgressMessage && isEmpty && (
-                <div className="text-gray-900 text-center"> {noMessagesContent || "No messages yet."}</div>
+                <div className="text-gray-900 text-center"> {noMessagesContent || ""}</div>
             )}
         </div>
     );

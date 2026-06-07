@@ -18,10 +18,10 @@ export const conversationApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor:5,
         }),
         listProjectConversationById: builder.query({
-            query: (sessionId: string) => ({
-                url: `${CONVERSATION_URL}/project_conversations/${sessionId}`,
+            query: (playWrightQueryId: string) => ({
+                url: `${CONVERSATION_URL}/project_conversations/${playWrightQueryId}`,
                 method: "GET",
-                params: {sessionId}
+                params: {playWrightQueryId}
             }),
             providesTags: ["ConversationMessage"],
             keepUnusedDataFor: 5,
@@ -35,8 +35,8 @@ export const conversationApiSlice = apiSlice.injectEndpoints({
             invalidatesTags: ["ConversationChatSession"],
         }),
         getProjectId: builder.query({
-            query: (id: string) => ({
-                url: `${CONVERSATION_URL}/chat/${id}`,
+            query: (playWrightQueryId: string) => ({
+                url: `${CONVERSATION_URL}/chat/${playWrightQueryId}`,
                 method: "GET",
             }),
             providesTags: ["ConversationChatSession"],

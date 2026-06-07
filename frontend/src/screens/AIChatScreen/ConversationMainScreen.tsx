@@ -4,7 +4,7 @@ import ChatSideBar from "../../components/Layout/Graph & Tables/ChatSideBar";
 import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector, } from "react-redux";
-import {NavLink, useParams, useNavigate} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import {LucideFilePlus, ClipboardList, SheetIcon, MicIcon, MicOffIcon, ArrowBigRightDash, CalendarDaysIcon} from "lucide-react"
 import {useAzureSpeech} from "../../components/useAzureSpeech"
 import { PRODUCTION_PDF_URL} from "../../util/urlconstants"
@@ -35,6 +35,7 @@ import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
 import {toast} from "react-toastify";
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
 import { sanitizeTextForTTS} from "../../screens/AIChatScreen/sanitizeTextForTTS";
+import {useGetPlayWrightQuerybyIdQuery} from "../../../src/features/playwrightApiSlice";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -101,7 +102,8 @@ export function ConversationMainScreen() {
     const { id } = useParams();
     const projectId = String(id);
 
-    const {data: projectData} = useGetProjectIdQuery<any>(projectId);
+    const {data: projectData} = useGetPlayWrightQuerybyIdQuery<any>(projectId);
+
 
     /* ---------------- AI Redux Toolkit call ---------------- */
 
@@ -870,20 +872,20 @@ export function ConversationMainScreen() {
 
                             </div>
 
-                            <div className={"p-4 border-t bg-white flex items-center gap-3"}>
+                            <div className={"p-4 border-t bg-white flex items-center gap-2"}>
                                 { /*Speech Synthesis*/}
                                 <button
                                     onPointerDown={startSpeech}
                                     onPointerUp={stopSpeech}
                                     onTouchStart={startSpeech}
                                     onTouchEnd={stopSpeech}
-                                    className={`rounded-full p-3 transition ${
+                                    className={`rounded-full p-2 transition ${
                                         isListening
                                             ? "bg-red-600 text-white animate-pulse"
                                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                                     }`}
                                     title="Hold to talk">
-                                    {isListening ? <MicOffIcon size={22} /> : <MicIcon size={22} />}
+                                    {isListening ? <MicOffIcon size={24} /> : <MicIcon size={24} />}
                                 </button>
 
                                 {/*<ChatWindow/>*/}

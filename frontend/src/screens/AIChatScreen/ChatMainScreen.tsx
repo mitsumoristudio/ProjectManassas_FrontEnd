@@ -26,6 +26,11 @@ import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
 import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
 
+import {
+    useSummaryContractMutation
+} from "../../features/contractAnalysisSlice";
+
+
 import AssistantChatInput from "./Rev1Chat/AssistantChatInput";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
@@ -110,6 +115,7 @@ export function ChatMainScreen() {
     const [sendEquipmentAIMessage] = useSendAIEquipmentMessageMutation();
     const [sendProposalAIMessage] = useSendProposalDraftMutation();
     const [sendAdvisorAIMessage] = useSendProjectAdvisorMutation();
+    const [sendSummaryContractMessage] = useSummaryContractMutation();
 
     const keyword = useParams();
 
