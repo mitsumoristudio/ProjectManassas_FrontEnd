@@ -579,7 +579,6 @@ export function PlayWrightQueryDashboard() {
                                 </div>
                             </div>
 
-
                     </div>
                     {/*================= Recent Query ================= */}
                     <RecentQueries data={playWrightQuery} refetch={refetch}
@@ -597,7 +596,6 @@ export function PlayWrightQueryDashboard() {
                             </div>
                         </>
                     )}
-
 
                     {/*================= Ingested Files ================= */}
                     <FilesTable  />

@@ -101,15 +101,16 @@ export default function LoginScreen() {
                     </button>
 
                     <div className={"flex flex-col items-center"}>
-                        <p className={"text-gray-800 w-full items-center ml-12"}>Create a new account
-                            <span>  </span>
-                            <span className={"text-indigo-700 font-semibold underline cursor-pointer"}>
+                        {/*<p className={"text-gray-800 w-full items-center ml-12"}>Create a new account*/}
+                        {/*    <span>  </span>*/}
+                        {/*    <span className={"text-indigo-700 font-semibold underline cursor-pointer"}>*/}
 
-                            <Link to={"/register"}
-                                  data-cy={"submit2"}
-                            > Click here </Link>
+                        {/*        /!* Registration *!/*/}
+                        {/*    /!*<Link to={"/register"}*!/*/}
+                        {/*    /!*      data-cy={"submit2"}*!/*/}
+                        {/*    /!*> Click here </Link>*!/*/}
 
-                        </span></p>
+                        {/*</span></p>*/}
                     </div>
                     <div className={"flex flex-col items-center"}>
 
