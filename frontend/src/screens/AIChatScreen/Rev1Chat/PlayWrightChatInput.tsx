@@ -735,8 +735,8 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                                             />
 
                                                             <span className="text-sm text-gray-800">
-                        {doc.originalFileName}
-                    </span>
+                                                                {doc.originalFileName}
+                                                            </span>
                                                         </div>
                                                     </li>
                                                 );

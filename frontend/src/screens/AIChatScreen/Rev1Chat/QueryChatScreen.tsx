@@ -9,9 +9,10 @@ import {
 import {assets} from "../../../assets/assets";
 import {
     useGetPlayWrightProjectbyIdQuery,
+    useGetPlayWrightQuerybyIdQuery,
 } from "../../../features/playwrightApiSlice";
 import {
-    useSummaryContractMutation
+    useContinueSummarizationMutation
 } from "../../../features/contractAnalysisSlice";
 import {toast} from "react-toastify";
 import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
@@ -44,9 +45,17 @@ export default function QueryChatScreen() {
 
     const {id: playWrightQueryId} = useParams();
 
+    const [continueSummarization, {isLoading}] = useContinueSummarizationMutation();
+    const {data: queryInfo, refetch: refetchQuery} = useGetPlayWrightQuerybyIdQuery(playWrightQueryId);
+
+    const azureBlobQueryId = queryInfo?.azureBlobId;
+    const documentQueryId = queryInfo?.documentId;
+    const playWrightQueryProjectId = queryInfo?.playWrightQueryProjectId;
+
     const {
         data: conversationMessages,
         isLoading: isMessagesLoading,
+        refetch: refetchConversation,
     } =  useListProjectConversationByIdQuery(playWrightQueryId, {
         refetchOnMountOrArgChange: true
     });
@@ -56,6 +65,79 @@ export default function QueryChatScreen() {
             setMessages(conversationMessages);
         }
     }, [conversationMessages]);
+
+    const summaryOnSubmitHandler = async (
+        messages: string,
+        projectQueryTitle?: string,
+        playWrightProjectId?: string,
+        documentId?: string,
+        azureBlobId?: string,
+    )=> {
+        if (!messages?.trim()) {
+            toast.error("Message cannot be empty");
+            return;
+        }
+
+            try {
+                const userMessage = {
+                    role: "user",
+                    messageContent: messages,
+                    createdAt: new Date().toISOString(),
+                };
+
+                setMessages(prev => [...prev, userMessage])
+
+                const session = {
+                    sessionId: crypto.randomUUID(),
+                    messages: [ {
+                        role: "user",
+                        messageContent: messages,
+                        createdAt: new Date().toISOString(),
+                    }]
+                };
+
+                const response = await continueSummarization({
+                    projectQueryTitle: inputValue,
+                    playWrightProjectId: playWrightQueryProjectId,
+                    playWrightQueryId: playWrightQueryId.toString(),
+                    azureBlobId: azureBlobQueryId,
+                    singleTabular: "single-search",
+                    documentId: azureBlobQueryId,
+                    session : {
+                        messages: [
+                            {
+                                role: "user",
+                                messageContent: inputValue,
+                            }
+                        ]
+                    }
+
+                }).unwrap();
+
+                await refetchConversation();
+
+                setInputValue("");
+
+                console.log("messages", messages);
+                console.log("ProjectQueryTitle", inputValue);
+                console.log("AzureBlobId", azureBlobQueryId);
+                console.log("DocumentId", documentQueryId);
+                console.log("PlayWrightQueryId", playWrightQueryId.toString());
+                console.log("Response", response);
+                console.log("ConversationMessages", conversationMessages);
+
+            } catch (err) {
+                console.error(err);
+                toast.error("Failed to send message");
+            }
+
+            return;
+
+
+
+        console.log("Sending message:", messages);
+    };
+
 
     // Authentication
     const {userInfo} = useSelector((state: any) => state.auth);
@@ -105,7 +187,9 @@ export default function QueryChatScreen() {
                 <title>Chat App</title>
                 <meta name="description" content="Chat App"/>
             </Helmet>
-            {isMessagesLoading ? (
+
+
+            {isMessagesLoading || isLoading ? (
                 <div className={"justify-center items-center py-20"}>
                     <CustomLoaderSmall />
                 </div>
@@ -206,7 +290,7 @@ export default function QueryChatScreen() {
                                     </button>
 
                                     <div className={"flex-1"}>
-                                        <ChatInput onSend={() => "hello, come fix it later"}
+                                        <ChatInput onSend={() => summaryOnSubmitHandler(inputValue)}
                                                    disabled={isMessagesLoading}
                                                    value={inputValue}
                                                    onChange={setInputValue}

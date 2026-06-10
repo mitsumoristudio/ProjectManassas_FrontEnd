@@ -26,6 +26,14 @@ export default function ChatMessageItem({message, inProgress = false, showSource
 
     const {userInfo} = useSelector((state: any) => state.auth)
 
+    const uniquePages = [
+        ...new Set(
+            (message.sources ?? [])
+                .map((s: any) => s.PageNumber ?? s.pageNumber)
+                .filter(Boolean)
+        )
+    ];
+
     useEffect(() => {
         if (!inProgress && message?.role === "assistant" && message?.text?.length > 0) {
             const regex = /<citation filename='([^']*)' page_number='(\d*)'>(.*?)<\/citation>/g;
@@ -127,48 +135,29 @@ export default function ChatMessageItem({message, inProgress = false, showSource
 
                             )}
 
-
                         </div>
-
-
-
 
                     </div>
 
 
                     <div className="ml-2 rounded-br-sm break-words max-w-[95%] text-gray-600 text-base font-serif ">
                         <Markdown>{message.text || message.messageContent}</Markdown>
-                        {citations?.map((c, i) => (
-                            <ChatCitation file={c.file}
-                                          page={c.page}
-                                          quote={c.quote}
-                                          pageNumber={c.page} />
-                        ))}
-                    </div>
 
+                        {uniquePages.length > 0 && (
+                                <div className="mt-2 border-t pt-3">
+                                    <h4 className={"text-md text-gray-800 font-medium mb-1 py-2"}>
+                                        Source Page:
+                                    </h4>
 
-                    {/* Render sources if toggle is on */}
-                    {showSources &&
-                        message.sources?.length > 0 && (
-                            <div className="mt-2 border-t border-gray-400 pt-2">
-                                <div className={"text-sm text-gray-800 font-medium mb-1"}>
-                                    Sources:
-                                </div>
-                                <ul className="list-disc list-inside text-sm text-gray-800 space-y-1">
-                                    {message.sources.map((src: any, i: number) => (
-                                        <li key={i}>
-                                            <ChatCitation
-                                                file={src.documentId}
-                                                page={src.pageNumber}
-                                                quote={src.snippet}
-                                                pageNumber={src.pageNumber}
-                                            />
-                                        </li>
+                                    {uniquePages.map((page: number) => (
+                                        <span
+                                            key={page}
+                                            className="px-3 py-1 bg-blue-300 text-blue-800 rounded-full mx-2 text-sm"
+                                        > Page {page} </span>
                                     ))}
-                                </ul>
-                            </div>
-
-                        )}
+                                </div>
+                            )}
+                    </div>
 
                 </div>
             </section>
