@@ -9,14 +9,12 @@ import {
     ArrowLeftFromLine
 } from "lucide-react"
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
-import {assets} from "../../../assets/assets";
-import {useSelector, useDispatch, } from "react-redux";
 import {useParams, useNavigate, NavLink} from "react-router-dom";
 import {
     useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightQuerybyIdQuery, useGetPlayWrightQueryListQuery,
 } from "../../../features/playwrightApiSlice";
-import PdfViewerPage from "../../mainscreen/PdfViewerPage";
+// import PdfViewerPage from "../../mainscreen/PdfViewerPage";
 
 // ================= Sidebar =================
 
@@ -53,7 +51,7 @@ function PlayWrightTable({rows, }) {
 
     const filterRows = rows?.filter(r => r.analysisType == activeType);
 
-    const navigate = useNavigate();
+//    const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState<any | null>(null);
     const [pdfViewer, setPdfViewer] = useState(null);
 

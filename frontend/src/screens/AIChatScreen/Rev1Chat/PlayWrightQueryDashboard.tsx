@@ -4,7 +4,7 @@ import {
     Share2,
     ArrowLeftFromLine,
     EllipsisIcon,
-    ChevronDown, Trash2Icon, MailsIcon
+    ChevronDown, Trash2Icon, MailsIcon, SearchIcon
 } from "lucide-react";
 import React, {useEffect, useState, useRef} from "react";
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
@@ -15,13 +15,11 @@ import {
     useGetPdfFromPlayWrightProjectIdQuery,
     useDeletePdfIngestedMutation,
     useDeleteEntirePdfMutation,
-    useSendSummaryAIMessageMutation
 } from "../../../features/chatapiSlice";
 import {
     useAddPlayWrightQueryMutation,
     useGetPlayWrightProjectbyIdQuery,
     useUpdatePlayWrightQueryMutation,
-    useGetPlayWrightQueryListQuery,
     useDeletePlayWrightQueryMutation,
     useFetchPlayWrightQueryListByIdQuery,
   } from "../../../features/playwrightApiSlice";
@@ -32,7 +30,7 @@ import {AnimatePresence, motion} from "framer-motion";
 
 
 // ================= Recent Queries =================
-export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
+export function RecentQueries({data, tabularOrSingleQuery, refetch , isPlayWrightError}) {
 
     const {userInfo} = useSelector((state: any) => state.auth);
     const navigate = useNavigate();
@@ -45,11 +43,6 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const [addQuery] = useAddPlayWrightQueryMutation();
-
-    const [sendSummaryAIMessage] = useSendSummaryAIMessageMutation();
-    const [messages, setMessages] = useState<any[]>([]);
-    const [inProgressMessage, setInProgressMessage] = useState<any>(null);
-    const [sessionId] = useState("session-1234");
 
     // Edit PlayWrightQuery
     const onSelectQueryEditHandler = (query: any) => {
@@ -271,20 +264,23 @@ export function RecentQueries({data, tabularOrSingleQuery, refetch}) {
                                     </div>
                                 </div>
                             )}
-
-
                         </div>
-
                     </div>
                 ))}
             </div>
+
+            {isPlayWrightError && (
+                <>
+                    <span className="px-2 text-red-500 text-sm">Error Loading queries</span>
+                </>
+            )}
         </div>
     );
 }
 
 // ================= Files Table =================
 export function FilesTable() {
-    // const {keyword} = useParams();
+
    const {id} = useParams();
 
     const {
@@ -294,12 +290,14 @@ export function FilesTable() {
     } = useGetPdfFromPlayWrightProjectIdQuery(id);
 
 
+    const [searchTerms, setSearchTerm] = useState("");
+    const filterByOriginalFileName = pdfs?.filter((item: any) => item.originalFileName.toLowerCase().includes(searchTerms.toLowerCase()));
+
     const [deleteEntirePdf] = useDeleteEntirePdfMutation();
     const [deletePdfEmbedding] = useDeletePdfIngestedMutation();
     const [activePdfMenu, setPdfActiveMenu] = useState<string | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
-    const [highlights, setHighlights] = useState([]);
-    // const navigate = useNavigate();
+   // const [highlights, setHighlights] = useState([]);
 
     const [selectedFile, setSelectedFile] = useState<any | null>(null);
     const onPreviewPdf = (file: any) => {
@@ -323,6 +321,11 @@ export function FilesTable() {
             }
         }
         setPdfActiveMenu(null);
+    }
+
+    const handlePdfSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const terms = e.target.value.toLowerCase();
+        setSearchTerm(terms);
     }
 
     // when user click outside the ellipsis, the window closes
@@ -352,10 +355,18 @@ export function FilesTable() {
         <div>
             <div className="flex justify-between items-center mb-3">
                 <h2 className="text-lg font-medium mb-3">Project files</h2>
-                <input
-                    className="border px-3 py-1 rounded-lg text-sm"
-                    placeholder="Search"
-                />
+
+                <div className={"flex flex-row gap-2"}>
+                    <SearchIcon className={"my-2 relative left-10"} color={"gray"} size={24}/>
+                    <input
+                        type='text'
+                        onChange={handlePdfSearch}
+                        placeholder='Search...'
+                        className='bg-gray-200 text-gray-700 text-sm placeholder-gray-400 rounded-lg pl-16 pr-6 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
+
+                </div>
+
             </div>
 
             <div className="bg-white rounded-2xl overflow-hidden border">
@@ -371,7 +382,7 @@ export function FilesTable() {
                     </tr>
                     </thead>
                     <tbody>
-                    {pdfs?.map((file: any, i: number) => (
+                    {filterByOriginalFileName?.map((file: any, i: number) => (
                         <tr key={i} className="border-t hover:bg-gray-50 cursor-pointer"
                             onClick={() => onPreviewPdf(file)}>
 
@@ -421,7 +432,7 @@ export function FilesTable() {
 
                     {isPdfError && (
                         <>
-                            <span className="px-2 text-red-500 text-xs">Error Loading PDF</span>
+                            <span className="px-2 text-red-500 text-sm">Error Loading PDF</span>
                         </>
                     )}
 
@@ -429,8 +440,6 @@ export function FilesTable() {
                 </table>
 
                 </div>
-
-
 
                 {selectedFile && (
                     <div className="fixed inset-0 bg-black/30 z-50 flex justify-end">
@@ -533,12 +542,6 @@ export function PlayWrightQueryDashboard() {
                             </p>
                         </div>
 
-                        {isPlayWrightError && (
-                            <>
-                                <span className="px-2 text-red-500 text-xs">Error Loading queries</span>
-                            </>
-                        )}
-
                         <button className="flex items-center gap-2 border px-3 py-2 rounded-xl">
                             <Share2 size={16} /> Share
                         </button>
@@ -582,7 +585,8 @@ export function PlayWrightQueryDashboard() {
                     </div>
                     {/*================= Recent Query ================= */}
                     <RecentQueries data={playWrightQuery} refetch={refetch}
-                                   tabularOrSingleQuery={tabularOrSingleQuery} />
+                                   tabularOrSingleQuery={tabularOrSingleQuery}
+                                   isPlayWrightError={isPlayWrightError} />
 
                     {isPlayWrightLoading && (
                         <>

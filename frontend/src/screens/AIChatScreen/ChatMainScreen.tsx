@@ -41,6 +41,7 @@ import {toast} from "react-toastify";
 import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
 import { sanitizeTextForTTS} from "../../screens/AIChatScreen/sanitizeTextForTTS";
 import {assets} from "../../assets/assets";
+import BoltCustomLoader from "../../components/Layout/BoltCustomLoader";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },
@@ -554,7 +555,7 @@ export function ChatMainScreen() {
                 </Helmet>
                 {isLoading ? (
                     <div className={"justify-center items-center py-20"}>
-                        <CustomLoaderSmall />
+                        <BoltCustomLoader mode={"summary"} />
                     </div>
                 ) : (
                     <motion.div

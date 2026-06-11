@@ -1,7 +1,8 @@
 import React from "react";
 import {useEffect, useRef} from "react";
-import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
+// import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
 import ChatMessageItem from "./ChatMessageItem";
+import BoltCustomLoader from "../../components/Layout/BoltCustomLoader";
 
 export function ChatMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false, onSpeakHandler,
                                     onPause, onResume, onStop, isPlaying, isPaused }:
@@ -48,7 +49,9 @@ export function ChatMessageList({ messages, inProgressMessage, noMessagesContent
                                      showSources={showSources} inProgress={inProgressMessage}
                     />
 
-                    <CustomLoaderSmall/>
+                    <div className={"justify-center items-center py-20"}>
+                        <BoltCustomLoader mode={"summary"} />
+                    </div>
                 </>
             )}
             {!inProgressMessage && isEmpty && (

@@ -2,11 +2,11 @@ import React, {useEffect, useRef, useState} from "react";
 import {Helmet} from "react-helmet";
 import ChatSideBar from "../../../components/Layout/Graph & Tables/ChatSideBar";
 import {useSelector } from "react-redux";
-import {NavLink, useParams} from "react-router-dom";
+import { useParams} from "react-router-dom";
 import {
     useGetPdfIngestedQuery,
 } from "../../../features/chatapiSlice";
-import {assets} from "../../../assets/assets";
+
 import {
     useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightQuerybyIdQuery,
@@ -24,7 +24,8 @@ import { sanitizeTextForTTS} from "../sanitizeTextForTTS";
 import {useListProjectConversationByIdQuery} from "../../../features/conversationapiSlice";
 import {useAzureSpeech} from "../../../components/useAzureSpeech";
 import PdfOutlinePanel from "../../AIChatScreen/PdfOutlinePanel";
-import {ArrowLeftFromLine, MicIcon, MicOffIcon} from "lucide-react";
+import { MicIcon, MicOffIcon} from "lucide-react";
+import BoltCustomLoader from "../../../components/Layout/BoltCustomLoader";
 
 export default function QueryChatScreen() {
 
@@ -64,6 +65,9 @@ export default function QueryChatScreen() {
         if (conversationMessages && conversationMessages.length > 0) {
             setMessages(conversationMessages);
         }
+
+       refetchQuery();
+
     }, [conversationMessages]);
 
     const summaryOnSubmitHandler = async (
@@ -132,10 +136,6 @@ export default function QueryChatScreen() {
             }
 
             return;
-
-
-
-        console.log("Sending message:", messages);
     };
 
 
@@ -187,9 +187,14 @@ export default function QueryChatScreen() {
                 <title>Chat App</title>
                 <meta name="description" content="Chat App"/>
             </Helmet>
+            {isLoading && (
+                <div className={"justify-center items-center py-20"}>
+                    <BoltCustomLoader mode={"analysis"} />
+                </div>
+            )}
 
 
-            {isMessagesLoading || isLoading ? (
+            {isMessagesLoading ? (
                 <div className={"justify-center items-center py-20"}>
                     <CustomLoaderSmall />
                 </div>
@@ -212,7 +217,7 @@ export default function QueryChatScreen() {
                                 <div className="flex-1 overflow-y-auto p-4 text-gray-800 text-2xl">
 
                                     {/* SHOW ONLY BEFORE CHAT STARTS */}
-                                    {!hasStartedChat && (
+                                    {!hasStartedChat && userInfo && (
                                         <div className="flex flex-col items-center justify-center h-full text-center">
 
                                             <h1 className="text-5xl font-bold text-gray-800 mb-4">
@@ -228,7 +233,7 @@ export default function QueryChatScreen() {
                                     )}
 
                                     {/* SHOW CHAT AFTER MESSAGE STARTS */}
-                                    {hasStartedChat && (
+                                    {hasStartedChat && userInfo && (
                                         <>
                                             <ChatMessageList
                                                 messages={messages}
@@ -246,6 +251,12 @@ export default function QueryChatScreen() {
                                             <div ref={messageEndRef}></div>
 
                                         </>
+                                    )}
+
+                                    {isLoading && (
+                                        <div className={"justify-center items-center py-20"}>
+                                            <BoltCustomLoader mode={"summary"} />
+                                        </div>
                                     )}
 
                                 </div>
@@ -300,11 +311,11 @@ export default function QueryChatScreen() {
 
                                 </div>
 
-
                             </div>
                             <h2 className="p-2 text-blue-700 font-medium text-sm text-center">
                                 Please note that AI agent may give inaccurate information
                             </h2>
+
                         </div>
                     </div>
                 </motion.div>

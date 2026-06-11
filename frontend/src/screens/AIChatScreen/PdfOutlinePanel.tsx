@@ -1,6 +1,5 @@
 import React from "react";
 import {NotepadTextIcon} from "lucide-react"
-import {Button} from "@mui/material";
 
 type PdfSource = {
     documentId: string;
@@ -15,9 +14,7 @@ interface PdfOutlinePanelProps {
 
 }
 
-
 export default function PdfOutlinePanel({ messages}: PdfOutlinePanelProps) {
-
 
     const sources: PdfSource[] = messages
         .flatMap(m => m.sources || [])

@@ -1,5 +1,15 @@
 import React, {useState, useRef, useEffect} from "react";
-import {Search, Folder, MoreHorizontal, Users, Database, ChevronDown, Trash2Icon, MailsIcon} from "lucide-react";
+import {
+    Search,
+    Folder,
+    MoreHorizontal,
+    Users,
+    Database,
+    ChevronDown,
+    Trash2Icon,
+    MailsIcon,
+    SearchIcon
+} from "lucide-react";
 
 import {toast} from "react-toastify";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,6 +22,7 @@ import {useCreatePlayWrightProjectMutation,
 
 
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
+import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 
 export default function PlaybookProject() {
     const [openProject, setOpenProject] = useState(false);
@@ -26,7 +37,6 @@ export default function PlaybookProject() {
     const [deleteProject] = useDeletePlayWrightProjectMutation();
     const {id} = useParams();
     const {keyword} = useParams();
-    const projectId = String(id);
 
     const {
         data: playWrightProject,
@@ -35,9 +45,17 @@ export default function PlaybookProject() {
         refetch,
     } = useGetPlayWrightProjectListQuery({keyword})
 
+    const [searchTerms, setSearchTerms] = useState("");
+    const filterByPlayWrightProject = playWrightProject?.filter((item: any) => item.projectName.toLowerCase().includes(searchTerms.toLowerCase()));
+
     const onSelectShare = (id: string) => {
         console.log("Share project:", id);
         setActiveMenu(null);
+    }
+
+    const handlePlayWrightProjectSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const terms = e.target.value.toLowerCase();
+        setSearchTerms(terms)
     }
 
     // Confirm if the user exists
@@ -185,15 +203,21 @@ export default function PlaybookProject() {
                             <button className="text-gray-500">Shared with you</button>
                         </div>
 
-                        <input
-                            className="border border-r px-8 py-2 rounded-lg text-md font-semibold "
-                            placeholder="Search"
-                        />
+                        <div className={"flex flex-row gap-2"}>
+                            <SearchIcon className={"my-2 relative left-10"} color={"gray"} size={24}/>
+                            <input
+                                type='text'
+                                onChange={handlePlayWrightProjectSearch}
+                                placeholder='Search...'
+                                className='bg-gray-200 text-gray-700 text-sm placeholder-gray-400 rounded-lg pl-16 pr-6 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+                            />
+
+                        </div>
                     </div>
 
                     {/* Project Card Lists */}
                     <div className="grid grid-cols-4 gap-4 min-h-56">
-                        {playWrightProject?.map((pro, i) => (
+                        {filterByPlayWrightProject?.map((pro, i) => (
                             <div className="bg-white p-6 rounded-2xl hover:bg-gray-200 transition-colors mb-2 cursor-pointer"
                             key={`${pro}-${i}`}>
 
@@ -261,6 +285,18 @@ export default function PlaybookProject() {
 
                         ))}
                     </div>
+
+                    {isProjectError && (
+                        <>
+                            <span className="px-2 text-red-500 text-xs">Error Loading PDF</span>
+                        </>
+                    )}
+
+                    {isProjectLoading && (
+                        <>
+                            <CustomLoaderSmall />
+                        </>
+                    )}
 
                     {/* Opening create project. Add requireAuth and wrap around setOpenEdit if there is no user logged in */}
                     {openProject && (
