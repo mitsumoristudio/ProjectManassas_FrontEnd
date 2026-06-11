@@ -1,7 +1,6 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, {useState} from "react";
 import {
     Search,
-    FileText,
     Share2,
     Filter,
     Columns,
@@ -9,7 +8,7 @@ import {
     ArrowLeftFromLine
 } from "lucide-react"
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
-import {useParams, useNavigate, NavLink} from "react-router-dom";
+import {useParams, NavLink} from "react-router-dom";
 import {
     useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightQuerybyIdQuery, useGetPlayWrightQueryListQuery,
