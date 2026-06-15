@@ -34,6 +34,7 @@ import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatSc
 import SinglePlayQueryScreen from "./screens/AIChatScreen/Rev1Chat/SinglePlayQueryScreen";
 import PlayWrightQueryChat from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryChat";
 import QueryChatScreen from "../src/screens/AIChatScreen/Rev1Chat/QueryChatScreen"
+import NewHomeScreenPage from "../src/screens/mainscreen/NewHomeScreenPage";
 
 import { pdfjs } from "react-pdf";
 
@@ -47,7 +48,7 @@ function App() {
             <ToastContainer />
 
             <Routes>
-                <Route path="/" element={<HomePage/>} />
+                <Route path="/" element={<NewHomeScreenPage/>} />
                 <Route path="/login" element={<LoginScreen />} />
                 <Route path="/register" element={<RegisterScreen />} />
                 <Route path={"/projects"} element={<ProjectsScreen />} />

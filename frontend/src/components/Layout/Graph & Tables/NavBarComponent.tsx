@@ -53,9 +53,6 @@ export default function NavBarComponent() {
                         <div className="flex items-center justify-between h-16">
                             <div className="flex items-center space-x-8">
                                 <div className="flex-shrink-0">
-                                    {/*<svg width="30" height="30" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">*/}
-                                    {/*    <path fillRule="evenodd" clipRule="evenodd" d="M48 0C21.49 0 0 21.49 0 48C0 74.51 21.49 96 48 96C74.51 96 96 74.51 96 48C96 21.49 74.51 0 48 0ZM48 88C26.021 88 8 69.979 8 48C8 26.021 26.021 8 48 8C69.979 8 88 26.021 88 48C88 69.979 69.979 88 48 88ZM68 48L48 68L28 48L48 28L68 48Z" fill="#30E0A5"/>*/}
-                                    {/*</svg> */}
                                     <img
                                         alt=""
                                         src={assets.mori_solution_logo2}
@@ -86,9 +83,9 @@ export default function NavBarComponent() {
 
                             </div>
                             <div className="hidden md:flex items-center space-x-4">
-                                <button className="text-gray-300 hover:text-white">
-                                    <Search size={18} />
-                                </button>
+                                {/*<button className="text-gray-300 hover:text-white">*/}
+                                {/*    <Search size={18} />*/}
+                                {/*</button>*/}
 
                                 {userInfo ? (
                                     <div className="hidden md:flex items-center space-x-4">
@@ -100,7 +97,7 @@ export default function NavBarComponent() {
                                     </div>
                                 ) : (
                                     <div className={"hidden md:flex items-center space-x-4"}>
-                                        <NavLink to={"/login"} className={"px-4 py-2 text-sm font-medium text-black bg-[#30E0A5] rounded-md hover:bg-opacity-90 hover:text-white transition-colors"}>Log in</NavLink>
+                                        <NavLink to={"/login"} className={"px-8 py-2 text-sm font-medium text-black bg-[#30E0A5] rounded-md hover:bg-opacity-90 hover:text-white transition-colors"}>Log in</NavLink>
 
                                         {/* Registration Link */}
                                         {/*<NavLink to={"/register"} className={"px-4 py-2 text-sm font-medium text-black bg-[#30E0A5] rounded-md hover:bg-opacity-90 hover:text-white transition-colors"}>Sign up</NavLink>*/}
