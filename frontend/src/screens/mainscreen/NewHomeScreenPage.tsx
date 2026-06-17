@@ -110,7 +110,7 @@ export default function NewHomeScreenPage() {
                             <img
                                 src={assets.playWrightQuerydash}
                                 alt="Mori Specification Review"
-                                className="h-[460px] w-[700px] rounded-xl"
+                                className="w-full max-w-[700px] h-auto rounded-xl"
                             />
                         </div>
 
@@ -191,7 +191,14 @@ export default function NewHomeScreenPage() {
                         </div>
 
                         {/* Screenshot */}
-                        <div className="relative h-[500px] w-[700px]">
+                        <div className=" relative
+                                        h-[280px]
+                                        sm:h-[350px]
+                                        md:h-[450px]
+                                        lg:h-[500px]
+                                        w-full
+                                        max-w-[700px]
+                                        mx-auto">
 
                             {/* Background Card */}
                             <img
@@ -213,26 +220,33 @@ export default function NewHomeScreenPage() {
                                 src={assets.create_advisor_tabular}
                                 alt=""
                                 className="
-                                            absolute
-                                            top-28
-                                            left-64
-                                            w-[450px]
-                                            rounded-3xl
-                                            shadow-2xl
-                                            border
-                                            border-gray-200
-                                            z-12
+                                               absolute
+                                                top-12
+                                                sm:top-20
+                                                lg:top-24
+
+                                                left-[35%]
+                                                sm:left-[45%]
+
+                                                w-[65%]
+                                                sm:w-[60%]
+
+                                                rounded-3xl
+                                                shadow-2xl
+                                                border
+                                                border-gray-200
+                                                z-20
                                         "
                             />
                         </div>
 
                         {/* Chat Interface Screen */}
-                        <div className="rounded-2xl overflow-hidden shadow-xl mx-6 py-4">
+                        <div className="rounded-2xl overflow-hidden shadow-xl mx-6 py-24">
 
                             <img
                                 src={assets.chat_interface}
                                 alt="Mori Specification Review"
-                                className="h-[460px] w-[700px] rounded-xl"
+                                className="w-full max-h-[460px] max-w-[700px] rounded-xl"
                             />
                         </div>
 
@@ -318,8 +332,8 @@ export default function NewHomeScreenPage() {
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
                             <div className="col-span-2 md:col-span-4 lg:col-span-2">
-                                <div className={"flex flex-row"}>
-                                    <div className="flex-shrink-0 mx-4">
+                                <div className={"flex flex-row gap-3"}>
+                                    <div className="flex-shrink-0 mx-1">
                                         <img
                                             alt=""
                                             src={assets.mori_solution_logo2}
