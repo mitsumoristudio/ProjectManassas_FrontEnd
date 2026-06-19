@@ -287,6 +287,21 @@ export default function NewHomeScreenPage() {
                         </div>
                     </div>
 
+                    <section className="bg-[#0B0B0B] py-24">
+                        <div className="max-w-7xl mx-auto px-4">
+
+                            <div className="rounded-3xl overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,.5)]">
+                                <iframe
+                                    className="w-full aspect-video"
+                                    src="https://www.youtube.com/embed/PBCoogZr33k"
+                                    title="Mori Demo"
+                                    allowFullScreen
+                                />
+                            </div>
+
+                        </div>
+                    </section>
+
                     {/* Trusted by Section */}
                     <section className="container mx-auto px-4 sm:px-6 lg:px-8 mt-10 sm:mt-32">
                         <p className="text-center text-lg text-gray-600">Developed Utilizing Trusted Tech Providers</p>
@@ -325,6 +340,8 @@ export default function NewHomeScreenPage() {
                             ))}
                         </div>
                     </section>
+
+
                 </main>
 
                 {/* Footer */}
