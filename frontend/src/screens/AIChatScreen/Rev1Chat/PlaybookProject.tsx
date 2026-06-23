@@ -38,12 +38,13 @@ export default function PlaybookProject() {
     const {id} = useParams();
     const {keyword} = useParams();
 
+
     const {
         data: playWrightProject,
         isLoading: isProjectLoading,
         isError: isProjectError,
         refetch,
-    } = useGetPlayWrightProjectListQuery({keyword})
+    } = useGetPlayWrightProjectListQuery(userInfo?.id)
 
     const [searchTerms, setSearchTerms] = useState("");
     const filterByPlayWrightProject = playWrightProject?.filter((item: any) => item.projectName.toLowerCase().includes(searchTerms.toLowerCase()));

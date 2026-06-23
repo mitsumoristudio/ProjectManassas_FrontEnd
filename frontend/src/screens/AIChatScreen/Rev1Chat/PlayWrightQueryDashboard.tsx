@@ -483,7 +483,6 @@ export function PlayWrightQueryDashboard() {
     const [inputValue, setInputValue] = useState("");
 
     const {id} = useParams();
-    // const {keyword} = useParams();
     const projectId = String(id);
     const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
 
@@ -492,7 +491,7 @@ export function PlayWrightQueryDashboard() {
         isLoading: isPlayWrightLoading,
         isError: isPlayWrightError,
         refetch,
-    } = useFetchPlayWrightQueryListByIdQuery(id);
+    } = useFetchPlayWrightQueryListByIdQuery(userInfo?.id);
 
     const [showSlideIn, setShowSlideIn] = useState(false);
 

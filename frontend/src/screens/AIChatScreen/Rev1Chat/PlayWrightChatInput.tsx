@@ -4,7 +4,8 @@ import { ArrowRight, Square, LucideFilePlus, XIcon, FileTextIcon, LucideFolderOp
 import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
 import {
     useSendDocumentEmbeddingMutation,
-    useGetPdfIngestedQuery,
+ //   useGetPdfIngestedQuery,
+    useGetPdfFromPlayWrightProjectIdQuery,
 } from "../../../features/chatapiSlice";
 import {useContractAnalysisMutation,
         useAdviseContractMutation,
@@ -23,6 +24,7 @@ import {
 
 import {toast} from "react-toastify";
 import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
+import {useSelector} from "react-redux";
 
 interface ChatInputProps {
     onSend: (value: string, toolType?: string, mode?: string) => void;
@@ -68,6 +70,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const {keyword} = useParams();
     const projectId = String(id);
     const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
+    const {userInfo} = useSelector((state: any) => state.auth);
 
     /* ---------------- AI Redux Toolkit call ---------------- */
     const [contractAnalysis, {isLoading: iscontractAnalysisLoading}] = useContractAnalysisMutation();
@@ -88,8 +91,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         isLoading: isPdfLoading,
         isError: isPdfError,
         refetch,
-    } = useGetPdfIngestedQuery({keyword});
-
+    } = useGetPdfFromPlayWrightProjectIdQuery(id);
 
     const toolMutationMap = {
         analysis: contractAnalysis,
@@ -304,7 +306,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         data: playWrightProject = [],
         isLoading: isProjectLoading,
         isError: isProjectError,
-    } = useGetPlayWrightProjectListQuery({keyword})
+    } = useGetPlayWrightProjectListQuery(userInfo?.id)
 
     const handleSend = () => {
         if (!value?.trim()) return;

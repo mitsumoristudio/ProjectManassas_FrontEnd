@@ -37,23 +37,22 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor: 5,
         }),
         fetchPlayWrightQueryListById: builder.query({
-            query: (id: any) =>({
-                url: `${PLAYWRIGHT_API}/listQuery/${id}`,
+            query: (id: string) =>({
+                url: `${PLAYWRIGHT_API}/fetchQuery/${id}`,
                 method: "GET",
             })
         }),
         getPlayWrightProjectList: builder.query({
-            query: ({keyword}) => ({
-                url: `${PLAYWRIGHT_API}/playbookProjects`,
-                params: {keyword},
+            query: (id: string) => ({
+                url: `${PLAYWRIGHT_API}/playbookProjects/${id}`,
                 method: "GET",
             }),
             providesTags: ["PlayWrightProject"],
             keepUnusedDataFor: 5,
         }),
         getPlayWrightQueryList: builder.query({
-            query: () => ({
-                url: `${PLAYWRIGHT_API}/listQuery`,
+            query: (id: string) => ({
+                url: `${PLAYWRIGHT_API}/fetchQuery/${id}`,
                 method: "GET",
             }),
             providesTags: ["PlayWrightQuery"],

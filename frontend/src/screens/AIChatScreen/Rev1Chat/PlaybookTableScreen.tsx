@@ -10,9 +10,11 @@ import {
 import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
 import {useParams, NavLink} from "react-router-dom";
 import {
+    useFetchPlayWrightQueryListByIdQuery,
     useGetPlayWrightProjectbyIdQuery,
     useGetPlayWrightQuerybyIdQuery, useGetPlayWrightQueryListQuery,
 } from "../../../features/playwrightApiSlice";
+import {useSelector} from "react-redux";
 // import PdfViewerPage from "../../mainscreen/PdfViewerPage";
 
 // ================= Sidebar =================
@@ -202,7 +204,7 @@ function PlayWrightTable({rows, }) {
 
                 <tbody>
                 {filterRows?.map((r, i) => (
-                    <tr key={i} className="border-b hover:bg-gray-300 duration-700 rounded-xl cursor-pointer">
+                    <tr key={i} className="border-b hover:bg-gray-300  duration-700 rounded-xl cursor-pointer">
                         <td className="p-2 max-w-[220px]">{i + 1}</td>
 
                         <td className="p-1 max-w-[220px] flex items-center gap-1">
@@ -351,7 +353,9 @@ export default function PlaybookTableScreen() {
         skip: !projectId,
     });
 
-    const {data: playWrightQueryData} = useGetPlayWrightQueryListQuery<any>(playWrightQueryId);
+    const {userInfo} = useSelector((state: any) => state.auth);
+
+    const {data: playWrightQueryData} = useFetchPlayWrightQueryListByIdQuery<any>(userInfo?.id);
 
     return (
         <>
