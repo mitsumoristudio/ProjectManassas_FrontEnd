@@ -25,6 +25,11 @@ export default function RegisterScreen() {
     const sp = new URLSearchParams(search);
     const redirect = sp.get("redirect") || "/projects";
 
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{12,}$/;
+
+    const passwordValid = passwordRegex.test(password);
+
     useEffect(() => {
         if (userInfo && !emailSent) {
             navigate((redirect))
@@ -38,8 +43,8 @@ export default function RegisterScreen() {
             toast.error("Passwords don't match");
             return;
 
-        } else if (password.length <= 5) {
-            toast.error("Password must be at least 6 characters long");
+        } else if (!passwordRegex.test(password)) {
+            toast.error("Password must be at least 12 characters and contain an uppercase letter, lowercase letter, and a number");
             return;
 
         } else {
@@ -116,7 +121,8 @@ export default function RegisterScreen() {
 
                     <div className={'w-full'}>
                         <p className={"mb-2 text-lg font-semibold"}>Password</p>
-                        <input className={'border border-zinc-700 rounded-lg w-full p-2 pt-1'}
+                        <input className={'border  rounded-lg w-full p-2 pt-1' +
+                            `${password.length > 0 ? passwordValid ? "border-green-500" : "border-red-500" : "border-zinc-700"}`}
                                placeholder={"Enter your password"}
                                type={'password'}
                                value={password}
@@ -124,6 +130,30 @@ export default function RegisterScreen() {
                                data-cy={"error-password"}
                                data-cx={"input-password"}
                                onChange={(e) => setPassword(e.target.value)}/>
+
+                        <div className={"mt-2 text-sm text-gray-600"}>
+                            <ul className={"list-disc ml-5"}>
+                                <li>At least 12 characters</li>
+                                <li>One Uppercase Letter (A-Z)</li>
+                                <li>One Lowercase Letter (a-z)</li>
+                                <li>One Number (0-9)</li>
+                            </ul>
+                        </div>
+
+                        {password.length > 0 && (
+                            <p
+                                className={`mt-1 text-sm ${
+                                    passwordValid
+                                        ? "text-green-600"
+                                        : "text-red-600"
+                                }`}
+                            >
+                                {passwordValid
+                                    ? "✓ Password meets requirements"
+                                    : "Password does not meet requirements"}
+                            </p>
+                        )}
+
                     </div>
 
                     <div className={'w-full'}>
@@ -140,11 +170,15 @@ export default function RegisterScreen() {
 
                     <button
                         type="submit"
-                        disabled={isLoading}
+                        disabled={isLoading || !passwordRegex.test(password) || password !== confirmPassword}
                         data-cy={"submit"}
-                        className="flex max-w-xs  mt-2 flex-1 items-center justify-center rounded-lg border border-transparent
-                        bg-indigo-600 px-8 py-2 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2
-                        focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full"
+                        className="flex max-w-xs mt-2 flex-1 items-center justify-center
+                                    rounded-lg border border-transparent
+                                    bg-indigo-600 px-8 py-2 text-base font-medium text-white
+                                    hover:bg-indigo-700
+                                    disabled:opacity-50
+                                    disabled:cursor-not-allowed
+                                    sm:w-full"
                     >
                         Sign Up
                     </button>

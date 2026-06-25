@@ -1,7 +1,9 @@
 import React, {useState} from "react";
 import {useNavigate, useLocation} from "react-router-dom";
 import {toast} from "react-toastify";
-import {useResetPasswordMutation} from "../../features/userApiSlice";
+import {useResetPasswordMutation, useLogoutMutation} from "../../features/userApiSlice";
+import {logout} from "../../../src/features/authSlice";
+import {useDispatch} from "react-redux";
 
 export default function PasswordResetScreen() {
     const navigate = useNavigate();
@@ -10,10 +12,11 @@ export default function PasswordResetScreen() {
 
     const email = params.get("email");
     const token = params.get("token");
-
+    const dispatch = useDispatch();
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [resetPassword, {isLoading}] = useResetPasswordMutation();
+    const [logoutApiCall] = useLogoutMutation();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -23,8 +26,8 @@ export default function PasswordResetScreen() {
             return;
         }
 
-        if (newPassword.length <= 6) {
-            toast.error("Password is too short. Must be at least 6 characters.");
+        if (newPassword.length <= 12) {
+            toast.error("Password is too short. Must be at least 12 characters.");
             return;
         }
 
@@ -37,6 +40,12 @@ export default function PasswordResetScreen() {
             await resetPassword({email, token, newPassword}).unwrap();
 
             toast.success("Password reset successfully!");
+
+            // @ts-ignore
+            await logoutApiCall().unwrap();
+            // @ts-ignore
+            dispatch(logout())
+
             navigate("/login");
 
         } catch (error) {

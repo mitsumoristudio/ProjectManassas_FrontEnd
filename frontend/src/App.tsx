@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import LoginScreen from "./screens/mainscreen/LoginScreen";
 import RegisterScreen from "./screens/mainscreen/RegisterScreen";
-import HomePage from "./screens/mainscreen/Homepage";
 import {ProjectsScreen} from "./screens/mainscreen/ProjectsScreen";
 import EquipmentScreen from "./screens/mainscreen/EquipmentScreen";
 import EquipmentAnalyticsScreen from "./screens/mainscreen/EquipmentAnalyticsScreen";
