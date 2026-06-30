@@ -49,6 +49,7 @@ export default function ExcelIngestionPage() {
 
         }
     }
+
     const handleRemove = (id: string) => {
         setExcelDocuments((prev) => prev.filter((doc) => doc.id !== id));
     }

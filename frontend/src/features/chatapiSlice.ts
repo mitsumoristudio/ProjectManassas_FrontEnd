@@ -123,10 +123,11 @@ export const chatApiSlice = apiSlice.injectEndpoints({
             }),
 
             sendExcelDocument: builder.mutation({
-               query: ({formFile, tableName} : { formFile: File; tableName: string }) => {
+               query: ({formFile, tableName, playWrightProjectId} : { formFile: File; tableName: string, playWrightProjectId: string }) => {
                    const formData = new FormData();
                    formData.append("formFile", formFile);
                    formData.append("tableName", tableName);
+                   formData.append("playWrightProjectId", playWrightProjectId);
 
                    return {
                        url: `${EXCEL_URL}/ingest`,

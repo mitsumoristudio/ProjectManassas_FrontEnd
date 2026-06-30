@@ -4,6 +4,7 @@ import { ArrowRight, Square, LucideFilePlus, XIcon, FileTextIcon, LucideFolderOp
 import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
 import {
     useSendDocumentEmbeddingMutation,
+    useSendExcelDocumentMutation,
  //   useGetPdfIngestedQuery,
     useGetPdfFromPlayWrightProjectIdQuery,
 } from "../../../features/chatapiSlice";
@@ -23,8 +24,9 @@ import {
 } from "../../../features/contractAnalysisSlice";
 
 import {toast} from "react-toastify";
-import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
+// import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 import {useSelector} from "react-redux";
+import ExcelIngestion, {UploadExcelIngestionProps} from "../../../screens/AIChatScreen/ExcelIngestion";
 
 interface ChatInputProps {
     onSend: (value: string, toolType?: string, mode?: string) => void;
@@ -35,6 +37,9 @@ interface ChatInputProps {
     onQueryTypeChange?: (
         type: "tabular-review" | "single-query-review" | "single-search"
     ) => void;
+    onIngestionTypeChange?: (
+        type: "pdf-ingestion" | "excel-ingestion"
+    ) => void;
 }
 
 const PlayWrightChatInput: React.FC<ChatInputProps> = ({
@@ -44,16 +49,21 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                                           onChange,
                                                           isLoading = false,
                                                            onQueryTypeChange,
+                                                           onIngestionTypeChange
                                                       }) => {
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [isDocumentMode, setIsDocumentMode] = useState(false);
     const [addPdfIngestion, setAddPdfIngestion] = useState(false);
+    const [addExcelIngestion, setAddExcelIngestion] = useState(false);
+
     const [usePdfIngestion, setUsePdfIngestion] = useState(false);
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
     const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
     const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review" | "single-search">("tabular-review");
 // Review is set for tabular and Ask is set for single query
+    const [openDocumentIngestion, setOpenDocumentIngestion] = useState<boolean>(false);
+    const [ingestionType, setIngestionType] = useState<"pdf-ingestion" | "excel-ingestion">("pdf-ingestion");
 
     const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summarization'>("advisor");
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
@@ -64,7 +74,9 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [reviewPrompt, setReviewPrompt] = useState<string>("");
 
     const [documents, setDocuments] = useState<UploadedDocumentProp[]>([]);
+    const [excelDocuments, setExcelDocuments] = useState<UploadExcelIngestionProps[]>([]);
     const [createPdfIngestion] = useSendDocumentEmbeddingMutation();
+    const [createExcelIngestion] = useSendExcelDocumentMutation();
 
     const {id} = useParams();
     const {keyword} = useParams();
@@ -109,7 +121,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         try {
 
             // Summarization workflow
-            if (toolType == "summarization") {
+            if (toolType === "summarization") {
 
                 const pdf = selectedPdfs[0];
 
@@ -236,7 +248,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         console.log("Sending message:", messages);
     };
 
-
     const modelPromptHandler = () => {
         if (!value.trim()) return;
 
@@ -303,8 +314,8 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     };
 
     const {
-        data: playWrightProject = [],
-        isLoading: isProjectLoading,
+        // data: playWrightProject = [],
+        // isLoading: isProjectLoading,
         isError: isProjectError,
     } = useGetPlayWrightProjectListQuery(userInfo?.id)
 
@@ -334,7 +345,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     };
 
     // When user selects or drags pdf ingestion files
-    const handleUpload = async (files: FileList) => {
+    const handlePdfUpload = async (files: FileList) => {
         const fileArray = Array.from(files);
 
         for (const file of fileArray) {
@@ -399,6 +410,47 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         }
     }
 
+    // When user selects or drags Excel file
+    const handleExcelUpload = async (files: FileList) => {
+        const fileArray = Array.from(files);
+
+        for (const file of fileArray) {
+            const id = crypto.randomUUID();
+            const newDoc: UploadExcelIngestionProps= {
+                id,
+                tableName: file.name,
+                size: `${(file.size / 1024).toFixed(1)} KB`,
+                type: file.type,
+                status: "uploading",
+            };
+
+            // Add to document list as "uploading"
+            setExcelDocuments((prev) => [...prev, newDoc]);
+
+            try {
+                const response = await createExcelIngestion({formFile: file, tableName: file.name, playWrightProjectId: projectData?.id.toString() }).unwrap();
+                console.log("Upload was success:", response);
+
+                // Update to analyzed
+                setExcelDocuments((prev) =>
+                    prev.map((doc) =>
+                        doc.id === id ? { ...doc, status: "analyzed" } : doc
+                    )
+                );
+
+            } catch (error) {
+                console.log(error);
+
+                setExcelDocuments((prev) =>
+                    prev.map((doc) =>
+                        doc.id === id ? { ...doc, status: "error" } : doc
+                    )
+                );
+            }
+
+        }
+    }
+
     const handleRemove = (id: string) => {
         setDocuments((prev) => prev.filter((doc) => doc.id !== id));
     }
@@ -439,7 +491,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                     <div className={"flex items-center gap-x-1 relative top-20 left-2"}>
                         <button
                             className={"text-gray-800 hover:text-blue-700 my-4 flex items-center hover:bg-gray-300 rounded-md p-2 transition duration-700"}
-                            onClick={() => setAddPdfIngestion(true)}
+                            onClick={() => setOpenDocumentIngestion(true)}
                         >
                             <LucideFilePlus size={18} color={"gray"}
                                             className={"mx-auto sm:mx-0"}/>
@@ -475,6 +527,25 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             <ArrowDownUpIcon size={18} color={"gray"} />
                         </button>
 
+                        {/* Add Excel File to ingestion */}
+                        {addExcelIngestion && (
+                            <div className={"fixed inset-0 z-50 flex items-center justify-center"}>
+                                <div className={"bg-white rounded-xl shadow-xl w-full max-w-md p-6"}>
+                                    <button className={"left-2 rounded-1xl hover:bg-gray-600 p-1 rounded-2xl transition duration-700"}
+                                            onClick={() => setAddExcelIngestion(false)}>
+                                        <XIcon size={20} color={"gray"} />
+                                    </button>
+
+                                    <ExcelIngestion
+                                        documents={excelDocuments}
+                                        onUpload={handleExcelUpload}
+                                        onRemove={handleRemove}
+                                    />
+                                </div>
+
+                            </div>
+                        )}
+
                         {/* Add PDF Document */}
                         {addPdfIngestion && (
                             <div className={"fixed inset-0 z-50 flex items-center justify-center"}>
@@ -485,9 +556,66 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     </button>
                                     <DocumentIngestion
                                         documents={documents}
-                                        onUpload={handleUpload}
+                                        onUpload={handlePdfUpload}
                                         onRemove={handleRemove}
                                     />
+
+                                </div>
+                            </div>
+                        )}
+
+                        {openDocumentIngestion && (
+                            <div className={"fixed inset-0 z-50 flex items-start justify-center pt-24"}>
+                                <div className={"bg-white rounded-2xl shadow-xl w-[500px] p-4"}>
+                                    <div className={"flex justify-between items-center mb-4"}>
+                                        <div className={"text-sm font-medium"}>Choose ingestion type</div>
+                                        <button onClick={() => setOpenDocumentIngestion(false)}>x</button>
+                                    </div>
+
+                                    <div className="flex flex-col gap-3">
+
+                                        {/* PDF- ingestion*/}
+                                        <div
+                                            onClick={() => {
+                                                setIngestionType("pdf-ingestion");
+                                                setAddPdfIngestion(true);
+
+                                                onIngestionTypeChange?.("pdf-ingestion");
+                                            }}
+
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${ingestionType === "pdf-ingestion"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Add PDF Document</div>
+                                            <div className="text-sm text-gray-500">
+                                                Knowledge base solution by ingesting PDF
+                                            </div>
+                                        </div>
+
+                                        {/* Excel Ingestion */}
+                                        <div
+                                            onClick={() => {
+                                                setIngestionType("excel-ingestion");
+                                                setAddExcelIngestion(true);
+                                                onIngestionTypeChange?.("excel-ingestion");
+                                            }}
+
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${ingestionType === "excel-ingestion"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Add Excel Document</div>
+                                            <div className="text-sm text-gray-500">
+                                                Ingestion for spreadsheet
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                                 </div>
                             </div>

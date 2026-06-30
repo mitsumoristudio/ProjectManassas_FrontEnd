@@ -13,7 +13,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled = false, value, 
  //   const [inputValue, setInputValue] = useState("");
     const [isDocumentMode, setIsDocumentMode] = useState(false);
 
-
     const handleSend = () => {
         if (!value?.trim()) return;
         onSend(value.trim());
