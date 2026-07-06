@@ -324,14 +324,6 @@ function PlayWrightTable({rows, }) {
                     </div>
                 )}
 
-                    {/*<PdfViewerPage*/}
-                    {/*    url={pdfViewer.url}*/}
-                    {/*    page={pdfViewer.page}*/}
-                    {/*    highlights={pdfViewer.highlights}*/}
-                    {/*/>*/}
-
-
-
         </div>
     );
 }

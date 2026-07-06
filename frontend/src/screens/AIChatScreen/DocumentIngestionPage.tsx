@@ -26,6 +26,7 @@ export default function DocumentIngestionPage() {
             setDocuments((prev) => [...prev, newDoc]);
 
             try {
+                // @ts-ignore
                 const response = await createPdfIngestion({file: file, documentId: file.name}).unwrap();
                 console.log("Upload was success:", response);
 

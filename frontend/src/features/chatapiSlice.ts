@@ -148,14 +148,25 @@ export const chatApiSlice = apiSlice.injectEndpoints({
 
             getExcelIngestedFiles: builder.query({
                 //@ts-ignore
-                query: ({keyword}) => ({
+                query: ({keyword}: any) => ({
                     url: `${EXCEL_URL}/list_excelDocuments`,
                     method: "GET",
-                    params: {keyword},
+                    params: {keyword}
                 }),
                 keepUnusedDataFor: 5,
                 //@ts-ignore
-                providesTags: ["Chat"],
+                providesTags: ["TableDataSet"],
+            }),
+
+            fetchExcelFiles: builder.query({
+                //@ts-ignore
+                query: (id: string) => ({
+                    url: `${EXCEL_URL}/fetchExcels/${id}`,
+                    method: "GET",
+                }),
+                keepUnusedDataFor: 5,
+                //@ts-ignore
+                providesTags: ["TableDataSet"],
             }),
 
             getColumnsBySheetId: builder.query<TableColumn[], string>({
@@ -265,6 +276,7 @@ export const {
     useDeleteExcelIngestedFilesMutation,
     useSendExcelDocumentMutation,
     useGetExcelIngestedFilesQuery,
+    useFetchExcelFilesQuery,
     useSendAIExcelMessageMutation,
     useGetColumnsBySheetIdQuery,
     useGetRowsBySheetIdQuery,

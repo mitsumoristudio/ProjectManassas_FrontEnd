@@ -42,6 +42,7 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
                 method: "GET",
             })
         }),
+
         getPlayWrightProjectList: builder.query({
             query: (id: string) => ({
                 url: `${PLAYWRIGHT_API}/playbookProjects/${id}`,
@@ -52,7 +53,7 @@ export const playWrightApiSlice = apiSlice.injectEndpoints({
         }),
         getPlayWrightQueryList: builder.query({
             query: (id: string) => ({
-                url: `${PLAYWRIGHT_API}/fetchQuery/${id}`,
+                url: `${PLAYWRIGHT_API}/listQuery/${id}`,
                 method: "GET",
             }),
             providesTags: ["PlayWrightQuery"],
