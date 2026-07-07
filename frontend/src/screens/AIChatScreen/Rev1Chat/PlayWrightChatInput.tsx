@@ -5,7 +5,6 @@ import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatSc
 import {
     useSendDocumentEmbeddingMutation,
     useSendExcelDocumentMutation,
- //   useGetPdfIngestedQuery,
     useGetPdfFromPlayWrightProjectIdQuery,
     useSendAIExcelMessageMutation,
     useFetchExcelFilesQuery,
@@ -58,7 +57,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [addPdfIngestion, setAddPdfIngestion] = useState(false);
     const [addExcelIngestion, setAddExcelIngestion] = useState(false);
 
-    // const [usePdfIngestion, setUsePdfIngestion] = useState(false);
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
     const [selectedExcel, setSelectedExcel] = useState<any>([]);
     const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
@@ -802,6 +800,12 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                         {isProjectError && (
                             <>
                                 <span className="text-red-500 text-xs">Error Loading Project From Database</span>
+                            </>
+                        )}
+
+                        {isExcelError && (
+                            <>
+                                <span className="text-red-500 text-xs">Error Loading Excel From Database</span>
                             </>
                         )}
 
