@@ -7,6 +7,8 @@ import {
     useSendExcelDocumentMutation,
  //   useGetPdfIngestedQuery,
     useGetPdfFromPlayWrightProjectIdQuery,
+    useSendAIExcelMessageMutation,
+    useFetchExcelFilesQuery,
 } from "../../../features/chatapiSlice";
 import {useContractAnalysisMutation,
         useAdviseContractMutation,
@@ -24,7 +26,6 @@ import {
 } from "../../../features/contractAnalysisSlice";
 
 import {toast} from "react-toastify";
-// import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
 import {useSelector} from "react-redux";
 import ExcelIngestion, {UploadExcelIngestionProps} from "../../../screens/AIChatScreen/ExcelIngestion";
 
@@ -35,7 +36,7 @@ interface ChatInputProps {
     value: string;
     onChange: (value: string) => void;
     onQueryTypeChange?: (
-        type: "tabular-review" | "single-query-review" | "single-search"
+        type: "tabular-review" | "single-query-review" | "single-search" | "excel-review"
     ) => void;
     onIngestionTypeChange?: (
         type: "pdf-ingestion" | "excel-ingestion"
@@ -57,19 +58,20 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [addPdfIngestion, setAddPdfIngestion] = useState(false);
     const [addExcelIngestion, setAddExcelIngestion] = useState(false);
 
-    const [usePdfIngestion, setUsePdfIngestion] = useState(false);
+    // const [usePdfIngestion, setUsePdfIngestion] = useState(false);
     const [selectedPdfs, setSelectedPdfs] = useState<any[]>([]);
+    const [selectedExcel, setSelectedExcel] = useState<any>([]);
     const [openReviewQuery, setOpenReviewQuery] = useState<boolean>(false);
-    const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review" | "single-search">("tabular-review");
+    const [queryType, setQueryType] = useState<"tabular-review" | "single-query-review" | "excel-review" |"single-search">("tabular-review");
 // Review is set for tabular and Ask is set for single query
     const [openDocumentIngestion, setOpenDocumentIngestion] = useState<boolean>(false);
     const [ingestionType, setIngestionType] = useState<"pdf-ingestion" | "excel-ingestion">("pdf-ingestion");
 
-    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" |'summarization'>("advisor");
+    const [toolType, setToolType] = useState<"advisor"| "analysis" | "specification" | "spreadSheet"| 'summarization'>("advisor");
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
     // State-Driven Model Workflow
-    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "document-config"| "regularChat";
+    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "document-config"| "excelSheet"| "regularChat";
     const [mode, setMode] = useState<Mode>("regularChat");
     const [reviewPrompt, setReviewPrompt] = useState<string>("");
 
@@ -79,7 +81,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [createExcelIngestion] = useSendExcelDocumentMutation();
 
     const {id} = useParams();
-    const {keyword} = useParams();
     const projectId = String(id);
     const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId);
     const {userInfo} = useSelector((state: any) => state.auth);
@@ -89,6 +90,8 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [reviewSpecification, {isLoading: isreviewSpecificationLoading}] = useReviewSpecificationMutation();
     const [projectAdvisor, {isLoading: isprojectAdvisorLoading}] = useAdviseContractMutation();
     const [summarizationAI, {isLoading: isSummaryAILoading}] = useSummaryContractMutation();
+    const [sendAIExcelMessage, {isLoading: isExcelLoading}] = useSendAIExcelMessageMutation();
+
 
     const {
         data: playWrightQuery,
@@ -105,11 +108,34 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         refetch,
     } = useGetPdfFromPlayWrightProjectIdQuery(id);
 
+    const {
+        data: excelFile = [],
+        isError: isExcelError,
+    } = useFetchExcelFilesQuery(id);
+
+
+    const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+    const [isPdfDropdownOpen, setIsPdfDropdownOpen] = useState(false);
+    const [pdfSearch, setPdfSearch] = useState("");
+
+    const [isExcelModalOpen, setIsExcelModalOpen] = useState(false);
+    const [isExcelDropdownOpen, setIsExcelDropdownOpen] = useState(false);
+    const [excelSearch, setExcelSearch] = useState<string>("");
+
+    const filteredPdfFiles = pdfFile?.filter((doc: any) =>
+        doc.originalFileName
+            .toLowerCase()
+            .includes(pdfSearch.toLowerCase())
+    );
+
+    const filteredExcelFiles = excelFile?.filter((doc: any) => doc.tableName.toLowerCase().includes(excelSearch.toLowerCase()));
+
     const toolMutationMap = {
         analysis: contractAnalysis,
         specification: reviewSpecification,
         advisor: projectAdvisor,
         summarization: summarizationAI,
+        spreadsheet: sendAIExcelMessage,
     };
 
     const handleToolMutation = async () => {
@@ -293,6 +319,12 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
             return;
         }
 
+        if (queryType === "excel-review" && toolType === "spreadSheet") {
+            setReviewPrompt(value);
+            setMode("excelSheet");
+            return;
+        }
+
         onSend(value);
         onChange("");
     };
@@ -313,6 +345,21 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         });
     };
 
+    const toggleExcelSelection = (doc: any) => {
+        const normalizedDoc = {
+            id: doc.id,
+            tableName: doc.tableName,
+        };
+
+        setSelectedExcel((prev) => {
+            const exists = prev.some((d) => d.id === normalizedDoc.id);
+
+            return exists
+                ? prev.filter((d) => d.id !== normalizedDoc.id)
+                : [...prev, normalizedDoc];
+        });
+    };
+
     const {
         // data: playWrightProject = [],
         // isLoading: isProjectLoading,
@@ -321,11 +368,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
     const handleSend = () => {
         if (!value?.trim()) return;
-
-        // onSend({
-        //     message: value.trim(),
-        //     documents: selectedPdfs,
-        // });
 
         onChange("");
     };
@@ -447,7 +489,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                     )
                 );
             }
-
         }
     }
 
@@ -456,12 +497,19 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     }
 
     const handleConfirmSelection = () => {
-        if (selectedPdfs.length === 0) return;
+        if (selectedPdfs.length === 0 && selectedExcel.length === 0) return;
 
-        // close modal
-        setUsePdfIngestion(false);
+        setIsPdfDropdownOpen(false);
+        setIsExcelDropdownOpen(false);
+
 
         refetch();
+        // close modal
+       // setUsePdfIngestion(false);
+        setIsPdfModalOpen(false);
+        setIsExcelModalOpen(false);
+
+
 
         // (optional) you could trigger something here if needed
         console.log("Selected PDFs:", selectedPdfs);
@@ -500,11 +548,15 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                         <button
                             className={"text-gray-800 hover:text-blue-700 my-4 flex items-center hover:bg-gray-300 rounded-md p-2 transition duration-700"}
-                            onClick={() => setUsePdfIngestion(true)}
+                            onClick={() => {
+                                setIsPdfModalOpen(true);
+                                setIsExcelModalOpen(true);
+                            }}
                         >
                             <FileTextIcon size={18} color={"gray"}
                                           className={"mx-auto sm:mx-0"}/>
-                            <span className={"hidden sm:inline text-gray-600 text-sm font-mono mx-2"}>Use Document</span>
+                            <span className={"hidden sm:inline text-gray-600 text-sm font-mono mx-2"}
+                            >Use Document</span>
                         </button>
 
                         <button
@@ -690,6 +742,27 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                             <div className="text-sm text-gray-500">
                                                 Search engine for documents
                                             </div>
+
+
+                                        </div>
+
+                                        {/* Excel Review */}
+                                        <div
+                                            onClick={() => {
+                                                setQueryType("excel-review");
+                                                onQueryTypeChange?.("excel-review");
+                                            }}
+
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${queryType === "excel-review"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium">Review Excel </div>
+                                            <div className="text-sm text-gray-500">
+                                                Work with single Excel file
+                                            </div>
                                         </div>
                                     </div>
 
@@ -807,6 +880,22 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                             </div>
                                         </div>
 
+                                        {/* Excel Review */}
+                                        <div
+                                            onClick={() => setToolType("spreadSheet")}
+
+                                            className={`p-4 rounded-xl border cursor-pointer transition
+                    ${toolType === "spreadSheet"
+                                                ? "border-black bg-gray-100"
+                                                : "hover:bg-gray-50"}
+                    `}
+                                        >
+                                            <div className="font-medium"> Analyze Excel file </div>
+                                            <div className="text-sm text-gray-500">
+                                                Evaluate data within spreadsheet
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                     {/* Footer */}
@@ -822,70 +911,285 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                             </div>
                         )}
 
-                        {/* Select PDF document Ingestion */}
-                        {usePdfIngestion && (
-                            <div>
-                                <div className={"fixed inset-0 z-50 flex items-center justify-center"}>
-                                    <div className={"bg-white rounded-2xl w-full max-w-md p-10 shadow-md"}>
-                                        <h2 className={"relative left-28 justify-center items-center"}>Select Document</h2>
-                                        <button className={"relative right-4 bottom-6 rounded-1xl hover:bg-gray-600 p-1 rounded-2xl transition duration-700"}
-                                                onClick={() => setUsePdfIngestion(false)}>
-                                            <XIcon size={20} color="gray" />
+                        {/* Select List of PDF */}
+                        {isPdfModalOpen  &&  (
+                            <div className="fixed inset-0 z-50 flex gap-y-2 items-center justify-center bg-black/40">
+                                <div className="bg-white rounded-2xl shadow-xl w-full max-w-xl p-6">
+
+                                    {/* Header */}
+                                    <div className="flex justify-between items-center mb-5">
+                                        <h2 className="text-xl font-semibold">
+                                            Select PDF or Excel files
+                                        </h2>
+
+                                        <button
+                                            onClick={() => setIsPdfModalOpen(false)}
+                                            className="rounded-full p-2 hover:bg-gray-100"
+                                        >
+                                            <XIcon size={20} />
+                                        </button>
+                                    </div>
+
+                                    {/* Dropdown Button*/}
+                                    <div className={"py-2"}>
+                                        <button
+                                            onClick={() =>
+                                                setIsPdfDropdownOpen((prev) => !prev)
+                                            }
+                                            className="w-full border rounded-xl p-3 flex justify-between items-center hover:bg-gray-50"
+                                        >
+                <span>
+                    {selectedPdfs.length
+                        ? `${selectedPdfs.length} document(s) selected`
+                        : "PDF Document"}
+                </span>
+
+                                            <ArrowDownUpIcon
+                                                size={18}
+                                                className={`transition-transform ${
+                                                    isPdfDropdownOpen
+                                                        ? "rotate-180"
+                                                        : ""
+                                                }`}
+                                            />
                                         </button>
 
-                                        <ul className="space-y-3">
-                                            {pdfFile?.map((doc: any, index: number) => {
-                                                const isSelected = selectedPdfs.some(
-                                                    (d) => d.originalFileName === doc.originalFileName
-                                                );
+                                    </div>
+
+                                    {/* Dropdown Button*/}
+                                    <div className={"py-2"}>
+                                        <button
+                                            onClick={() =>
+                                                setIsExcelDropdownOpen((prev) => !prev)
+                                            }
+                                            className="w-full border rounded-xl p-3 flex justify-between items-center hover:bg-gray-50"
+                                        >
+                <span>
+                    {selectedExcel.length
+                        ? `${selectedExcel.length} document(s) selected`
+                        : "Excel Document"}
+                </span>
+
+                                            <ArrowDownUpIcon
+                                                size={18}
+                                                className={`transition-transform ${
+                                                    isExcelDropdownOpen
+                                                        ? "rotate-180"
+                                                        : ""
+                                                }`}
+                                            />
+                                        </button>
+
+                                    </div>
+
+
+                                    {/* Selected PDF Chips */}
+                                    {selectedPdfs.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-4">
+                                            {selectedPdfs.map((doc: any) => (
+                                                <div
+                                                    key={doc.id}
+                                                    className="flex items-center gap-2 bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-sm"
+                                                >
+                                                    {doc.originalFileName}
+
+                                                    <button
+                                                        onClick={() =>
+                                                            togglePdfSelection(doc)
+                                                        }
+                                                    >
+                                                        <XIcon size={12} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {selectedExcel.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mt-4">
+                                            {selectedExcel.map((doc: any) => (
+                                                <div
+                                                    key={doc.id}
+                                                    className="flex items-center gap-2 bg-blue-100 text-blue-700 rounded-full px-3 py-1 text-sm"
+                                                >
+                                                    {doc.tableName}
+
+                                                    <button
+                                                        onClick={() =>
+                                                            toggleExcelSelection(doc)
+                                                        }
+                                                    >
+                                                        <XIcon size={12} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    <div
+                                        className={`overflow-hidden transition-all duration-300 ${
+                                            isPdfDropdownOpen
+                                                ? "max-h-[500px] mt-5"
+                                                : "max-h-0"
+                                        }`}
+                                    >
+                                        {/* Search */}
+                                        <input
+                                            type="text"
+                                            placeholder="Search documents..."
+                                            value={pdfSearch}
+                                            onChange={(e) =>
+                                                setPdfSearch(e.target.value)
+                                            }
+                                            className="w-full border rounded-lg px-3 py-2 mb-3"
+                                        />
+
+                                        {/* PDF List */}
+                                        <div className="border rounded-xl max-h-72 overflow-y-auto">
+
+                                            {filteredPdfFiles?.length === 0 && (
+                                                <div className="p-5 text-center text-gray-500">
+                                                    No matching documents.
+                                                </div>
+                                            )}
+
+                                            {filteredPdfFiles?.map((doc: any) => {
+
+                                                const isSelected =
+                                                    selectedPdfs.some(
+                                                        (p: any) => p.id === doc.id
+                                                    );
 
                                                 return (
-                                                    <li
-                                                        key={index}
-                                                        onClick={() => togglePdfSelection(doc)}
-                                                        className={`border rounded-lg p-4 flex justify-between items-center cursor-pointer transition
-                    ${isSelected ? "bg-blue-100 border-blue-600" : "hover:bg-gray-100"}
-                `}
-                                                    >
-                                                        <div className="flex items-center gap-2">
+                                                    <div
+                                                        key={doc.id}
+                                                        onClick={() =>
+                                                            togglePdfSelection(doc)
+                                                        }
+                                                        className={`flex justify-between items-center p-3 border-b cursor-pointer transition
 
-                                                            {/* ✅ Checkbox */}
+                                ${
+                                                            isSelected
+                                                                ? "bg-blue-50"
+                                                                : "hover:bg-gray-50"
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+
                                                             <input
                                                                 type="checkbox"
                                                                 checked={isSelected}
-                                                                onChange={() => togglePdfSelection(doc)}
-                                                                onClick={(e) => e.stopPropagation()} // prevents double toggle
-                                                                className="w-4 h-4"
+                                                                onChange={() =>
+                                                                    togglePdfSelection(doc)
+                                                                }
+                                                                onClick={(e) =>
+                                                                    e.stopPropagation()
+                                                                }
                                                             />
 
                                                             <img
-                                                                alt=""
                                                                 src={assets.pdf_file_format}
-                                                                className="h-6 w-6"
+                                                                alt=""
+                                                                className="w-6 h-6"
                                                             />
 
-                                                            <span className="text-sm text-gray-800">
-                                                                {doc.originalFileName}
-                                                            </span>
+                                                            <span className="text-sm">
+                                        {doc.originalFileName}
+                                    </span>
                                                         </div>
-                                                    </li>
+                                                    </div>
                                                 );
                                             })}
-                                        </ul>
-
-                                        <div className={"flex flex-row p-3 justify-end items-end gap-2 scroll-auto"}>
-                                            <button className={"px-4 py-2  text-gray-800 rounded-md hover:bg-gray-500 transition duration-600"}
-                                                    onClick={() => setUsePdfIngestion(false)}
-                                            >
-                                                Cancel
-                                            </button>
-
-                                            <button className={"px-4 py-2 bg-black text-white rounded-md hover:bg-gray-600 transition duration-600"}
-                                                    onClick={() => handleConfirmSelection()}>
-                                                Confirm
-                                            </button>
                                         </div>
 
+                                    </div>
+
+                                    {/* Selected Excel List */}
+                                    {isExcelDropdownOpen && (
+
+                                        <div className="mt-4">
+
+                                            <input
+                                                type="text"
+                                                placeholder="Search Excel..."
+                                                value={excelSearch}
+                                                onChange={(e)=>setExcelSearch(e.target.value)}
+                                                className="w-full border rounded-lg px-3 py-2 mb-3"
+                                            />
+
+                                            <div className="border rounded-xl max-h-72 overflow-y-auto">
+
+                                                {filteredExcelFiles.length === 0 && (
+
+                                                    <div className="p-5 text-center text-gray-500">
+                                                        No Excel files found.
+                                                    </div>
+                                                )}
+
+                                                {filteredExcelFiles.map((doc:any)=>{
+
+                                                    const isSelected =
+                                                        selectedExcel.some(
+                                                            x=>x.id===doc.id
+                                                        );
+
+                                                    return (
+
+                                                        <div
+                                                            key={doc.id}
+                                                            onClick={() =>
+                                                                toggleExcelSelection(doc)
+                                                            }
+                                                            className={`flex items-center gap-3
+                                                                        p-3
+                                                                        border-b
+                                                                        cursor-pointer
+                                                               ${
+                                                                isSelected
+                                                                    ? "bg-green-50"
+                                                                    : "hover:bg-gray-50"
+                                                            }`}
+                                                        >
+
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={isSelected}
+                                                                readOnly
+                                                            />
+
+                                                            <img
+                                                                src={assets.icons8_excel_48}
+                                                                className="w-6 h-6"
+                                                                alt=""
+                                                            />
+
+                                                            <span className="flex-1">
+                                                                {doc.tableName}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                    )}
+
+                                    {/* Button Footer */}
+                                    <div className="flex justify-end gap-3 mt-6">
+
+                                        <button
+                                            onClick={() => setIsPdfModalOpen(false)}
+                                            className="px-4 py-2 rounded-lg hover:bg-gray-100"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button className={"px-4 py-2 bg-black text-white rounded-md hover:bg-gray-600 transition duration-600"}
+                                                onClick={() => {
+                                                    handleConfirmSelection();
+                                                }}>
+                                            Confirm
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -994,6 +1298,14 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     )}
 
                                     {isprojectAdvisorLoading && (
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isExcelLoading && (
                                         <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
                                             <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
@@ -1113,6 +1425,14 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                         </button>
                                     )}
 
+                                    {isExcelLoading && (
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
                                 </div>
                             </div>
                         </div>
@@ -1213,6 +1533,14 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                                     {isreviewSpecificationLoading && (
                                         <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                    {isExcelLoading && (
+                                        <button type="button" className="px-4 py-2 bg-indigo-700 text-white rounded-md" disabled>
                                             <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>
                                             Processing…
@@ -1332,6 +1660,28 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
                                     <button
                                         onClick={() => togglePdfSelection(doc)}
+                                        className="ml-1"
+                                    >
+                                        <XIcon size={12} />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Show selected Excel on top right of text field */}
+                    {selectedExcel.length > 0 && (
+                        <div className="relative flex flex-wrap gap-2 px-2 py-2 mb-2 bottom-20 right-2">
+                            {selectedExcel.map((doc) => (
+                                <div
+                                    key={doc.tableName}
+                                    className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-md text-xs text-white"
+                                >
+                                    <FileTextIcon size={12} />
+                                    {doc.tableName}
+
+                                    <button
+                                        onClick={() => toggleExcelSelection(doc)}
                                         className="ml-1"
                                     >
                                         <XIcon size={12} />

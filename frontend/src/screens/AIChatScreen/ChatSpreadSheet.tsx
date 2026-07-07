@@ -436,7 +436,7 @@ export function ChatSpreadSheet() {
                         <ChatSideBar/>
 
                         {/*Header*/}
-                        <div className={"flex-1 flex flex-col min-w-1"}>
+                        <div className={"flex-1 min-w-1"}>
                             <div
                                 className={"h-14 border-b border-border px-4 my-2 flex items-center justify-between flex-shrink-0"}>
                                 <div className={"flex flex-1 justify-items-start mx-1 px-2 gap-x-4"}>
@@ -500,7 +500,7 @@ export function ChatSpreadSheet() {
                                             <CustomLoaderSmall/>
                                         ) :
                                         (
-                                            <div className="flex-1 overflow-auto p-1">
+                                            <div className="p-1">
                                                 <div
                                                     className={"flex gap-2 mb-3 p-1 bg-white border rounded-md shadow-sm"}>
                                                     {ExcelEditIcons.map((item, index) => (
@@ -523,97 +523,104 @@ export function ChatSpreadSheet() {
                                                         </button>
                                                     ))}
                                                 </div>
+                                                <div className={"w-full h-full bg-white flex flex-col"}>
+                                                    <div className={"flex-1 overflow-auto"}>
+                                                        <table
+                                                            className="border-collapse w-full table-fixed text-sm border-gray-600 border-2">
+
+                                                            {/* HEADER */}
+                                                            <thead>
+                                                            <tr className={"bg-blue-400 sticky top-0 z-30"}>
+                                                                <th className={"border w-12 sticky left-0 bg-blue-300 z-40"}></th>
+
+                                                                {buildColumnHeaders(columnIndex).map((item: any) => (
+                                                                    <th
+                                                                        key={item.columnIndex}
+                                                                        style={{width: columnWidths[item.columnIndex] || 150}}
+                                                                        className={"border px-2 py-1 text-center font-semibold text-gray-700 hover:bg-blue-300"}
+                                                                    >
+                                                                        {getColumnLetter(item.columnIndex)}
+
+                                                                    </th>
+
+                                                                ))}
+                                                            </tr>
 
 
-                                                <table
-                                                    className="border-collapse w-full table-fixed text-sm border-gray-600 border-2">
 
-                                                    {/* HEADER */}
-                                                    <thead>
-                                                    <tr className={"bg-blue-400 sticky top-0 z-30"}>
-                                                        <th className={"border w-12 sticky left-0 bg-blue-300 z-40"}></th>
+                                                            <tr className="bg-blue-300 sticky top-[32px] z-20 ">
 
-                                                        {buildColumnHeaders(columnIndex).map((item: any) => (
-                                                            <th
-                                                                key={item.columnIndex}
-                                                                style={{width: columnWidths[item.columnIndex] || 150}}
-                                                                className={"border px-2 py-1 text-center font-semibold text-gray-700 hover:bg-blue-300"}
-                                                            >
-                                                                {getColumnLetter(item.columnIndex)}
+                                                                <th className="border px-2 py-1 w-12 text-blue-900 sticky left-0 bg-blue-300 z-30">#</th>
 
-                                                            </th>
+                                                                {buildColumnHeaders(columnIndex).map((col) => (
+                                                                    <th key={col.columnIndex}
+                                                                        className="border px-2 py-2 font-semibold text-blue-900 relative">
+                                                                        {col.columnName}
 
-                                                        ))}
-                                                    </tr>
-
-
-
-                                                    <tr className="bg-blue-300 sticky top-[32px] z-20 ">
-
-                                                        <th className="border px-2 py-1 w-12 text-blue-900 sticky left-0 bg-blue-300 z-30">#</th>
-
-                                                        {buildColumnHeaders(columnIndex).map((col) => (
-                                                            <th key={col.columnIndex}
-                                                                className="border px-2 py-2 font-semibold text-blue-900 relative">
-                                                                {col.columnName}
-
-                                                                <div className={"absolute right-0 top-0 h-full cursor-col-resize bg-blue-300 hover:bg-blue-600"}
-                                                                     onMouseDown={(e) => startResize(e, col.columnIndex)}
-                                                                />
-
-
-                                                            </th>
-                                                        ))}
-
-
-                                                    </tr>
-                                                    </thead>
-
-                                                    {/* BODY */}
-                                                    <tbody className="cursor-pointer hover:transition duration-200">
-                                                    {rowIndex.map((row: any) => (
-                                                        <tr key={row.rowIndex}
-                                                            onClick={() => setSelectedRow(row)}
-                                                            className={`cursor-pointer ${
-                                                                selectedRow?.rowIndex === row.rowIndex
-                                                                    ? "bg-gray-200"
-                                                                    : "hover:bg-gray-300 bg-gray-100"
-                                                            }`}
-                                                        >
-
-                                                            {/* Row Index */}
-                                                            <td className="border px-2 text-center text-black sticky left-0 bg-white z-10 cursor-pointer">
-                                                                {row.rowIndex + 1}
-                                                            </td>
-
-                                                            {buildColumnHeaders(columnIndex).map((col) => {
-                                                                const cell = row.cells?.find(
-                                                                    (c: any) => c.columnIndex === col.columnIndex
-                                                                );
-
-                                                                return (
-                                                                    <td key={col.columnIndex}
-                                                                        style={{width: columnWidths[col.columnIndex] || 150}}
-                                                                        className={"border px-1 text-black"}>
-
-                                                                        <input
-                                                                            className="w-full bg-transparent outline-none"
-                                                                            value={cell?.value ?? ""}
-                                                                            onChange={(e) =>
-                                                                                handleCellChange(
-                                                                                    row.rowIndex,
-                                                                                    col.columnIndex,
-                                                                                    e.target.value,
-                                                                                )
-                                                                            }
+                                                                        <div className={"absolute right-0 top-0 h-full cursor-col-resize bg-blue-300 hover:bg-blue-600"}
+                                                                             onMouseDown={(e) => startResize(e, col.columnIndex)}
                                                                         />
+
+
+                                                                    </th>
+                                                                ))}
+
+
+                                                            </tr>
+                                                            </thead>
+
+                                                            {/* BODY */}
+                                                            <tbody className="cursor-pointer hover:transition duration-200">
+                                                            {rowIndex.map((row: any) => (
+                                                                <tr key={row.rowIndex}
+                                                                    onClick={() => setSelectedRow(row)}
+                                                                    className={`cursor-pointer ${
+                                                                        selectedRow?.rowIndex === row.rowIndex
+                                                                            ? "bg-gray-200"
+                                                                            : "hover:bg-gray-300 bg-gray-100"
+                                                                    }`}
+                                                                >
+
+                                                                    {/* Row Index */}
+                                                                    <td className="border px-2 text-center text-black sticky left-0 bg-white z-10 cursor-pointer">
+                                                                        {row.rowIndex + 1}
                                                                     </td>
-                                                                );
-                                                            })}
-                                                        </tr>
-                                                    ))}
-                                                    </tbody>
-                                                </table>
+
+                                                                    {buildColumnHeaders(columnIndex).map((col) => {
+                                                                        const cell = row.cells?.find(
+                                                                            (c: any) => c.columnIndex === col.columnIndex
+                                                                        );
+
+                                                                        return (
+                                                                            <td key={col.columnIndex}
+                                                                                style={{width: columnWidths[col.columnIndex] || 150}}
+                                                                                className={"border px-1 text-black"}>
+
+                                                                                <input
+                                                                                    className="w-full bg-transparent outline-none"
+                                                                                    value={cell?.value ?? ""}
+                                                                                    onChange={(e) =>
+                                                                                        handleCellChange(
+                                                                                            row.rowIndex,
+                                                                                            col.columnIndex,
+                                                                                            e.target.value,
+                                                                                        )
+                                                                                    }
+                                                                                />
+                                                                            </td>
+                                                                        );
+                                                                    })}
+                                                                </tr>
+                                                            ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+
+
+
+
 
                                                 {/* Chat Overlay */}
                                                 {/* Floating Chat Button */}

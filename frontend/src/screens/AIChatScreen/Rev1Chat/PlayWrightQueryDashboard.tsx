@@ -849,20 +849,23 @@ export function ExcelListTable() {
                                 </div>
 
 
+
                                 {/* Excel PREVIEW */}
+                                <div className={"flex-1 overflow-auto"}>
+
                                 <table
-                                    className="border-collapse rounded-2xlu w-full scroll-m-2 table-fixed text-sm border-gray-600 border-2">
+                                    className="border-collapse rounded-2xl min-w-max text-sm border-gray-600 border-2">
 
                                     {/* HEADER */}
                                     <thead>
-                                    <tr className={"bg-blue-400 sticky top-0 z-30"}>
-                                        <th className={"border w-12 sticky left-0 bg-blue-300 z-40"}></th>
+                                    <tr className={"bg-blue-600 sticky top-0 z-30"}>
+                                        <th className={"border w-12 sticky left-0 bg-blue-600 z-40"}></th>
 
                                         {orderedColumns.map((item: any) => (
                                             <th
                                                 key={item.columnIndex}
                                                 style={{width: columnWidths[item.columnIndex] || 150}}
-                                                className={"border px-2 py-1 text-center font-semibold text-gray-700 hover:bg-blue-300"}
+                                                className={"border px-2 py-1 text-center font-semibold text-white hover:bg-blue-200"}
                                             >
                                                 {getColumnLetter(item.columnIndex)}
 
@@ -871,13 +874,13 @@ export function ExcelListTable() {
                                         ))}
                                     </tr>
 
-                                    <tr className="bg-blue-300 sticky top-[32px] z-20 ">
+                                    <tr className="bg-blue-400 sticky top-[32px] z-20 ">
 
-                                        <th className="border px-2 py-1 w-12 text-blue-900 sticky left-0 bg-blue-300 z-30">#</th>
+                                        <th className="border px-2 py-1 w-12 text-blue-900 sticky left-0 bg-blue-400 z-30">#</th>
 
                                         {orderedColumns.map((col) => (
                                             <th key={col.columnIndex}
-                                                className="border px-2 py-2 font-semibold text-blue-900 relative">
+                                                className="border px-2 py-2 font-semibold text-black hover:bg-blue-200 relative">
                                                 {col.columnName}
 
                                                 <div className={"absolute right-0 top-0 h-full cursor-col-resize bg-blue-300 hover:bg-blue-600"}
@@ -937,6 +940,7 @@ export function ExcelListTable() {
                                     ))}
                                     </tbody>
                                 </table>
+                            </div>
 
                             </div>
                         </div>
