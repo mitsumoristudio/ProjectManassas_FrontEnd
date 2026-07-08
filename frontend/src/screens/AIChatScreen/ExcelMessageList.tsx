@@ -1,7 +1,7 @@
 import React from "react";
 import {useEffect, useRef} from "react";
 import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
-import ChatMessageItem from "./ChatMessageItem";
+import ChatMessageItem from "./Rev1Chat/ChatPage/ChatMessageItem";
 import ExcelMessageItem from "../../screens/AIChatScreen/ExcelMessageItem";
 
 export default function ExcelMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false, onSpeakHandler,

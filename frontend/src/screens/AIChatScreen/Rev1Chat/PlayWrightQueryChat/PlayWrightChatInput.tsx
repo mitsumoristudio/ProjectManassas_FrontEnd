@@ -1,32 +1,32 @@
 
 import React, { useRef, useState } from "react";
 import { ArrowRight, Square, LucideFilePlus, XIcon, FileTextIcon, LucideFolderOpenDot, ArrowDownUpIcon, ToolCaseIcon} from "lucide-react";
-import DocumentIngestion, {UploadedDocumentProp} from "../../../screens/AIChatScreen/DocumentIngestion";
+import DocumentIngestion, {UploadedDocumentProp} from "../../DocumentIngestion";
 import {
     useSendDocumentEmbeddingMutation,
     useSendExcelDocumentMutation,
     useGetPdfFromPlayWrightProjectIdQuery,
     useSendAIExcelMessageMutation,
     useFetchExcelFilesQuery,
-} from "../../../features/chatapiSlice";
+} from "../../../../features/chatapiSlice";
 import {useContractAnalysisMutation,
         useAdviseContractMutation,
-        useReviewSpecificationMutation} from "../../../features/contractAnalysisSlice";
+        useReviewSpecificationMutation} from "../../../../features/contractAnalysisSlice";
 
-import {assets} from "../../../assets/assets";
+import {assets} from "../../../../assets/assets";
 import {useParams, useNavigate} from "react-router-dom";
 import {
     useGetPlayWrightProjectListQuery,
     useGetPlayWrightProjectbyIdQuery, useFetchPlayWrightQueryListByIdQuery,
-} from "../../../features/playwrightApiSlice";
+} from "../../../../features/playwrightApiSlice";
 
 import {
     useSummaryContractMutation
-} from "../../../features/contractAnalysisSlice";
+} from "../../../../features/contractAnalysisSlice";
 
 import {toast} from "react-toastify";
 import {useSelector} from "react-redux";
-import ExcelIngestion, {UploadExcelIngestionProps} from "../../../screens/AIChatScreen/ExcelIngestion";
+import ExcelIngestion, {UploadExcelIngestionProps} from "../../ExcelIngestion";
 
 interface ChatInputProps {
     onSend: (value: string, toolType?: string, mode?: string) => void;
@@ -90,13 +90,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [summarizationAI, {isLoading: isSummaryAILoading}] = useSummaryContractMutation();
     const [sendAIExcelMessage, {isLoading: isExcelLoading}] = useSendAIExcelMessageMutation();
 
-
-    const {
-        data: playWrightQuery,
-        isLoading: isPlayWrightLoading,
-        isError: isPlayWrightError,
-    } = useFetchPlayWrightQueryListByIdQuery(id);
-
     const navigate = useNavigate();
 
     const {
@@ -143,7 +136,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         }
 
         try {
-
             // Summarization workflow
             if (toolType === "summarization") {
 
@@ -241,14 +233,6 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                     documentId: documentId,
                     singleTabular: "single-search",
                 }).unwrap();
-
-                console.log("messages", messages);
-                console.log("ProjectQueryTitle", projectQueryTitle);
-                console.log("PlayWrightProjectId", playWrightProjectId);
-
-                console.log("PlayWrightQueryId", response.playWrightQueryId);
-                console.log("Response", response);
-
 
                 navigate(`/playWrightQuery/chatItem/${response.playWrightQueryId}`, {
                     state: {
@@ -503,11 +487,8 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
         refetch();
         // close modal
-       // setUsePdfIngestion(false);
         setIsPdfModalOpen(false);
         setIsExcelModalOpen(false);
-
-
 
         // (optional) you could trigger something here if needed
         console.log("Selected PDFs:", selectedPdfs);

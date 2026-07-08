@@ -2,7 +2,7 @@
 import React from "react";
 
 import cn from "../../util/util";
-import {Upload, FileSpreadsheet, XOctagon, BadgeCheckIcon} from "lucide-react";
+import {Upload, XOctagon, BadgeCheckIcon} from "lucide-react";
 import {Button} from "@mui/material";
 import {assets} from "../../assets/assets";
 

@@ -2,7 +2,7 @@ import React from "react";
 import {useEffect, useRef} from "react";
 // import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
 import ChatMessageItem from "./ChatMessageItem";
-import BoltCustomLoader from "../../components/Layout/BoltCustomLoader";
+import BoltCustomLoader from "../../../../components/Layout/BoltCustomLoader";
 
 export function ChatMessageList({ messages, inProgressMessage, noMessagesContent, showSources = false, onSpeakHandler,
                                     onPause, onResume, onStop, isPlaying, isPaused }:

@@ -16,8 +16,8 @@ import {
 } from "../../../features/contractAnalysisSlice";
 import {toast} from "react-toastify";
 import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
-import ChatInput from "../ChatInput";
-import {ChatMessageList} from "../ChatMessageList";
+import ChatInput from "./ChatPage/ChatInput";
+import {ChatMessageList} from "./ChatPage/ChatMessageList";
 import {motion} from "framer-motion";
 import {useAzureTextToSpeech} from "../useAzureTextToSpeech";
 import { sanitizeTextForTTS} from "../sanitizeTextForTTS";

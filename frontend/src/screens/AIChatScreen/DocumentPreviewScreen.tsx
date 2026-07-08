@@ -37,6 +37,7 @@ export default function DocumentPreviewScreen() {
             // Remove all inline styles and classes if the element is an HTMLElement
             // Children are checked as well since TextNode can be nested
             // in i, b, and strong tags.
+
             // @ts-ignore
             for (const el of [
                 output.element,

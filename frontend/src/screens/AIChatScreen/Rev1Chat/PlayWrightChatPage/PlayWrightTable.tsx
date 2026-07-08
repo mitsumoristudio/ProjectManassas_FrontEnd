@@ -1,43 +1,5 @@
 import React, {useState} from "react";
-import {
-    Search,
-    Share2,
-    Filter,
-    Columns,
-    Download,
-    ArrowLeftFromLine
-} from "lucide-react"
-import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
-import {useParams, NavLink} from "react-router-dom";
-import {
-    useFetchPlayWrightQueryListByIdQuery,
-    useGetPlayWrightProjectbyIdQuery,
-    useGetPlayWrightQuerybyIdQuery, useGetPlayWrightQueryListQuery,
-} from "../../../features/playwrightApiSlice";
-import {useSelector} from "react-redux";
-// import PdfViewerPage from "../../mainscreen/PdfViewerPage";
-
-// ================= Sidebar =================
-
-// ================= Top Toolbar =================
-function DataToolbar() {
-    return (
-        <div className="flex items-center justify-between border-b px-4 py-2 bg-white">
-            <div className="flex items-center gap-4 text-sm">
-                <button className="flex items-center gap-1"><Search size={14}/> Ask Mori</button>
-                <button className="flex items-center gap-1"><Filter size={14}/> Filter</button>
-                <button className="flex items-center gap-1"><Columns size={14}/> Manage columns</button>
-            </div>
-
-            <div className="flex items-center gap-3">
-                <button className="border px-3 py-1 rounded-lg text-sm flex items-center gap-1"><Share2 size={14}/> Share</button>
-                <button className="border px-3 py-1 rounded-lg text-sm flex items-center gap-1"><Download size={14}/> Export</button>
-            </div>
-        </div>
-    );
-}
-
-// ================= Table =================
+import {useParams} from "react-router-dom";
 
 function PlayWrightTable({rows, }) {
     const [selectedClause, setSelectedClause] = useState(null);
@@ -52,7 +14,6 @@ function PlayWrightTable({rows, }) {
 
     const filterRows = rows?.filter(r => r.analysisType == activeType);
 
-//    const navigate = useNavigate();
     const [selectedFile, setSelectedFile] = useState<any | null>(null);
     const [pdfViewer, setPdfViewer] = useState(null);
 
@@ -159,11 +120,11 @@ function PlayWrightTable({rows, }) {
     const ClauseCell = ({ clause, azureBlobId, azureBlobUrl }) => (
         <td className="p-2 max-w-[220px] align-top">
             <div className="h-28 overflow-hidden line-clamp-4 break-words whitespace-normal"
-                onClick={() => setSelectedClause({
-                    ...clause,
-                    azureBlobId,
-                    azureBlobUrl,
-                })}>
+                 onClick={() => setSelectedClause({
+                     ...clause,
+                     azureBlobId,
+                     azureBlobUrl,
+                 })}>
                 {clause?.summaryShort || "-"}
             </div>
         </td>
@@ -270,10 +231,10 @@ function PlayWrightTable({rows, }) {
                         </p>
 
                         <p className="cursor-pointer text-blue-600 hover:underline"
-                        onClick={() => {
+                           onClick={() => {
 
-                            handleOpenPdf(selectedClause)}
-                        }>
+                               handleOpenPdf(selectedClause)}
+                           }>
 
                             <strong className={"gap-x-1"}>Source Page:</strong> {selectedClause.sourcePage}
                         </p>
@@ -282,115 +243,50 @@ function PlayWrightTable({rows, }) {
                 </div>
             )}
 
-                {pdfViewer && (
-                    <div className="fixed left-0 top-0 h-full w-[820px] bg-white shadow-xl z-50">
+            {pdfViewer && (
+                <div className="fixed left-0 top-0 h-full w-[820px] bg-white shadow-xl z-50">
 
-                        <div className="flex  bg-white shadow-xl rounded-lg overflow-hidden">
+                    <div className="flex  bg-white shadow-xl rounded-lg overflow-hidden">
 
-                            {/* 🔴 CLOSE BUTTON */}
-                            <button
-                                onClick={() => setPdfViewer(null)}
-                                className="absolute top-2 right-2 z-10 bg-white border rounded-full px-3 py-1 shadow hover:bg-gray-100"
-                            >
-                                ✕
-                            </button>
+                        {/* 🔴 CLOSE BUTTON */}
+                        <button
+                            onClick={() => setPdfViewer(null)}
+                            className="absolute top-2 right-2 z-10 bg-white border rounded-full px-3 py-1 shadow hover:bg-gray-100"
+                        >
+                            ✕
+                        </button>
 
-                            {/* 📄 PDF VIEW */}
-                            <div className="w-[800px] h-[800px] top-2 ">
-                                <iframe
-                                    src={`${pdfViewer.url}#page=${pdfViewer.page}&zoom=page-width`}
-                                    className="w-full h-full border-none left-2"
-                                />
-                            </div>
-
-                            <div className="absolute inset-0 pointer-events-none">
-                                {pdfViewer.highlights?.map((h, i) => (
-                                    <div
-                                        key={i}
-                                        style={{
-                                            position: "absolute",
-                                            top: `${h.top * 100}%`,
-                                            left: `${h.left * 100}%`,
-                                            width: `${h.width * 100}%`,
-                                            height: `${h.height * 100}%`,
-                                            backgroundColor: "rgba(255,255,0,0.4)",
-                                            border: "2px solid orange"
-                                        }}
-                                    />
-                                ))}
-                            </div>
-
+                        {/* 📄 PDF VIEW */}
+                        <div className="w-[800px] h-[800px] top-2 ">
+                            <iframe
+                                src={`${pdfViewer.url}#page=${pdfViewer.page}&zoom=page-width`}
+                                className="w-full h-full border-none left-2"
+                            />
                         </div>
+
+                        <div className="absolute inset-0 pointer-events-none">
+                            {pdfViewer.highlights?.map((h, i) => (
+                                <div
+                                    key={i}
+                                    style={{
+                                        position: "absolute",
+                                        top: `${h.top * 100}%`,
+                                        left: `${h.left * 100}%`,
+                                        width: `${h.width * 100}%`,
+                                        height: `${h.height * 100}%`,
+                                        backgroundColor: "rgba(255,255,0,0.4)",
+                                        border: "2px solid orange"
+                                    }}
+                                />
+                            ))}
+                        </div>
+
                     </div>
-                )}
+                </div>
+            )}
 
         </div>
     );
 }
 
-// ================= Page =================
-export default function PlaybookTableScreen() {
-
-    const [selectedClause, setSelectedClause] = useState(null);
-
-    const {id} = useParams();
-
-    const {playWrightQueryId} = useParams();
-
-    const {data: queryData} = useGetPlayWrightQuerybyIdQuery<any>(id);
-
-    const projectId = queryData?.playWrightProjectId;
-
-    const {data: projectData} = useGetPlayWrightProjectbyIdQuery<any>(projectId, {
-        skip: !projectId,
-    });
-
-    const {userInfo} = useSelector((state: any) => state.auth);
-
-    const {data: playWrightQueryData} = useFetchPlayWrightQueryListByIdQuery<any>(userInfo?.id);
-
-    return (
-        <>
-            <div className="flex h-screen bg-gray-50 font-sans">
-                {/*================= SideBar ================= */}
-                <SideBar/>
-
-                <div className="flex-1 p-6 overflow-y-auto">
-
-                    {/*================= Navigation Header ================= */}
-                    <div className="flex flex-1 items-center py-1 cursor-pointer hover:bg-gray-200 rounded-lg w-56">
-                        <NavLink
-                            to={`/playbookProject/playWrightQuery/${projectId}`}
-                            className="flex items-center gap-4 text-gray-700 font-sans"
-                        >
-                            <ArrowLeftFromLine size={20} />
-                            <span>PlayWright Query/</span>
-                        </NavLink>
-                    </div>
-
-                    {/*================= Sub Header ================= */}
-                    <div className="px-4 py-3 border-b bg-white">
-                        <h1 className="text-2xl font-semibold">{projectData?.projectName || "Project Not Found"}</h1>
-                    </div>
-                    {/*================= Feature ================= */}
-                    <div className="flex items-center justify-between border-b px-4 py-2 bg-white">
-                        <div className="flex items-center gap-4 text-sm">
-                            <button className="flex items-center gap-1"><Search size={14}/> Ask Mori</button>
-                            <button className="flex items-center gap-1"><Filter size={14}/> Filter</button>
-                            <button className="flex items-center gap-1"><Columns size={14}/> Manage columns</button>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                            <button className="border px-3 py-1 rounded-lg text-sm flex items-center gap-1"><Share2 size={14}/> Share</button>
-                            <button className="border px-3 py-1 rounded-lg text-sm flex items-center gap-1"><Download size={14}/> Export</button>
-                        </div>
-                    </div>
-
-                    <PlayWrightTable rows={playWrightQueryData}  />
-
-                    {/*<DataTable rows={rows} />*/}
-                </div>
-            </div>
-        </>
-    )
-}
+export default PlayWrightTable;

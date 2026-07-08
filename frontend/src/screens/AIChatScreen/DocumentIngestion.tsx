@@ -4,7 +4,6 @@ import {useState} from "react";
 import cn from "../../util/util";
 import {Upload, FileText, XOctagon, BadgeCheckIcon} from "lucide-react";
 import {Button} from "@mui/material";
-import UpdateProgressBar from "../../../src/components/Layout/UpdateProgressBar";
 
 export interface UploadedDocumentProp {
     id: string;

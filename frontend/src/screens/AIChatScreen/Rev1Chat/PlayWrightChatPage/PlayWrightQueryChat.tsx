@@ -1,20 +1,20 @@
 
 
-import ChatSideBar from "../../../components/Layout/Graph & Tables/ChatSideBar";
+import ChatSideBar from "../../../../components/Layout/Graph & Tables/ChatSideBar";
 import {useSelector, } from "react-redux";
 import {useLocation, useParams, useNavigate} from "react-router-dom";
-import {useAzureSpeech} from "../../../components/useAzureSpeech"
+import {useAzureSpeech} from "../../../../components/useAzureSpeech"
 import React, {useState, useEffect, useRef,} from "react";
-import {sanitizeTextForTTS} from "../../AIChatScreen/sanitizeTextForTTS";
-import ChatInput from "../ChatInput";
-import {ChatMessageList} from "../ChatMessageList";
+import {sanitizeTextForTTS} from "../../sanitizeTextForTTS";
+import ChatInput from "../ChatPage/ChatInput";
+import {ChatMessageList} from "../ChatPage/ChatMessageList";
 import {toast} from "react-toastify";
-import {useAzureTextToSpeech} from "../../AIChatScreen/useAzureTextToSpeech";
+import {useAzureTextToSpeech} from "../../useAzureTextToSpeech";
 import {Helmet} from "react-helmet";
-import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
-import {useSendSummaryAIMessageMutation} from "../../../features/chatapiSlice";
+import CustomLoaderSmall from "../../../../components/Layout/CustomLoaderSmall";
+import {useSendSummaryAIMessageMutation} from "../../../../features/chatapiSlice";
 import { motion } from "framer-motion";
-import PdfOutlinePanel from "../PdfOutlinePanel";
+import PdfOutlinePanel from "../../PdfOutlinePanel";
 import {MicIcon, MicOffIcon} from "lucide-react";
 
 export default function PlayWrightQueryChat() {

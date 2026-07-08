@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import ChatCitation from "./ChatCitation";
+import React, { useEffect, useState } from "react";
+import ChatCitation from "./Rev1Chat/ChatPage/ChatCitation";
 import Markdown from "react-markdown";
 // import {useSendSemanticAIMessageMutation} from "../../features/chatapiSlice";
 import {BotIcon, User, MicIcon, PauseIcon, CircleStop, PlayCircle} from "lucide-react";

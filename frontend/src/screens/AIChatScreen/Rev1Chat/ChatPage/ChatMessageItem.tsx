@@ -5,7 +5,7 @@ import Markdown from "react-markdown";
 import {BotIcon, User, MicIcon, PauseIcon, CircleStop, PlayCircle} from "lucide-react";
 import {Button} from "@mui/material";
 import {useSelector} from "react-redux";
-import {assets} from "../../assets/assets";
+import {assets} from "../../../../assets/assets";
 
 
 interface ChatMessageItemProps {

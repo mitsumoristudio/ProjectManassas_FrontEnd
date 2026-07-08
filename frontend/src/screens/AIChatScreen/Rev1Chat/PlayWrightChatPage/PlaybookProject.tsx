@@ -18,11 +18,11 @@ import {AnimatePresence, motion} from "framer-motion";
 import {useCreatePlayWrightProjectMutation,
         useGetPlayWrightProjectListQuery,
         useUpdatePlayWrightProjectMutation,
-        useDeletePlayWrightProjectMutation} from "../../../features/playwrightApiSlice";
+        useDeletePlayWrightProjectMutation} from "../../../../features/playwrightApiSlice";
 
 
-import SideBar from "../../../components/Layout/Graph & Tables/SideBar";
-import CustomLoaderSmall from "../../../components/Layout/CustomLoaderSmall";
+import SideBar from "../../../../components/Layout/Graph & Tables/SideBar";
+import CustomLoaderSmall from "../../../../components/Layout/CustomLoaderSmall";
 
 export default function PlaybookProject() {
     const [openProject, setOpenProject] = useState(false);

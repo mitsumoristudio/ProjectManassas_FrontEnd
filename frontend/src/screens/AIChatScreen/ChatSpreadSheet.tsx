@@ -4,7 +4,7 @@ import ChatSideBar from "../../components/Layout/Graph & Tables/ChatSideBar";
 import {AnimatePresence, motion} from "framer-motion";
 import {toast} from "react-toastify";
 import {Helmet} from "react-helmet";
-import ChatInput from "./ChatInput";
+import ChatInput from "./Rev1Chat/ChatPage/ChatInput";
 import {
     useGetExcelIngestedFilesQuery,
     useSendAIExcelMessageMutation,

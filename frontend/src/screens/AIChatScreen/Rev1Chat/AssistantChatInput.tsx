@@ -97,6 +97,7 @@ const AssistantChatInput: React.FC<ChatInputProps> = ({
     };
 
     // When user selects or drags files
+    // @ts-ignore
     const handleUpload = async (files: FileList) => {
         const fileArray = Array.from(files);
 

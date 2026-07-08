@@ -1,14 +1,14 @@
-import CustomLoaderSmall from "../../components/Layout/CustomLoaderSmall";
+import CustomLoaderSmall from "../../../../components/Layout/CustomLoaderSmall";
 import {Helmet} from "react-helmet";
 
-import ChatSideBar from "../../components/Layout/Graph & Tables/ChatSideBar";
-import {AIModel} from "../../components/Layout/DropdownMenu/ChatMenuSelector";
-import ChatMenuSelector from "../../components/Layout/DropdownMenu/ChatMenuSelector";
+import ChatSideBar from "../../../../components/Layout/Graph & Tables/ChatSideBar";
+import {AIModel} from "../../../../components/Layout/DropdownMenu/ChatMenuSelector";
+import ChatMenuSelector from "../../../../components/Layout/DropdownMenu/ChatMenuSelector";
 import {useSelector, } from "react-redux";
 import {NavLink, useParams, useNavigate} from "react-router-dom";
 import {LucideFilePlus, ClipboardList, SheetIcon, MicIcon, MicOffIcon, ArrowBigRightDash, CalendarDaysIcon} from "lucide-react"
-import {useAzureSpeech} from "../../components/useAzureSpeech"
-import {PDF_URL, PRODUCTION_PDF_URL} from "../../util/urlconstants"
+import {useAzureSpeech} from "../../../../components/useAzureSpeech"
+import {PDF_URL, PRODUCTION_PDF_URL} from "../../../../util/urlconstants"
 
 
 import {
@@ -21,27 +21,27 @@ import {
     useSendProjectAdvisorMutation,
     useGetExcelIngestedFilesQuery,
     useSendAIExcelMessageMutation
-} from "../../features/chatapiSlice";
-import {useSendAIProjectMessageMutation} from "../../features/projectApiSlice";
-import {useSendAIEquipmentMessageMutation} from "../../features/equipmentApiSlice";
+} from "../../../../features/chatapiSlice";
+import {useSendAIProjectMessageMutation} from "../../../../features/projectApiSlice";
+import {useSendAIEquipmentMessageMutation} from "../../../../features/equipmentApiSlice";
 import React, { useState, useEffect} from "react";
 
 import {
     useSummaryContractMutation
-} from "../../features/contractAnalysisSlice";
+} from "../../../../features/contractAnalysisSlice";
 
 
-import AssistantChatInput from "./Rev1Chat/AssistantChatInput";
+import AssistantChatInput from "../AssistantChatInput";
 import ChatInput from "./ChatInput";
 import {ChatMessageList} from "./ChatMessageList";
-import PromptSelector from "../../components/Layout/PromptSelector";
+import PromptSelector from "../../../../components/Layout/PromptSelector";
 import {motion} from "framer-motion";
-import PdfOutlinePanel from "../AIChatScreen/PdfOutlinePanel";
+import PdfOutlinePanel from "../../PdfOutlinePanel";
 import {toast} from "react-toastify";
-import {useAzureTextToSpeech} from "../../screens/AIChatScreen/useAzureTextToSpeech";
-import { sanitizeTextForTTS} from "../../screens/AIChatScreen/sanitizeTextForTTS";
-import {assets} from "../../assets/assets";
-import BoltCustomLoader from "../../components/Layout/BoltCustomLoader";
+import {useAzureTextToSpeech} from "../../useAzureTextToSpeech";
+import { sanitizeTextForTTS} from "../../sanitizeTextForTTS";
+import {assets} from "../../../../assets/assets";
+import BoltCustomLoader from "../../../../components/Layout/BoltCustomLoader";
 
 const promptList = [
     { id: "1", title: "Understand scope of work", description: "Please summarize contract for this project" },

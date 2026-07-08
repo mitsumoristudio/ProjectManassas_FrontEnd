@@ -17,21 +17,21 @@ import ProjectAnalyticsScreen from "./screens/mainscreen/ProjectAnalyticsScreen"
 import EquipmentEditScreen from "./screens/admin/EquipmentEditScreen";
 import VerifyEmailScreen from "./screens/admin/VerifyEmailScreen";
 import ForgotPasswordPage from "./screens/admin/ForgotPasswordPage";
-import {ChatMainScreen} from "./screens/AIChatScreen/ChatMainScreen";
+import {ChatMainScreen} from "./screens/AIChatScreen/Rev1Chat/ChatPage/ChatMainScreen";
 import DocumentIngestionPage from "../src/screens/AIChatScreen/DocumentIngestionPage"
 import SignalRProvider from "../src/SignalRProvider/SignalRProvider";
 import PasswordResetScreen from "../src/screens/admin/PasswordResetScreen";
 import ExcelngestionPage from "../src/screens/AIChatScreen/ExcelngestionPage";
 import {ExcelCard} from "../src/components/ExcelCard";
-import {ConversationMainScreen} from "../src/screens/AIChatScreen/ConversationMainScreen";
+import {ConversationMainScreen} from "./screens/AIChatScreen/Rev1Chat/ChatPage/ConversationMainScreen";
 import {ChatSpreadSheet} from "../src/screens/AIChatScreen/ChatSpreadSheet";
 import DocumentPreviewScreen from "../src/screens/AIChatScreen/DocumentPreviewScreen";
-import {PlayWrightQueryDashboard} from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryDashboard";
-import PlaybookProject from "./screens/AIChatScreen/Rev1Chat/PlaybookProject";
-import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlaybookTableScreen";
+import {PlayWrightQueryDashboard} from "./screens/AIChatScreen/Rev1Chat/PlayWrightChatPage/PlayWrightQueryDashboard";
+import PlaybookProject from "./screens/AIChatScreen/Rev1Chat/PlayWrightChatPage/PlaybookProject";
+import PlaybookTableScreen from "./screens/AIChatScreen/Rev1Chat/PlayWrightChatPage/PlaybookTableScreen";
 import AssistantChatScreen from "./screens/AIChatScreen/Rev1Chat/AssistantChatScreen";
 import SinglePlayQueryScreen from "./screens/AIChatScreen/Rev1Chat/SinglePlayQueryScreen";
-import PlayWrightQueryChat from "./screens/AIChatScreen/Rev1Chat/PlayWrightQueryChat";
+import PlayWrightQueryChat from "./screens/AIChatScreen/Rev1Chat/PlayWrightChatPage/PlayWrightQueryChat";
 import QueryChatScreen from "../src/screens/AIChatScreen/Rev1Chat/QueryChatScreen"
 import NewHomeScreenPage from "../src/screens/mainscreen/NewHomeScreenPage";
 
