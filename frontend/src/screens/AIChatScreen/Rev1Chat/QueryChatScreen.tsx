@@ -110,8 +110,10 @@ export default function QueryChatScreen() {
                     session : {
                         messages: [
                             {
+                                sessionId: crypto.randomUUID(),
                                 role: "user",
                                 messageContent: inputValue,
+                                createdAt: new Date().toISOString(),
                             }
                         ]
                     }

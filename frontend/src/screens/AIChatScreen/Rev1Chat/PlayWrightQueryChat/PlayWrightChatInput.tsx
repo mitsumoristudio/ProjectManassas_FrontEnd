@@ -8,6 +8,7 @@ import {
     useGetPdfFromPlayWrightProjectIdQuery,
     useSendAIExcelMessageMutation,
     useFetchExcelFilesQuery,
+    useProcessSpreadSheetChatAsyncMutation,
 } from "../../../../features/chatapiSlice";
 import {useContractAnalysisMutation,
         useAdviseContractMutation,
@@ -27,6 +28,7 @@ import {
 import {toast} from "react-toastify";
 import {useSelector} from "react-redux";
 import ExcelIngestion, {UploadExcelIngestionProps} from "../../ExcelIngestion";
+import chatInput from "@/src/screens/AIChatScreen/Rev1Chat/ChatPage/ChatInput";
 
 interface ChatInputProps {
     onSend: (value: string, toolType?: string, mode?: string) => void;
@@ -69,7 +71,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [selectGadget, setSelectGadget] = useState<boolean>(false);
 
     // State-Driven Model Workflow
-    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "document-config"| "excelSheet"| "regularChat";
+    type Mode = "advisor-config"| "analysis-config" | "specification-config" | "document-config"| "excel-Sheet"| "regularChat";
     const [mode, setMode] = useState<Mode>("regularChat");
     const [reviewPrompt, setReviewPrompt] = useState<string>("");
 
@@ -88,7 +90,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
     const [reviewSpecification, {isLoading: isreviewSpecificationLoading}] = useReviewSpecificationMutation();
     const [projectAdvisor, {isLoading: isprojectAdvisorLoading}] = useAdviseContractMutation();
     const [summarizationAI, {isLoading: isSummaryAILoading}] = useSummaryContractMutation();
-    const [sendAIExcelMessage, {isLoading: isExcelLoading}] = useSendAIExcelMessageMutation();
+    const [excelProcessChat, {isLoading: isExcelLoading}] = useProcessSpreadSheetChatAsyncMutation();
 
     const navigate = useNavigate();
 
@@ -126,70 +128,76 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         specification: reviewSpecification,
         advisor: projectAdvisor,
         summarization: summarizationAI,
-        spreadsheet: sendAIExcelMessage,
+        spreadsheet: excelProcessChat,
     };
 
-    const handleToolMutation = async () => {
-        if (selectedPdfs.length === 0) {
-            console.error("No selected pdf found.");
+    // @ts-ignore
+    const excelOnSubmitHandler = async (
+        sessionId: string,
+        role: string,
+        createdAt: string,
+        userId: string,
+        messageContent: string,
+        playWrightProjectId: string,
+        playWrightQueryId: string,
+        tableDataSetId: string,
+        messages: string,
+        toolType: string,
+    ) => {
+        if (!messages?.trim()) {
+            toast.error("Message cannot be empty");
             return;
         }
-
-        try {
-            // Summarization workflow
-            if (toolType === "summarization") {
-
-                const pdf = selectedPdfs[0];
-
-                console.log("azureBlobId", pdf.id);
-
-                await summaryOnSubmitHandler(
-                    reviewPrompt || value,
-                    "summarization",
-                    "regularChat",
-                    reviewPrompt || value,
-                    projectId,
-                    pdf.id,
-                    pdf.id
-                );
-                return
-            }
-
-            // Existing workflow for Advisor / Analysis / Specification
-            const selectedMutation = toolMutationMap[toolType];
-
-            const requests = selectedPdfs.map(async  (pdf) => {
-                const payload = {
-                    projectQueryTitle: reviewPrompt || value,
-                    playWrightProjectId: projectId,
-                    documentId: pdf.id,
-                    azureBlobId: pdf.id,
-                    singleTabular: queryType,
+        if (
+            toolType === "spreadsheet" &&
+            mode === "excel-Sheet"
+        ) {
+            try {
+                const userMessage = {
+                    role: "user",
+                    messageContent: messages,
+                    createdAt: new Date().toISOString(),
                 };
 
-                console.log("Summary Payload", payload);
+                const session = {
+                    sessionId: crypto.randomUUID(),
+                    messages: [ {
+                        role: "user",
+                        messageContent: messages,
+                        createdAt: new Date().toISOString(),
+                    }]
+                };
+                const response = await excelProcessChat({
+                    messageContent: messageContent,
+                    createdAt: createdAt,
+                    tableDataSetId: tableDataSetId,
+                    sessionId: sessionId,
+                    role: role,
+                    userId: userId,
+                    playWrightQueryId: playWrightQueryId,
+                    playWrightProjectId: playWrightProjectId,
+                }).unwrap();
 
-                return await selectedMutation(payload).unwrap();
+                navigate(`/playWrightQuery/chatItem/${response.playWrightQueryId}`, {
+                    state: {
+                        initialMessages: [
+                            userMessage,
+                            {
+                                role: "assistant",
+                                messageContent: response.session.messages,
+                                createdAt: Date.now().toString(),
+                            },
+                        ],
+                    },
+                });
 
 
-
-            });
-            const responses = await Promise.all(requests);
-
-            setMode("regularChat");
-
-            onChange("");
-
-            setReviewPrompt("");
-
-            console.log("Mutation response", responses);
-
-            toast.success("Added new query")
-
-        } catch (err) {
-            toast.error(err?.data?.message || "Failed to create a project");
+            } catch (error) {
+            console.error(error);}
         }
-    }
+        return;
+
+    };
 
     const summaryOnSubmitHandler = async (
         messages: string,
@@ -256,6 +264,74 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
         console.log("Sending message:", messages);
     };
 
+    const handleExcelToolMutation = async () => {
+        if (selectedExcel.length == 0) {
+            console.error("No selected Excel found");
+        }
+    }
+
+    const handleToolMutation = async () => {
+        if (selectedPdfs.length === 0) {
+            console.error("No selected pdf found.");
+            return;
+        }
+
+        try {
+            // Summarization workflow
+            if (toolType === "summarization") {
+
+                const pdf = selectedPdfs[0];
+
+                console.log("azureBlobId", pdf.id);
+
+                await summaryOnSubmitHandler(
+                    reviewPrompt || value,
+                    "summarization",
+                    "regularChat",
+                    reviewPrompt || value,
+                    projectId,
+                    pdf.id,
+                    pdf.id
+                );
+                return
+            }
+
+            // Existing workflow for Advisor / Analysis / Specification
+            const selectedMutation = toolMutationMap[toolType];
+
+            const requests = selectedPdfs.map(async  (pdf) => {
+                const payload = {
+                    projectQueryTitle: reviewPrompt || value,
+                    playWrightProjectId: projectId,
+                    documentId: pdf.id,
+                    azureBlobId: pdf.id,
+                    singleTabular: queryType,
+                };
+
+                console.log("Summary Payload", payload);
+
+                return await selectedMutation(payload).unwrap();
+
+
+
+            });
+            const responses = await Promise.all(requests);
+
+            setMode("regularChat");
+
+            onChange("");
+
+            setReviewPrompt("");
+
+            console.log("Mutation response", responses);
+
+            toast.success("Added new query")
+
+        } catch (err) {
+            toast.error(err?.data?.message || "Failed to create a project");
+        }
+    }
+
     const modelPromptHandler = () => {
         if (!value.trim()) return;
 
@@ -303,7 +379,7 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
 
         if (queryType === "excel-review" && toolType === "spreadSheet") {
             setReviewPrompt(value);
-            setMode("excelSheet");
+            setMode("excel-Sheet");
             return;
         }
 
@@ -1620,6 +1696,82 @@ const PlayWrightChatInput: React.FC<ChatInputProps> = ({
                                     )}
 
                                     {isprojectAdvisorLoading && (
+                                        <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
+                                            <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
+                                            </svg>
+                                            Processing…
+                                        </button>
+                                    )}
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Excel */}
+                    {mode === "excel-Sheet" && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+                            <div className="bg-white w-[700px] max-h-[80vh] rounded-2xl shadow-xl flex flex-col">
+
+                                {/* Header */}
+                                <div className="flex justify-between items-center p-4 border-b">
+                                    <h2 className="font-semibold text-lg">
+                                        Create a {toolType} {queryType}
+                                    </h2>
+                                    <button  onClick={() => {
+                                        setMode("regularChat")
+                                    }}>x</button>
+                                </div>
+
+                                {/* Table Config */}
+                                <div className="overflow-y-auto p-4 flex-1">
+
+                                    {/*<div className="text-sm text-gray-500 mb-3">*/}
+                                    {/*    Review single term across documents.*/}
+                                    {/*</div>*/}
+
+                                    {[// ProjectAdvisorClause
+                                        { label: "Review Excel Sheet", question: "Analyze Excel Sheet" },
+                                    ].map((item, i) => (
+                                        <div
+                                            key={i}
+                                            className="grid grid-cols-2 gap-4 border-b py-3"
+                                        >
+                                            <div className="font-medium text-sm">
+                                                {item.label}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                {item.question}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="flex justify-end gap-2 p-4 border-t">
+                                    <button
+                                        onClick={() => {
+                                            setMode("regularChat")
+                                        }}
+
+                                        className="px-4 py-2 rounded-lg bg-gray-200"
+                                    >
+                                        Cancel
+                                    </button>
+
+                                    <button
+                                        onClick={ async () => {
+                                            setMode("excel-Sheet"); // next step
+
+                                            await handleExcelToolMutation();
+
+                                        }}
+                                        className="px-4 py-2 rounded-lg bg-black text-white"
+                                    >
+                                        Continue
+                                    </button>
+
+                                    {isExcelLoading && (
                                         <button type="button" className="px-4 py-2 rounded-lg shadow-md text-white bg-indigo-700 ..." disabled>
                                             <svg className="mr-3 size-4  animate-spin ..." viewBox="0 0 24 24">
                                             </svg>

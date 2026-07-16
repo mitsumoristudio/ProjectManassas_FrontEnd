@@ -51,7 +51,7 @@ export function PlayWrightQueryDashboard() {
     }
 
     const [tabularOrSingleQuery, setTabularOrSingleQuery] =
-        useState<"tabular-review" | "single-query-review" | "single-search" | "excel-review">(
+        useState<"tabular-review" | "single-query-review" | "single-search" | "Excel-Review">(
             "tabular-review"
         );
 

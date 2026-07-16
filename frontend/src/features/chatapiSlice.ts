@@ -37,6 +37,41 @@ export interface TableColumn {
     sheetId: string;
 }
 
+export interface ChatMessageRequest {
+    sessionId: string;
+    role: "User" | "Assistant";
+    messageContent: string;
+}
+
+export interface ChatSessionRequest {
+    sessionId: string;
+    title: string;
+    messages: ChatMessageRequest[];
+}
+
+export interface SpreadSheetChatRequest {
+    tableDataSetId: string,
+    projectQueryTitle: string,
+    playWrightProjectId: string,
+    playWrightQueryId: string,
+    azureBlobId: string,
+    question: string,
+    singleTabular: string,
+    session: ChatSessionRequest
+}
+
+export interface ChatMessageResponse {
+    sessionId: string;
+    role: string;
+    messageContent: string;
+    createdAt: string;
+    userId: string;
+    playWrightProjectId: string;
+    playWrightQueryId: string;
+    tableDataSetId: string;
+}
+
+
 export const chatApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => {
         // @ts-ignore
@@ -144,6 +179,16 @@ export const chatApiSlice = apiSlice.injectEndpoints({
                     body: payload,
                 }),
                 invalidatesTags: ["Chat"],
+            }),
+
+            processSpreadSheetChatAsync: builder.mutation<
+                SpreadSheetChatRequest, ChatMessageResponse>({
+                query: (payload) =>({
+                    url: `${EXCEL_URL}/spreadSheetChat`,
+                    method: "POST",
+                    body: payload,
+                }),
+                invalidatesTags: ["TableDataSet", "TableDatasetCell"],
             }),
 
             getExcelIngestedFiles: builder.query({
@@ -263,6 +308,7 @@ export const {
     useSendAIMessageMutation,
     useSendChatMessageMutation,
     useDeletePdfIngestedMutation,
+    useProcessSpreadSheetChatAsyncMutation,
     useSendSemanticAIMessageMutation,
     useDeleteEntirePdfMutation,
     useSearchMessageQuery,
